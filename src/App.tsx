@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Button, Text, View} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 
 function App(): React.JSX.Element {
@@ -30,7 +30,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log('A new FCM message arrived!', remoteMessage);
     });
 
     return unsubscribe;
@@ -40,6 +40,10 @@ function App(): React.JSX.Element {
   return (
     <View>
       <Text>oi</Text>
+      <Button
+        title="Display Notification"
+        onPress={() => onDisplayNotification()}
+      />
     </View>
   );
 }
