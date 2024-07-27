@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/geolocation": "^3.2.1",
     "@react-native-firebase/app": "^20.3.0",
+    "@react-native-firebase/messaging": "^20.3.0",
     "@supersami/rn-foreground-service": "^2.1.1",
     "react": "18.2.0",
     "react-native": "0.74.1",

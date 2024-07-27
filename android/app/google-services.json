@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "267971645685",
+    "project_id": "dog-walker-9dd47",
+    "storage_bucket": "dog-walker-9dd47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267971645685:android:886150ac5d029af39335bc",
+        "android_client_info": {
+          "package_name": "com.pedro.trackmap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8xrbqBqj5uMlK2N6ZGnKX5m4v0fl7fWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

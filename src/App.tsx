@@ -1,25 +1,47 @@
-import React from 'react';
-import {
-  useColorScheme,
-} from 'react-native';
-
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-import Map from './components/map';
+import React, {useEffect} from 'react';
+import {Text, View} from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const handleToken = async () => {
+    async function requestUserPermission() {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+      }
+    }
+    await requestUserPermission();
+    const authorizationStatus = await messaging().requestPermission();
+    if (authorizationStatus) {
+      console.log('Permission status:', authorizationStatus);
+    }
+
+    const token = await messaging().getToken();
+    console.log('got token', token);
   };
 
+  useEffect(() => {
+    handleToken();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // return <Map />;
   return (
-    <Map />
+    <View>
+      <Text>oi</Text>
+    </View>
   );
 }
-
-
 
 export default App;

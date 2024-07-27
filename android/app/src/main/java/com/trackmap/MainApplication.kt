@@ -1,4 +1,4 @@
-package com.trackmap
+package com.pedro.trackmap
 
 import android.app.Application
 import com.facebook.react.PackageList
