@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Button, Text, View} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import Routes from './routes';
 
 function App(): React.JSX.Element {
   const handleToken = async () => {
@@ -38,13 +39,7 @@ function App(): React.JSX.Element {
 
   // return <Map />;
   return (
-    <View>
-      <Text>oi</Text>
-      <Button
-        title="Display Notification"
-        onPress={() => onDisplayNotification()}
-      />
-    </View>
+    <Routes/>
   );
 }
 
