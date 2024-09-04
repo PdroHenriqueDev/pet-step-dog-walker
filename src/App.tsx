@@ -1,5 +1,5 @@
+import './styles/global.css';
 import React, {useEffect} from 'react';
-import {Button, Text, View} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import Routes from './routes';
 
@@ -38,9 +38,7 @@ function App(): React.JSX.Element {
   }, []);
 
   // return <Map />;
-  return (
-    <Routes/>
-  );
+  return <Routes />;
 }
 
 export default App;

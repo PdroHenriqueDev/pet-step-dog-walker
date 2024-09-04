@@ -2,7 +2,7 @@ import React, {useLayoutEffect} from 'react';
 import {StackHeaderProps, createStackNavigator} from '@react-navigation/stack';
 import NotificationHeader from '../components/header/notificationHeader';
 import CustomHeader from '../components/header/customHeader';
-import { useAppNavigation } from '../hooks/useAppNavigation';
+import {useAppNavigation} from '../hooks/useAppNavigation';
 import Home from '../screens/home';
 
 const {Navigator, Screen} = createStackNavigator();
