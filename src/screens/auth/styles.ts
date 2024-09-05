@@ -22,6 +22,9 @@ const styles = StyleSheet.create({
   innerBorder: {
     width: 0,
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
 });
 
 export default styles;

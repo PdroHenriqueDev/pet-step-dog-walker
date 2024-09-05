@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import {CustomTextInputProps} from '../../interfaces/customTextInput';
 
 export default function CustomTextInput({
@@ -7,15 +7,21 @@ export default function CustomTextInput({
   onChangeText,
   placeholder,
   secureTextEntry = false,
+  error,
+  isEditable = false,
 }: CustomTextInputProps) {
   return (
-    <TextInput
-      className="border border-border rounded-lg p-3 text-dark"
-      placeholder={placeholder}
-      placeholderTextColor="#0000004D"
-      value={value}
-      onChangeText={onChangeText}
-      secureTextEntry={secureTextEntry}
-    />
+    <View>
+      <TextInput
+        className="border border-border rounded-lg p-3 text-dark"
+        placeholder={placeholder}
+        placeholderTextColor="#0000004D"
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        editable={isEditable}
+      />
+      {error && <Text className="text-danger text-sm mt-1">{error}</Text>}
+    </View>
   );
 }

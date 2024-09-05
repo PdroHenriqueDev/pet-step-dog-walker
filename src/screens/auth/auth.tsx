@@ -1,14 +1,14 @@
 import {ButtonGroup} from '@rneui/base';
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import styles from './styles';
 import SignIn from './signIn/signIn';
 import SignUp from './signUp/signUp';
 
 export default function AuthScreen() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const buttons = ['Login', 'Cadastro'];
 
-  const buttons = ['Login', 'Registro'];
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
     <View className="flex-1 px-5 bg-primary justify-center">
@@ -28,7 +28,9 @@ export default function AuthScreen() {
         selectedTextStyle={styles.selectedTabText}
         innerBorderStyle={styles.innerBorder}
       />
-      {selectedIndex === 0 ? <SignIn /> : <SignUp />}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {selectedIndex === 0 ? <SignIn /> : <SignUp />}
+      </ScrollView>
     </View>
   );
 }

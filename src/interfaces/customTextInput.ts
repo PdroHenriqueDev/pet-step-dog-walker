@@ -1,6 +1,8 @@
 export interface CustomTextInputProps {
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText: (value: string) => void;
   placeholder: string;
   secureTextEntry?: boolean;
+  isEditable?: boolean;
+  error?: string;
 }
