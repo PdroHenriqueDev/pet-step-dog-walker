@@ -6,11 +6,20 @@ import CustomButton from '../../../components/customButton';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
+import {DogWalker, DogWalkerForm} from '../../../interfaces/dogWalker';
+import {registerDogWalker} from '../../../services/dogWalkerService';
+import {useDialog} from '../../../contexts/dialogContext';
+import {AxiosError} from 'axios';
+import {fetchAddress} from '../../../services/adress';
+import {brazilStates} from '../../../utils/brazilStates';
+import CustomPicker from '../../../components/customPicker/customPicker';
 
-export default function SignUp() {
-  const [isLoading, setIsLoading] = useState(true);
+export default function SignUp({onRegister}: {onRegister: () => void}) {
+  const [isLoading, setIsLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const {showDialog, hideDialog} = useDialog();
 
   const {
     control,
@@ -21,8 +30,14 @@ export default function SignUp() {
   } = useForm({
     defaultValues: {
       name: '',
-      surname: '',
+      lastName: '',
       email: '',
+      cpf: '',
+      zipCode: '',
+      street: '',
+      neighborhood: '',
+      city: '',
+      state: '',
       birthdate: '',
       password: '',
       confirmPassword: '',
@@ -54,8 +69,94 @@ export default function SignUp() {
     });
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const formatCPF = (cpf: string) => {
+    return cpf
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1');
+  };
+
+  const removeMask = (value?: string) => {
+    if (!value) return;
+    return value.replace(/\D/g, '');
+  };
+
+  const formatCEP = (cep: string) => {
+    return cep
+      .replace(/\D/g, '')
+      .replace(/^(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{3})\d+?$/, '$1');
+  };
+
+  const handleAddress = async (zipCode: string) => {
+    const data = await fetchAddress(zipCode);
+    const {logradouro, bairro, localidade, uf} = data;
+    setValue('street', logradouro);
+    setValue('neighborhood', bairro);
+    setValue('city', localidade);
+    setValue('state', uf);
+  };
+
+  const onSubmit = async (data: DogWalkerForm) => {
+    console.log('got here', data);
+    setIsLoading(true);
+    try {
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        confirmPassword,
+        cpf,
+        zipCode,
+        street,
+        neighborhood,
+        city,
+        state,
+        ...rest
+      } = data;
+
+      const document = removeMask(cpf);
+      const cep = removeMask(zipCode);
+
+      const dogWalker: DogWalker = {
+        ...rest,
+        document,
+        address: {
+          zipCode: cep,
+          street,
+          neighborhood,
+          city,
+          state,
+        },
+      };
+      console.log('got here dogWalker', dogWalker);
+      await registerDogWalker(dogWalker);
+      showDialog({
+        title: 'Cadastro feito com sucesso!',
+        confirm: {
+          confirmLabel: 'Faça o login',
+          onConfirm: () => {
+            hideDialog();
+            onRegister();
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message = error.response?.data || 'Ocorreu um erro inesperado';
+        showDialog({
+          title: message,
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -81,16 +182,16 @@ export default function SignUp() {
       <View className="mb-3">
         <Controller
           control={control}
-          name="surname"
+          name="lastName"
           rules={{required: 'Sobrenome é obrigatório'}}
           render={({field: {value}}) => (
             <CustomTextInput
               value={value}
               onChangeText={(text: string) =>
-                setValue('surname', text, {shouldValidate: true})
+                setValue('lastName', text, {shouldValidate: true})
               }
               placeholder="Seu sobrenome"
-              error={errors.surname?.message}
+              error={errors.lastName?.message}
               isEditable={!isLoading}
             />
           )}
@@ -113,6 +214,126 @@ export default function SignUp() {
               placeholder="Seu email"
               error={errors.email?.message}
               isEditable={!isLoading}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="cpf"
+          rules={{
+            required: 'CPF é obrigatório',
+            pattern: {
+              value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
+              message: 'CPF inválido',
+            },
+          }}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={formatCPF(value)}
+              onChangeText={(text: string) =>
+                setValue('cpf', formatCPF(text), {shouldValidate: true})
+              }
+              placeholder="Seu CPF"
+              error={errors.cpf?.message}
+              isEditable={!isLoading}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="zipCode"
+          rules={{
+            required: 'CEP é obrigatório',
+            pattern: {
+              value: /^\d{5}-\d{3}$/,
+              message: 'CEP inválido',
+            },
+          }}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={formatCEP(value)}
+              onChangeText={(text: string) => {
+                setValue('zipCode', formatCEP(text), {shouldValidate: true});
+                if (text.length === 9) {
+                  handleAddress(text);
+                }
+              }}
+              placeholder="Seu CEP"
+              error={errors.zipCode?.message}
+              isEditable={!isLoading}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="street"
+          rules={{required: 'Logradouro é obrigatório'}}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={value}
+              onChangeText={(text: string) =>
+                setValue('street', text, {shouldValidate: true})
+              }
+              placeholder="Seu logradouro"
+              error={errors.street?.message}
+              isEditable={!isLoading}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="neighborhood"
+          rules={{required: 'Bairro é obrigatório'}}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={value}
+              onChangeText={(text: string) =>
+                setValue('neighborhood', text, {shouldValidate: true})
+              }
+              placeholder="Seu bairro"
+              error={errors.neighborhood?.message}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="city"
+          rules={{required: 'Cidade é obrigatória'}}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={value}
+              onChangeText={(text: string) =>
+                setValue('city', text, {shouldValidate: true})
+              }
+              placeholder="Sua cidade"
+              error={errors.city?.message}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="state"
+          rules={{required: 'Estado é obrigatório'}}
+          render={({field: {value}}) => (
+            <CustomPicker
+              selectedValue={value}
+              onValueChange={itemValue =>
+                setValue('state', itemValue, {shouldValidate: true})
+              }
+              items={brazilStates}
+              error={errors.state?.message}
             />
           )}
         />

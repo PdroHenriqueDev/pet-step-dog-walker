@@ -2,6 +2,7 @@ import './styles/global.css';
 import React, {useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import Routes from './routes';
+import {DialogProvider} from './contexts/dialogContext';
 
 function App(): React.JSX.Element {
   const handleToken = async () => {
@@ -38,7 +39,11 @@ function App(): React.JSX.Element {
   }, []);
 
   // return <Map />;
-  return <Routes />;
+  return (
+    <DialogProvider>
+      <Routes />
+    </DialogProvider>
+  );
 }
 
 export default App;

@@ -8,7 +8,7 @@ export default function CustomTextInput({
   placeholder,
   secureTextEntry = false,
   error,
-  isEditable = false,
+  isEditable = true,
 }: CustomTextInputProps) {
   return (
     <View>

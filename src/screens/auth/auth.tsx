@@ -10,13 +10,19 @@ export default function AuthScreen() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const handleRegisterSuccess = () => {
+    setSelectedIndex(0);
+  };
+
   return (
-    <View className="flex-1 px-5 bg-primary justify-center">
+    <View className="flex-1 p-5 bg-primary justify-center">
       <Text className="text-2xl font-bold text-center mb-2 text-dark">
-        Entre na sua conta 👋
+        {selectedIndex === 0 ? 'Entre na sua conta 👋' : 'Crie uma nova conta'}
       </Text>
       <Text className="text-center text-accent mb-5">
-        Preencha o formulário com suas credenciais para entrar na sua conta.
+        {selectedIndex === 0
+          ? 'Preencha o formulário com suas credenciais para entrar na sua conta. '
+          : 'Preencha o formulário e crie uma nova conta'}
       </Text>
       <ButtonGroup
         onPress={setSelectedIndex}
@@ -29,7 +35,11 @@ export default function AuthScreen() {
         innerBorderStyle={styles.innerBorder}
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {selectedIndex === 0 ? <SignIn /> : <SignUp />}
+        {selectedIndex === 0 ? (
+          <SignIn />
+        ) : (
+          <SignUp onRegister={handleRegisterSuccess} />
+        )}
       </ScrollView>
     </View>
   );
