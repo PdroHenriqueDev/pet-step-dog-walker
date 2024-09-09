@@ -6,6 +6,7 @@ import CustomButton from '../../../components/customButton';
 import {login} from '../../../services/auth';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +39,11 @@ export default function SignIn() {
         email,
         password,
       });
+
+      const {accessToken, refreshToken} = response.data;
+
+      await EncryptedStorage.setItem('accessToken', accessToken);
+      await EncryptedStorage.setItem('refreshToken', refreshToken);
 
       console.log('got here onSubmit', response);
     } catch (error) {
