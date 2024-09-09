@@ -32,6 +32,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       name: '',
       lastName: '',
       email: '',
+      phone: '',
       cpf: '',
       zipCode: '',
       street: '',
@@ -213,6 +214,30 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               }
               placeholder="Seu email"
               error={errors.email?.message}
+              isEditable={!isLoading}
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="phone"
+          rules={{
+            required: 'Telefone é obrigatório',
+            pattern: {
+              value: /^\+?\d{1,3}?\s?\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/,
+              message: 'Telefone inválido. Use o formato: +55 (99) 99999-9999',
+            },
+          }}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={value}
+              onChangeText={(text: string) =>
+                setValue('phone', text, {shouldValidate: true})
+              }
+              placeholder="Seu telefone com DDI (ex: +55)"
+              error={errors.phone?.message}
               isEditable={!isLoading}
             />
           )}

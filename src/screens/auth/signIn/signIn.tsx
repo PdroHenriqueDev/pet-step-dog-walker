@@ -33,7 +33,6 @@ export default function SignIn() {
     password: string;
   }) => {
     setIsLoading(true);
-    console.log('got here', email, password);
     try {
       const response = await login({
         email,
