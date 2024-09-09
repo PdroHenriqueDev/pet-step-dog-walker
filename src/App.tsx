@@ -3,6 +3,7 @@ import React, {useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import Routes from './routes';
 import {DialogProvider} from './contexts/dialogContext';
+import {AuthProvider} from './contexts/authContext';
 
 function App(): React.JSX.Element {
   const handleToken = async () => {
@@ -40,9 +41,11 @@ function App(): React.JSX.Element {
 
   // return <Map />;
   return (
-    <DialogProvider>
-      <Routes />
-    </DialogProvider>
+    <AuthProvider>
+      <DialogProvider>
+        <Routes />
+      </DialogProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Tabs} from './tabs';
 import {AuthStack} from './authStack';
 import SplashScreen from '../components/splash/splash';
+import {AuthContext} from '../contexts/authContext';
 
 function Routes() {
-  const [userToken, setUserToken] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const {accessToken, isLoading, renewAccessToken} = useContext(AuthContext);
 
   if (isLoading) {
     return <SplashScreen />;
@@ -14,7 +14,7 @@ function Routes() {
 
   return (
     <NavigationContainer>
-      {userToken ? <Tabs /> : <AuthStack />}
+      {accessToken ? <Tabs /> : <AuthStack />}
     </NavigationContainer>
   );
 }

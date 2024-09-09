@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Text, TouchableOpacity, View} from 'react-native';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
@@ -6,10 +6,10 @@ import CustomButton from '../../../components/customButton';
 import {login} from '../../../services/auth';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {useAuth} from '../../../contexts/authContext';
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false);
+  const {setIsLoading, storeTokens, isLoading} = useAuth();
 
   const {showDialog, hideDialog} = useDialog();
 
@@ -18,7 +18,6 @@ export default function SignIn() {
     handleSubmit,
     setValue,
     formState: {errors},
-    watch,
   } = useForm({
     defaultValues: {
       email: '',
@@ -40,12 +39,9 @@ export default function SignIn() {
         password,
       });
 
-      const {accessToken, refreshToken} = response.data;
+      const {accessToken, refreshToken} = response;
 
-      await EncryptedStorage.setItem('accessToken', accessToken);
-      await EncryptedStorage.setItem('refreshToken', refreshToken);
-
-      console.log('got here onSubmit', response);
+      await storeTokens(accessToken, refreshToken);
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
