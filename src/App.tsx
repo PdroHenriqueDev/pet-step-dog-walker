@@ -39,7 +39,6 @@ function App(): React.JSX.Element {
     return unsubscribe;
   }, []);
 
-  // return <Map />;
   return (
     <AuthProvider>
       <DialogProvider>
