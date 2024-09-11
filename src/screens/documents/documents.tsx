@@ -1,38 +1,44 @@
 import {Icon, ListItem} from '@rneui/base';
 import {useState} from 'react';
-import {GestureResponderEvent, ScrollView, Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import CustomButton from '../../components/customButton';
 import styles from './style';
+import {useAppNavigation} from '../../hooks/useAppNavigation';
 
 interface ListItemProps {
   title: string;
   description: string;
+  documentType: string;
   completed: boolean;
-  onPress: (event: GestureResponderEvent) => void;
 }
 
 export default function DocumentsScreen() {
+  const {navigation} = useAppNavigation();
   const [stepsCompleted, setStepsCompleted] = useState({
-    rg: true,
+    document: true,
     selfie: false,
     residence: false,
     criminalRecord: false,
   });
 
   const allStepsCompleted =
-    stepsCompleted.rg &&
+    stepsCompleted.document &&
     stepsCompleted.selfie &&
     stepsCompleted.residence &&
     stepsCompleted.criminalRecord;
+
+  const goToPhotoScreen = (documentType: string) => {
+    navigation.navigate('PhotoCapture', {documentType});
+  };
 
   const renderItem = ({
     title,
     description,
     completed,
-    onPress,
+    documentType,
   }: ListItemProps) => (
-    <ListItem bottomDivider onPress={onPress}>
+    <ListItem bottomDivider onPress={() => goToPhotoScreen(documentType)}>
       <ListItem.Content>
         <ListItem.Title>
           <Text className="text-base font-bold">{title}</Text>
@@ -49,11 +55,6 @@ export default function DocumentsScreen() {
     </ListItem>
   );
 
-  const handleDocument = () => {};
-  const handleResidence = () => {};
-  const handleCriminalRecord = () => {};
-  const handleSelfie = () => {};
-
   return (
     <ScrollView className="bg-primary flex-1 p-5">
       <View className="items-center">
@@ -66,29 +67,29 @@ export default function DocumentsScreen() {
       {renderItem({
         title: 'RG ou CNH',
         description: 'Tire uma foto dos seus documentos.',
-        completed: stepsCompleted.rg,
-        onPress: handleDocument,
+        completed: stepsCompleted.document,
+        documentType: 'document',
       })}
 
       {renderItem({
         title: 'Comprovante de residência',
         description: 'Tire uma foto do seu Comprovante de residência.',
         completed: stepsCompleted.residence,
-        onPress: handleResidence,
+        documentType: 'residence',
       })}
 
       {renderItem({
-        title: 'Certidão de Antecedentes Criminais',
+        title: 'Certidão Negativa de Antecedentes Criminais',
         description: 'Tire uma foto do seu Certidão de Antecedentes Criminais.',
         completed: stepsCompleted.criminalRecord,
-        onPress: handleCriminalRecord,
+        documentType: 'criminalRecord',
       })}
 
       {renderItem({
         title: 'Selfie',
         description: 'Tire uma selfie do seu rosto.',
         completed: stepsCompleted.selfie,
-        onPress: handleSelfie,
+        documentType: 'selfie',
       })}
 
       <View className="justify-end mt-5" style={styles.buttonContainer}>

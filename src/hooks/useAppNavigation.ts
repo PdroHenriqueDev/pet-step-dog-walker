@@ -7,6 +7,7 @@ import {
 
 type RootStackParamList = {
   HomeScreen: undefined;
+  PhotoCapture: {documentType: string};
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;
