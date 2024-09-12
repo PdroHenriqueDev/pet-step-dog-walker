@@ -3,7 +3,6 @@ import {useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import CustomButton from '../../components/customButton';
-import styles from './style';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
 
 interface ListItemProps {
@@ -16,17 +15,19 @@ interface ListItemProps {
 export default function DocumentsScreen() {
   const {navigation} = useAppNavigation();
   const [stepsCompleted, setStepsCompleted] = useState({
-    document: true,
+    document: false,
     selfie: false,
     residence: false,
     criminalRecord: false,
+    aboutMe: false,
   });
 
   const allStepsCompleted =
     stepsCompleted.document &&
     stepsCompleted.selfie &&
     stepsCompleted.residence &&
-    stepsCompleted.criminalRecord;
+    stepsCompleted.criminalRecord &&
+    stepsCompleted.aboutMe;
 
   const goToPhotoScreen = (documentType: string) => {
     navigation.navigate('PhotoCapture', {documentType});
@@ -56,7 +57,7 @@ export default function DocumentsScreen() {
   );
 
   return (
-    <ScrollView className="bg-primary flex-1 p-5">
+    <ScrollView className="flex-1 bg-primary p-5">
       <View className="items-center">
         <Text className="font-bold text-xl text-dark">Estamos quase lá!</Text>
         <Text className="text-base text-accent">
@@ -80,7 +81,8 @@ export default function DocumentsScreen() {
 
       {renderItem({
         title: 'Certidão Negativa de Antecedentes Criminais',
-        description: 'Tire uma foto do seu Certidão de Antecedentes Criminais.',
+        description:
+          'Tire uma foto da sua Certidão Negativa de Antecedentes Criminais.',
         completed: stepsCompleted.criminalRecord,
         documentType: 'criminalRecord',
       })}
@@ -92,16 +94,26 @@ export default function DocumentsScreen() {
         documentType: 'selfie',
       })}
 
-      <View className="justify-end mt-5" style={styles.buttonContainer}>
+      {renderItem({
+        title: 'Sobre Mim',
+        description:
+          'Fale um pouco sobre suas experiências e por que deseja ser um Dog Walker no Pet Step.',
+        completed: stepsCompleted.aboutMe,
+        documentType: 'aboutMe',
+      })}
+
+      <View className="mt-5">
         <CustomButton
           label={'Prosseguir'}
           onPress={function (): void {
             throw new Error('Function not implemented.');
           }}
           disabled={!allStepsCompleted}
-          backgroundColor={allStepsCompleted ? colors.accent : colors.secondary}
+          backgroundColor={
+            !allStepsCompleted ? colors.accent : colors.secondary
+          }
         />
-        <Text className="text-center text-accent mt-5">
+        <Text className="text-center text-accent mt-2">
           Conclua todas as etapas para prosseguir
         </Text>
       </View>

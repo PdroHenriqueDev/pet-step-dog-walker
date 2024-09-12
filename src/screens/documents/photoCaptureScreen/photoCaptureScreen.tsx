@@ -74,7 +74,7 @@ export default function PhotoCaptureScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 p-5 items-center">
+    <View className="bg-primary flex-1 px-5 pt-16 items-center">
       <Text className="font-bold text-xl text-dark text-center">
         {documentType === 'selfie'
           ? 'Tire sua selfie'
