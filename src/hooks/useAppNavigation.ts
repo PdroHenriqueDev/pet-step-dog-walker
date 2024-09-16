@@ -4,10 +4,12 @@ import {
   NavigationProp,
   RouteProp,
 } from '@react-navigation/native';
+import {DocumentType} from '../types/document';
 
 type RootStackParamList = {
   HomeScreen: undefined;
   PhotoCapture: {documentType: string};
+  Documents: {documentType?: DocumentType; success?: boolean};
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

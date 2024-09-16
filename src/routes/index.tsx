@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Tabs} from './tabs';
 import {AuthStack} from './authStack';
@@ -7,7 +7,8 @@ import {AuthContext} from '../contexts/authContext';
 import {DocumentsStack} from './documentsStack';
 
 function Routes() {
-  const {accessToken, isLoading, renewAccessToken} = useContext(AuthContext);
+  const {accessToken, refreshToken, isLoading, setAuthTokens} =
+    useContext(AuthContext);
   const [documentsPending, setDocumentsPending] = useState(true);
 
   // useEffect(() => {
@@ -24,12 +25,16 @@ function Routes() {
   //   }
   // }, [accessToken]);
 
+  useEffect(() => {
+    setAuthTokens();
+  }, [setAuthTokens]);
+
   if (isLoading) {
     return <SplashScreen />;
   }
 
   const renderContent = () => {
-    if (!accessToken) {
+    if (!accessToken && !refreshToken) {
       return <AuthStack />;
     }
 

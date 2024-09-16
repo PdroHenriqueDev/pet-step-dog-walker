@@ -1,9 +1,13 @@
 import {Icon, ListItem} from '@rneui/base';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import CustomButton from '../../components/customButton';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
+import {documentsStatus} from '../../services/application';
+import {useDialog} from '../../contexts/dialogContext';
+import {AxiosError} from 'axios';
+import {DocumentType} from '../../types/document';
 
 interface ListItemProps {
   title: string;
@@ -13,7 +17,8 @@ interface ListItemProps {
 }
 
 export default function DocumentsScreen() {
-  const {navigation} = useAppNavigation();
+  const {navigation, route} = useAppNavigation();
+  const {showDialog, hideDialog} = useDialog();
   const [stepsCompleted, setStepsCompleted] = useState({
     document: false,
     selfie: false,
@@ -21,6 +26,67 @@ export default function DocumentsScreen() {
     criminalRecord: false,
     aboutMe: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const getDocumentsStatus = async () => {
+      setIsLoading(true);
+      try {
+        const result = await documentsStatus();
+
+        const {documentStatus} = result;
+
+        const {document, selfie, residence, criminalRecord, aboutMe} =
+          documentStatus;
+
+        setStepsCompleted({
+          document,
+          residence,
+          criminalRecord,
+          selfie,
+          aboutMe,
+        });
+
+        console.log('got here getDocumentsStatus', result);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const message =
+            typeof error.response?.data?.data === 'string'
+              ? error.response?.data?.data
+              : 'Ocorreu um erro inesperado';
+          showDialog({
+            title: message,
+            confirm: {
+              confirmLabel: 'Entendi',
+              onConfirm: () => {
+                hideDialog();
+              },
+            },
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getDocumentsStatus();
+  }, [hideDialog, showDialog]);
+
+  useEffect(() => {
+    const params =
+      (route.params as {
+        success?: boolean;
+        documentType?: DocumentType;
+      }) ?? {};
+
+    const {success = false, documentType = null} = params;
+    if (success && documentType) {
+      setStepsCompleted(prevState => ({
+        ...prevState,
+        [documentType]: true,
+      }));
+    }
+  }, [route.params]);
 
   const allStepsCompleted =
     stepsCompleted.document &&

@@ -1,19 +1,28 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Alert} from 'react-native';
+import {View, Text, Image, Alert, ImageSourcePropType} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
+import {uploadDocument} from '../../../services/application';
+import {DocumentType} from '../../../types/document';
+import {UploadableFile} from '../../../interfaces/document';
+import {AxiosError} from 'axios';
+import {useDialog} from '../../../contexts/dialogContext';
 
 export default function PhotoCaptureScreen() {
-  const [photoUri, setPhotoUri] = useState(null);
-  const {route} = useAppNavigation();
-  const {documentType} = route.params;
+  const [photoUri, setPhotoUri] = useState<ImageSourcePropType | undefined>();
+  const {route, navigation} = useAppNavigation();
+  const {documentType} = route.params as {documentType: DocumentType};
+  const {showDialog, hideDialog} = useDialog();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const documentLabel: {[key: string]: string} = {
     document: 'documento',
     selfie: 'selfie',
     residence: 'comprovante de residência',
     criminalRecord: 'certidão negativa de antecedentes criminais',
+    aboutMe: 'sobre mim',
   };
 
   const selectImage = () => {
@@ -38,6 +47,51 @@ export default function PhotoCaptureScreen() {
     );
   };
 
+  const handleUploadDocument = async () => {
+    if (!documentType || !photoUri) return;
+
+    setIsLoading(true);
+
+    const filePath = photoUri as string;
+    const fileName = filePath.split('/').pop() as string;
+    const fileType = 'image/jpeg';
+
+    const file: UploadableFile = {
+      uri: filePath,
+      name: fileName,
+      type: fileType,
+    };
+
+    try {
+      await uploadDocument({
+        documentType,
+        documentFile: file,
+      });
+      navigation.navigate('Documents', {
+        documentType,
+        success: true,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
+            : 'Ocorreu um erro inesperado';
+        showDialog({
+          title: message,
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const openCamera = () => {
     const options = {
       mediaType: 'photo',
@@ -55,7 +109,6 @@ export default function PhotoCaptureScreen() {
     });
   };
 
-  // Função para abrir a galeria
   const openGallery = () => {
     const options = {
       mediaType: 'photo',
@@ -97,7 +150,8 @@ export default function PhotoCaptureScreen() {
 
       <CustomButton
         label={photoUri ? 'Enviar' : 'Selecionar Imagem'}
-        onPress={selectImage}
+        onPress={photoUri ? handleUploadDocument : selectImage}
+        isLoading={isLoading}
       />
     </View>
   );
