@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Alert, ImageSourcePropType} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {View, Text, Image, Alert} from 'react-native';
+import {
+  MediaType,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import {uploadDocument} from '../../../services/application';
@@ -10,7 +14,7 @@ import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
 
 export default function PhotoCaptureScreen() {
-  const [photoUri, setPhotoUri] = useState<ImageSourcePropType | undefined>();
+  const [photoUri, setPhotoUri] = useState<string | undefined>();
   const {route, navigation} = useAppNavigation();
   const {documentType} = route.params as {documentType: DocumentType};
   const {showDialog, hideDialog} = useDialog();
@@ -94,35 +98,25 @@ export default function PhotoCaptureScreen() {
 
   const openCamera = () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'photo' as MediaType,
       includeBase64: false,
     };
 
     launchCamera(options, response => {
-      if (response.didCancel) {
-        console.log('Usuário cancelou a câmera');
-      } else if (response.errorCode) {
-        console.log('Erro na câmera: ', response.errorMessage);
-      } else {
-        setPhotoUri(response.assets[0].uri);
-      }
+      if (!response.assets) return;
+      setPhotoUri(response.assets[0].uri);
     });
   };
 
   const openGallery = () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'photo' as MediaType,
       includeBase64: false,
     };
 
     launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('Usuário cancelou a galeria');
-      } else if (response.errorCode) {
-        console.log('Erro na galeria: ', response.errorMessage);
-      } else {
-        setPhotoUri(response.assets[0].uri);
-      }
+      if (!response.assets) return;
+      setPhotoUri(response.assets[0].uri);
     });
   };
 
