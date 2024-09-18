@@ -7,7 +7,16 @@ export const registerDogWalker = async (dogWalker: DogWalker): Promise<any> => {
     const {data} = response;
     return data;
   } catch (error) {
-    console.log('Error registering dog walker:', error);
+    throw error;
+  }
+};
+
+export const getDogWalkerById = async (id: string): Promise<any> => {
+  try {
+    const response = await api.get(`/dog-walker/${id}`);
+    const {data} = response;
+    return data;
+  } catch (error) {
     throw error;
   }
 };

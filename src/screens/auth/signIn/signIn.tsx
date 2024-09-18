@@ -39,9 +39,9 @@ export default function SignIn() {
         password,
       });
 
-      const {accessToken, refreshToken} = response;
+      const {accessToken, refreshToken, user} = response;
 
-      await storeTokens(accessToken, refreshToken);
+      await storeTokens(accessToken, refreshToken, user);
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =

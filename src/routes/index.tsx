@@ -1,44 +1,30 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Tabs} from './tabs';
 import {AuthStack} from './authStack';
 import SplashScreen from '../components/splash/splash';
 import {AuthContext} from '../contexts/authContext';
 import {DocumentsStack} from './documentsStack';
+import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStatus';
 
 function Routes() {
-  const {accessToken, refreshToken, isLoading, setAuthTokens} =
+  const {accessToken, refreshToken, isLoading, setAuthTSession, user} =
     useContext(AuthContext);
-  const [documentsPending, setDocumentsPending] = useState(true);
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     const checkDocuments = async () => {
-  //       const response = await fetch('/api/checkDocuments', {
-  //         headers: {Authorization: `Bearer ${accessToken}`},
-  //       });
-  //       const result = await response.json();
-  //       setDocumentsUploaded(result.documentsUploaded);
-  //     };
-
-  //     checkDocuments();
-  //   }
-  // }, [accessToken]);
 
   useEffect(() => {
-    setAuthTokens();
-  }, [setAuthTokens]);
-
-  if (isLoading) {
-    return <SplashScreen />;
-  }
+    setAuthTSession();
+  }, [setAuthTSession]);
 
   const renderContent = () => {
-    if (!accessToken && !refreshToken) {
+    if (isLoading) {
+      return <SplashScreen />;
+    }
+
+    if (!accessToken && !refreshToken && !user) {
       return <AuthStack />;
     }
 
-    if (documentsPending) {
+    if (user?.status === DogWalkerApplicationStatus.PendingDocuments) {
       return <DocumentsStack />;
     }
 

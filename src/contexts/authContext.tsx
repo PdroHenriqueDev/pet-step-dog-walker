@@ -1,27 +1,43 @@
-import React, {createContext, useContext, useState, ReactNode} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {DogWalker} from '../interfaces/dogWalker';
 
 interface AuthContextProps {
+  user: DogWalker | null;
   accessToken: string | null;
   refreshToken: string | null;
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   logout: () => void;
-  setAuthTokens: () => Promise<void>;
-  storeTokens: (accessToken: string, refreshToken: string) => Promise<void>;
+  setAuthTSession: () => Promise<void>;
+  storeTokens: (
+    accessToken: string,
+    refreshToken: string,
+    newUser: DogWalker,
+  ) => Promise<void>;
+  setUser: (owner: DogWalker) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
+  user: null,
   accessToken: null,
   refreshToken: null,
   isLoading: false,
   setIsLoading: () => {},
   logout: () => {},
-  setAuthTokens: async () => {},
+  setAuthTSession: async () => {},
   storeTokens: async () => {},
+  setUser: async (_owner: DogWalker) => {},
 });
 
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
+  const [user, setUser] = useState<DogWalker | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,19 +45,33 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const handleTokens = async (
     newAccessToken: string,
     newRefreshToken: string,
+    newUser: DogWalker,
   ) => {
     await EncryptedStorage.setItem('accessToken', newAccessToken);
     await EncryptedStorage.setItem('refreshToken', newRefreshToken);
+    await EncryptedStorage.setItem('user', JSON.stringify(newUser));
+
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
+    setUser(newUser);
   };
 
-  const setAuthTokens = async () => {
-    const resultAccessToken = await EncryptedStorage.getItem('accessToken');
-    const resultRefreshToken = await EncryptedStorage.getItem('refreshToken');
-    setAccessToken(resultAccessToken);
-    setRefreshToken(resultRefreshToken);
-  };
+  const setAuthTSession = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const resultAccessToken = await EncryptedStorage.getItem('accessToken');
+      const resultRefreshToken = await EncryptedStorage.getItem('refreshToken');
+      const storedUser = await EncryptedStorage.getItem('user');
+
+      if (resultAccessToken && resultRefreshToken && storedUser) {
+        setAccessToken(resultAccessToken);
+        setRefreshToken(resultRefreshToken);
+        setUser(JSON.parse(storedUser));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleLoading = (value: boolean) => {
     setIsLoading(value);
@@ -52,7 +82,11 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     try {
       await EncryptedStorage.removeItem('accessToken');
       await EncryptedStorage.removeItem('refreshToken');
+      await EncryptedStorage.removeItem('user');
       setAccessToken(null);
+      setAccessToken(null);
+      setRefreshToken(null);
+      setUser(null);
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     } finally {
@@ -63,13 +97,15 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   return (
     <AuthContext.Provider
       value={{
+        user,
         accessToken,
         refreshToken,
         isLoading,
         setIsLoading: handleLoading,
         logout: handleLogout,
-        setAuthTokens,
+        setAuthTSession,
         storeTokens: handleTokens,
+        setUser,
       }}>
       {children}
     </AuthContext.Provider>
