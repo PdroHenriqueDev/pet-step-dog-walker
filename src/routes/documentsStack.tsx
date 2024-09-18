@@ -3,6 +3,8 @@ import {StackHeaderProps, createStackNavigator} from '@react-navigation/stack';
 import DocumentsScreen from '../screens/documents/documents';
 import PhotoCaptureScreen from '../screens/documents/photoCaptureScreen/photoCaptureScreen';
 import CustomHeader from '../components/header/customHeader';
+import AboutMeScreen from '../screens/documents/aboutMe/aboutMeScreen';
+import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 const {Navigator, Screen} = createStackNavigator();
 
 const customHeader = (props: StackHeaderProps) => <CustomHeader {...props} />;
@@ -18,6 +20,16 @@ export function DocumentsStack() {
       <Screen
         name="PhotoCapture"
         component={PhotoCaptureScreen}
+        options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="AboutMe"
+        component={AboutMeScreen}
+        options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="ApplicationFeedback"
+        component={ApplicationFeedbackScreen}
         options={{header: customHeader, headerTransparent: true}}
       />
     </Navigator>

@@ -2,12 +2,12 @@ import {Icon, ListItem} from '@rneui/base';
 import {useEffect, useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
-import CustomButton from '../../components/customButton';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
 import {documentsStatus} from '../../services/application';
 import {useDialog} from '../../contexts/dialogContext';
 import {AxiosError} from 'axios';
 import {DocumentType} from '../../types/document';
+import Spinner from '../../components/spinner/spinner';
 
 interface ListItemProps {
   title: string;
@@ -26,11 +26,22 @@ export default function DocumentsScreen() {
     criminalRecord: false,
     aboutMe: false,
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const allStepsCompleted =
+    stepsCompleted.document &&
+    stepsCompleted.selfie &&
+    stepsCompleted.residence &&
+    stepsCompleted.criminalRecord &&
+    stepsCompleted.aboutMe;
+
+  const goToPhotoScreen = (documentType: string) => {
+    if (documentType === 'aboutMe') return navigation.navigate('AboutMe');
+    navigation.navigate('PhotoCapture', {documentType});
+  };
 
   useEffect(() => {
     const getDocumentsStatus = async () => {
-      setIsLoading(true);
       try {
         const result = await documentsStatus();
 
@@ -46,8 +57,6 @@ export default function DocumentsScreen() {
           selfie,
           aboutMe,
         });
-
-        console.log('got here getDocumentsStatus', result);
       } catch (error) {
         if (error instanceof AxiosError) {
           const message =
@@ -86,18 +95,11 @@ export default function DocumentsScreen() {
         [documentType]: true,
       }));
     }
-  }, [route.params]);
 
-  const allStepsCompleted =
-    stepsCompleted.document &&
-    stepsCompleted.selfie &&
-    stepsCompleted.residence &&
-    stepsCompleted.criminalRecord &&
-    stepsCompleted.aboutMe;
-
-  const goToPhotoScreen = (documentType: string) => {
-    navigation.navigate('PhotoCapture', {documentType});
-  };
+    if (allStepsCompleted) {
+      navigation.navigate('ApplicationFeedback');
+    }
+  }, [allStepsCompleted, navigation, route.params]);
 
   const renderItem = ({
     title,
@@ -105,7 +107,9 @@ export default function DocumentsScreen() {
     completed,
     documentType,
   }: ListItemProps) => (
-    <ListItem bottomDivider onPress={() => goToPhotoScreen(documentType)}>
+    <ListItem
+      bottomDivider
+      onPress={completed ? undefined : () => goToPhotoScreen(documentType)}>
       <ListItem.Content>
         <ListItem.Title>
           <Text className="text-base font-bold">{title}</Text>
@@ -121,6 +125,10 @@ export default function DocumentsScreen() {
       )}
     </ListItem>
   );
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <ScrollView className="flex-1 bg-primary p-5">
@@ -168,21 +176,9 @@ export default function DocumentsScreen() {
         documentType: 'aboutMe',
       })}
 
-      <View className="mt-5">
-        <CustomButton
-          label={'Prosseguir'}
-          onPress={function (): void {
-            throw new Error('Function not implemented.');
-          }}
-          disabled={!allStepsCompleted}
-          backgroundColor={
-            !allStepsCompleted ? colors.accent : colors.secondary
-          }
-        />
-        <Text className="text-center text-accent mt-2">
-          Conclua todas as etapas para prosseguir
-        </Text>
-      </View>
+      <Text className="text-center text-accent mt-5">
+        Conclua todas as etapas para prosseguir
+      </Text>
     </ScrollView>
   );
 }

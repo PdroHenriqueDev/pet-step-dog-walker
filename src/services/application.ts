@@ -38,3 +38,14 @@ export const documentsStatus = async () => {
     throw error;
   }
 };
+
+export const aboutMeText = async (text: string) => {
+  try {
+    const response = await api.post('/application/about-me', {aboutMe: text});
+
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

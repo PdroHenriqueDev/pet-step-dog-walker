@@ -10,6 +10,8 @@ type RootStackParamList = {
   HomeScreen: undefined;
   PhotoCapture: {documentType: string};
   Documents: {documentType?: DocumentType; success?: boolean};
+  AboutMe: undefined;
+  ApplicationFeedback: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;
