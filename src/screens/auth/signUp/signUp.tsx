@@ -45,6 +45,14 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     },
   });
 
+  const formatPhoneNumber = (phone: string) => {
+    return phone
+      .replace(/\D/g, '')
+      .replace(/^(\d{2})(\d{2})(\d)/g, '+$1 ($2) $3')
+      .replace(/(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{4})\d+?$/, '$1');
+  };
+
   const isAdult = (birthdate: string | number | Date) => {
     const today = new Date();
     const birthDate = new Date(birthdate);
@@ -84,6 +92,11 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     return value.replace(/\D/g, '');
   };
 
+  const removePhoneMask = (phone?: string) => {
+    if (!phone) return;
+    return phone.replace(/[^\d+]/g, '');
+  };
+
   const formatCEP = (cep: string) => {
     return cep
       .replace(/\D/g, '')
@@ -113,15 +126,18 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
         neighborhood,
         city,
         state,
+        phone,
         ...rest
       } = data;
 
       const document = removeMask(cpf);
       const cep = removeMask(zipCode);
+      const rawPhone = removePhoneMask(phone);
 
       const dogWalker: DogWalker = {
         ...rest,
         document,
+        phone: rawPhone,
         address: {
           zipCode: cep,
           street,
@@ -130,7 +146,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           state,
         },
       };
-      console.log('got here dogWalker', dogWalker);
+      6;
       await registerDogWalker(dogWalker);
       showDialog({
         title: 'Cadastro feito com sucesso!',
@@ -224,7 +240,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           control={control}
           name="phone"
           rules={{
-            required: 'Telefone é obrigatório',
+            required: 'Telefone celular é obrigatório',
             pattern: {
               value: /^\+?\d{1,3}?\s?\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/,
               message: 'Telefone inválido. Use o formato: +55 (99) 99999-9999',
@@ -232,11 +248,11 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           }}
           render={({field: {value}}) => (
             <CustomTextInput
-              value={value}
+              value={formatPhoneNumber(value)}
               onChangeText={(text: string) =>
                 setValue('phone', text, {shouldValidate: true})
               }
-              placeholder="Seu telefone com DDI (ex: +55)"
+              placeholder="Seu telefone celular com DDI (ex: +55)"
               error={errors.phone?.message}
               isEditable={!isLoading}
             />

@@ -2,6 +2,7 @@ export interface DogWalker {
   _id?: string;
   name?: string;
   email?: string;
+  phone?: string;
   document?: string;
   address: {
     zipCode?: string;
@@ -23,6 +24,7 @@ export interface DogWalker {
 export interface DogWalkerForm {
   name: string;
   email: string;
+  phone: string;
   cpf: string;
   zipCode: string;
   street: string;
