@@ -8,6 +8,7 @@ import {useDialog} from '../../contexts/dialogContext';
 import {AxiosError} from 'axios';
 import {DocumentType} from '../../types/document';
 import Spinner from '../../components/spinner/spinner';
+import CustomButton from '../../components/customButton';
 
 interface ListItemProps {
   title: string;
@@ -45,7 +46,7 @@ export default function DocumentsScreen() {
       try {
         const result = await documentsStatus();
 
-        const {documentStatus} = result;
+        const {documentStatus, allDocumentsSent} = result;
 
         const {document, selfie, residence, criminalRecord, aboutMe} =
           documentStatus;
@@ -57,6 +58,10 @@ export default function DocumentsScreen() {
           selfie,
           aboutMe,
         });
+
+        if (allDocumentsSent) {
+          navigation.navigate('ApplicationFeedback');
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           const message =
@@ -79,7 +84,49 @@ export default function DocumentsScreen() {
     };
 
     getDocumentsStatus();
-  }, [hideDialog, showDialog]);
+  }, [hideDialog, navigation, showDialog]);
+
+  const handleVerify = async () => {
+    setIsLoading(true);
+    try {
+      const result = await documentsStatus();
+
+      const {documentStatus, allDocumentsSent} = result;
+
+      const {document, selfie, residence, criminalRecord, aboutMe} =
+        documentStatus;
+
+      setStepsCompleted({
+        document,
+        residence,
+        criminalRecord,
+        selfie,
+        aboutMe,
+      });
+
+      if (allDocumentsSent) {
+        navigation.navigate('ApplicationFeedback');
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
+            : 'Ocorreu um erro inesperado';
+        showDialog({
+          title: message,
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const params =
@@ -94,10 +141,6 @@ export default function DocumentsScreen() {
         ...prevState,
         [documentType]: true,
       }));
-    }
-
-    if (allStepsCompleted) {
-      navigation.navigate('ApplicationFeedback');
     }
   }, [allStepsCompleted, navigation, route.params]);
 
@@ -176,9 +219,19 @@ export default function DocumentsScreen() {
         documentType: 'aboutMe',
       })}
 
-      <Text className="text-center text-accent mt-5">
-        Conclua todas as etapas para prosseguir
-      </Text>
+      <View className="mt-5">
+        <CustomButton
+          label={'Prosseguir'}
+          onPress={handleVerify}
+          disabled={!allStepsCompleted}
+          backgroundColor={
+            !allStepsCompleted ? colors.accent : colors.secondary
+          }
+        />
+        <Text className="text-center text-accent mt-2">
+          Conclua todas as etapas para prosseguir
+        </Text>
+      </View>
     </ScrollView>
   );
 }
