@@ -68,7 +68,7 @@ export default function ApplicationFeedbackScreen() {
           {message}
         </Text>
 
-        <CustomButton label={'Deslogar'} onPress={handleLogOut} />
+        <CustomButton label={'Sair'} onPress={handleLogOut} />
       </View>
     </Modal>
   );

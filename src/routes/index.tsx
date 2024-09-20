@@ -1,9 +1,9 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Tabs} from './tabs';
 import {AuthStack} from './authStack';
 import SplashScreen from '../components/splash/splash';
-import {AuthContext, useAuth} from '../contexts/authContext';
+import {useAuth} from '../contexts/authContext';
 import {DocumentsStack} from './documentsStack';
 import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStatus';
 import {getDogWalkerById} from '../services/dogWalkerService';
@@ -11,7 +11,7 @@ import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/
 
 function Routes() {
   const {accessToken, refreshToken, isLoading, setAuthTSession, setUser, user} =
-    useContext(AuthContext);
+    useAuth();
 
   useEffect(() => {
     setAuthTSession();
@@ -29,7 +29,7 @@ function Routes() {
     };
 
     getDogWalker();
-  }, [setUser, user]);
+  }, []);
 
   // const {logout} = useAuth();
   // useEffect(() => {
@@ -41,7 +41,7 @@ function Routes() {
       return <SplashScreen />;
     }
 
-    if (!accessToken && !refreshToken && !user) {
+    if (!accessToken || !refreshToken || !user) {
       return <AuthStack />;
     }
 
@@ -49,7 +49,10 @@ function Routes() {
       return <DocumentsStack />;
     }
 
-    if (user?.status === DogWalkerApplicationStatus.PendingReview) {
+    if (
+      user?.status === DogWalkerApplicationStatus.PendingReview ||
+      user?.status === DogWalkerApplicationStatus.Rejected
+    ) {
       return <ApplicationFeedbackScreen />;
     }
 

@@ -1,3 +1,5 @@
+import {KeyboardTypeOptions} from 'react-native';
+
 export interface CustomTextInputProps {
   value: string;
   onChangeText?: (value: string) => void;
@@ -5,4 +7,5 @@ export interface CustomTextInputProps {
   secureTextEntry?: boolean;
   isEditable?: boolean;
   error?: string;
+  keyboardType?: KeyboardTypeOptions;
 }

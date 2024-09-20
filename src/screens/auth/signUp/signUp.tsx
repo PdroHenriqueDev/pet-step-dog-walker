@@ -255,6 +255,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               placeholder="Seu telefone celular com DDI (ex: +55)"
               error={errors.phone?.message}
               isEditable={!isLoading}
+              keyboardType="phone-pad"
             />
           )}
         />
@@ -279,6 +280,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               placeholder="Seu CPF"
               error={errors.cpf?.message}
               isEditable={!isLoading}
+              keyboardType="phone-pad"
             />
           )}
         />
@@ -306,6 +308,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               placeholder="Seu CEP"
               error={errors.zipCode?.message}
               isEditable={!isLoading}
+              keyboardType="phone-pad"
             />
           )}
         />

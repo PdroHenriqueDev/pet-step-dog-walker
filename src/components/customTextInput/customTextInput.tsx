@@ -9,6 +9,7 @@ export default function CustomTextInput({
   secureTextEntry = false,
   error,
   isEditable = true,
+  keyboardType,
 }: CustomTextInputProps) {
   return (
     <View>
@@ -20,6 +21,7 @@ export default function CustomTextInput({
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         editable={isEditable}
+        keyboardType={keyboardType}
       />
       {error && <Text className="text-danger text-sm mt-1">{error}</Text>}
     </View>
