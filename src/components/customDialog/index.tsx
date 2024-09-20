@@ -31,7 +31,9 @@ function CustomDialog({
       overlayStyle={styles.dialog}
       isVisible={isVisible}
       onBackdropPress={onBackdropPress}>
-      <Dialog.Title titleStyle={styles.title} title={title} />
+      <View className="mb-2">
+        <Dialog.Title titleStyle={styles.title} title={title} />
+      </View>
       {description && <Text style={styles.description}>{description}</Text>}
 
       <View className="flex-col">
@@ -42,11 +44,13 @@ function CustomDialog({
           />
         )}
         {cancel && cancel.cancelLabel && cancel.onCancel && (
-          <CustomButton
-            label={cancel.cancelLabel}
-            onPress={cancel.onCancel}
-            backgroundColor={colors.primary}
-          />
+          <View className="mt-2">
+            <CustomButton
+              label={cancel.cancelLabel}
+              onPress={cancel.onCancel}
+              backgroundColor={colors.primary}
+            />
+          </View>
         )}
       </View>
     </Dialog>
