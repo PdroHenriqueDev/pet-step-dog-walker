@@ -84,7 +84,7 @@ export default function DocumentsScreen() {
     };
 
     getDocumentsStatus();
-  }, [hideDialog, navigation, showDialog]);
+  }, []);
 
   const handleVerify = async () => {
     setIsLoading(true);

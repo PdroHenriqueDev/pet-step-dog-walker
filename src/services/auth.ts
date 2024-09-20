@@ -1,3 +1,4 @@
+import EncryptedStorage from 'react-native-encrypted-storage';
 import api from './api';
 
 export const login = async ({
@@ -16,7 +17,6 @@ export const login = async ({
     const {data} = response;
     return data;
   } catch (error) {
-    console.log('Error when login:', error);
     throw error;
   }
 };
@@ -29,7 +29,16 @@ export const renewToken = async (refreshToken: string): Promise<any> => {
     const {data} = response;
     return data;
   } catch (error) {
-    console.log('Error refreshing token:', error);
+    throw error;
+  }
+};
+
+export const logoutSerivce = async () => {
+  try {
+    await EncryptedStorage.removeItem('accessToken');
+    await EncryptedStorage.removeItem('refreshToken');
+    await EncryptedStorage.removeItem('user');
+  } catch (error) {
     throw error;
   }
 };

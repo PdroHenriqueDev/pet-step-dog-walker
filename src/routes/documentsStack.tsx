@@ -30,7 +30,7 @@ export function DocumentsStack() {
       <Screen
         name="ApplicationFeedback"
         component={ApplicationFeedbackScreen}
-        options={{header: customHeader, headerTransparent: true}}
+        options={{headerShown: false}}
       />
     </Navigator>
   );
