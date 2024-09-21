@@ -21,7 +21,7 @@ interface AuthContextProps {
     refreshToken: string,
     newUser: DogWalker,
   ) => Promise<void>;
-  setUser: (owner: DogWalker) => void;
+  handleSetUser: (owner: DogWalker) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -33,7 +33,7 @@ export const AuthContext = createContext<AuthContextProps>({
   logout: () => {},
   setAuthTSession: async () => {},
   storeTokens: async () => {},
-  setUser: async (_owner: DogWalker) => {},
+  handleSetUser: async (_owner: DogWalker) => {},
 });
 
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
@@ -99,6 +99,11 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
+  const handleSetUser = async (newUser: DogWalker) => {
+    await EncryptedStorage.setItem('user', JSON.stringify(newUser));
+    setUser(newUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -110,7 +115,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         logout: handleLogout,
         setAuthTSession,
         storeTokens: handleTokens,
-        setUser,
+        handleSetUser,
       }}>
       {children}
     </AuthContext.Provider>

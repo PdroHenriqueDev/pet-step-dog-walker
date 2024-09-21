@@ -100,7 +100,7 @@ export default function ProfileScreen() {
           items={[
             {
               label: 'Confortável com todos os tipos de cães',
-              value: 'comfortableWithAllDogs',
+              value: 'allDogs',
             },
             {label: 'Confortável com cães mansos', value: 'calmDogs'},
           ]}

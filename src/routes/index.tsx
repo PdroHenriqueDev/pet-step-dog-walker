@@ -10,8 +10,14 @@ import {getDogWalkerById} from '../services/dogWalkerService';
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 
 function Routes() {
-  const {accessToken, refreshToken, isLoading, setAuthTSession, setUser, user} =
-    useAuth();
+  const {
+    accessToken,
+    refreshToken,
+    isLoading,
+    setAuthTSession,
+    handleSetUser,
+    user,
+  } = useAuth();
 
   useEffect(() => {
     setAuthTSession();
@@ -22,9 +28,7 @@ function Routes() {
       if (!user) return;
       try {
         const result = await getDogWalkerById(user?._id as string);
-        if (JSON.stringify(result) !== JSON.stringify(user)) {
-          setUser(result);
-        }
+        handleSetUser(result);
       } catch (error) {}
     };
 
