@@ -29,6 +29,11 @@ api.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
+
+    if (originalRequest.url.includes('/auth/login')) {
+      return Promise.reject(error);
+    }
+
     if (
       error.response &&
       [401, 403].includes(error.response.status) &&

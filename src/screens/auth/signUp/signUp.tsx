@@ -160,7 +160,10 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       });
     } catch (error) {
       if (error instanceof AxiosError) {
-        const message = error.response?.data || 'Ocorreu um erro inesperado';
+        const message =
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
+            : 'Ocorreu um erro inesperado';
         showDialog({
           title: message,
           confirm: {

@@ -44,9 +44,10 @@ export default function SignIn() {
       await storeTokens(accessToken, refreshToken, user);
     } catch (error) {
       if (error instanceof AxiosError) {
+        console.log('got here error', error.response);
         const message =
-          typeof error.response?.data === 'string'
-            ? error.response?.data
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
             : 'Ocorreu um erro inesperado';
         showDialog({
           title: message,
