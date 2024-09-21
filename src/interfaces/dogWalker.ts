@@ -16,7 +16,7 @@ export interface DogWalker {
   rate?: number;
   distance?: string;
   isOnline?: boolean;
-  status: string;
+  status?: string;
   date?: string;
   time?: string;
   profileUrl?: string;

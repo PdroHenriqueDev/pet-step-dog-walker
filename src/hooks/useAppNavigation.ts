@@ -12,6 +12,7 @@ type RootStackParamList = {
   Documents: {documentType?: DocumentType; success?: boolean};
   AboutMe: undefined;
   ApplicationFeedback: undefined;
+  Profile: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

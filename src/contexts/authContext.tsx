@@ -47,13 +47,18 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     newRefreshToken: string,
     newUser: DogWalker,
   ) => {
-    await EncryptedStorage.setItem('accessToken', newAccessToken);
-    await EncryptedStorage.setItem('refreshToken', newRefreshToken);
-    await EncryptedStorage.setItem('user', JSON.stringify(newUser));
+    setIsLoading(true);
+    try {
+      await EncryptedStorage.setItem('accessToken', newAccessToken);
+      await EncryptedStorage.setItem('refreshToken', newRefreshToken);
+      await EncryptedStorage.setItem('user', JSON.stringify(newUser));
 
-    setAccessToken(accessToken);
-    setRefreshToken(refreshToken);
-    setUser(newUser);
+      setAccessToken(newAccessToken);
+      setRefreshToken(newRefreshToken);
+      setUser(newUser);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const setAuthTSession = useCallback(async () => {

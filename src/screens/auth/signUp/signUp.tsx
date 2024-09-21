@@ -376,6 +376,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           render={({field: {value}}) => (
             <CustomPicker
               selectedValue={value}
+              label="Selecione o estado"
               onValueChange={itemValue =>
                 setValue('state', itemValue, {shouldValidate: true})
               }

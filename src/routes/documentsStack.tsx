@@ -5,6 +5,7 @@ import PhotoCaptureScreen from '../screens/documents/photoCaptureScreen/photoCap
 import CustomHeader from '../components/header/customHeader';
 import AboutMeScreen from '../screens/documents/aboutMe/aboutMeScreen';
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
+import ProfileScreen from '../screens/documents/profileScreen/profileScreen';
 const {Navigator, Screen} = createStackNavigator();
 
 const customHeader = (props: StackHeaderProps) => <CustomHeader {...props} />;
@@ -30,6 +31,11 @@ export function DocumentsStack() {
       <Screen
         name="ApplicationFeedback"
         component={ApplicationFeedbackScreen}
+        options={{headerShown: false}}
+      />
+      <Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{headerShown: false}}
       />
     </Navigator>

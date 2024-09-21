@@ -3,4 +3,5 @@ export type DocumentType =
   | 'selfie'
   | 'residence'
   | 'criminalRecord'
+  | 'profile'
   | 'aboutMe';

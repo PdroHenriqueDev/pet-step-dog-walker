@@ -8,6 +8,7 @@ interface CustomPickerProps {
   onValueChange: (itemValue: string) => void;
   items: {label: string; value: string}[];
   error?: string;
+  label?: string;
 }
 
 export default function CustomPicker({
@@ -15,6 +16,7 @@ export default function CustomPicker({
   onValueChange,
   items,
   error,
+  label,
 }: CustomPickerProps) {
   return (
     <View>
@@ -26,7 +28,7 @@ export default function CustomPicker({
           <Picker.Item
             style={{color: colors.accent}}
             key=""
-            label="Selecione o estado"
+            label={label}
             value={''}
             enabled={false}
           />

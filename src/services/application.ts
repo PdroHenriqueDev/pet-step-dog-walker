@@ -49,3 +49,26 @@ export const aboutMeText = async (text: string) => {
     throw error;
   }
 };
+
+export const profile = async ({
+  availability,
+  transport,
+  dogExperience,
+}: {
+  availability: string;
+  transport: string;
+  dogExperience: string;
+}) => {
+  try {
+    const response = await api.post('/application/profile', {
+      availability,
+      transport,
+      dogExperience,
+    });
+
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -40,11 +40,9 @@ export default function SignIn() {
       });
 
       const {accessToken, refreshToken, user} = response;
-
       await storeTokens(accessToken, refreshToken, user);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log('got here error', error.response);
         const message =
           typeof error.response?.data?.data === 'string'
             ? error.response?.data?.data

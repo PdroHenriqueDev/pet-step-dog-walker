@@ -14,7 +14,7 @@ export const login = async ({
       password,
       role: 'dogWalker',
     });
-    const {data} = response;
+    const {data} = response.data;
     return data;
   } catch (error) {
     throw error;

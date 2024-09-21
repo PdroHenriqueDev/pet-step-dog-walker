@@ -25,6 +25,7 @@ export default function DocumentsScreen() {
     selfie: false,
     residence: false,
     criminalRecord: false,
+    profile: false,
     aboutMe: false,
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -34,10 +35,12 @@ export default function DocumentsScreen() {
     stepsCompleted.selfie &&
     stepsCompleted.residence &&
     stepsCompleted.criminalRecord &&
+    stepsCompleted.profile &&
     stepsCompleted.aboutMe;
 
   const goToPhotoScreen = (documentType: string) => {
     if (documentType === 'aboutMe') return navigation.navigate('AboutMe');
+    if (documentType === 'profile') return navigation.navigate('Profile');
     navigation.navigate('PhotoCapture', {documentType});
   };
 
@@ -48,7 +51,7 @@ export default function DocumentsScreen() {
 
         const {documentStatus, allDocumentsSent} = result;
 
-        const {document, selfie, residence, criminalRecord, aboutMe} =
+        const {document, selfie, residence, criminalRecord, profile, aboutMe} =
           documentStatus;
 
         setStepsCompleted({
@@ -56,6 +59,7 @@ export default function DocumentsScreen() {
           residence,
           criminalRecord,
           selfie,
+          profile,
           aboutMe,
         });
 
@@ -93,7 +97,7 @@ export default function DocumentsScreen() {
 
       const {documentStatus, allDocumentsSent} = result;
 
-      const {document, selfie, residence, criminalRecord, aboutMe} =
+      const {document, selfie, residence, criminalRecord, profile, aboutMe} =
         documentStatus;
 
       setStepsCompleted({
@@ -101,6 +105,7 @@ export default function DocumentsScreen() {
         residence,
         criminalRecord,
         selfie,
+        profile,
         aboutMe,
       });
 
@@ -212,6 +217,13 @@ export default function DocumentsScreen() {
       })}
 
       {renderItem({
+        title: 'Meu perfil',
+        description: 'Disponibilidade, locomoção e experiência.',
+        completed: stepsCompleted.profile,
+        documentType: 'profile',
+      })}
+
+      {renderItem({
         title: 'Sobre Mim',
         description:
           'Fale um pouco sobre suas experiências e por que deseja ser um Dog Walker no Pet Step.',
@@ -219,7 +231,7 @@ export default function DocumentsScreen() {
         documentType: 'aboutMe',
       })}
 
-      <View className="mt-5">
+      <View className="mt-5 mb-10">
         <CustomButton
           label={'Prosseguir'}
           onPress={handleVerify}
@@ -228,6 +240,7 @@ export default function DocumentsScreen() {
             !allStepsCompleted ? colors.accent : colors.secondary
           }
         />
+
         <Text className="text-center text-accent mt-2">
           Conclua todas as etapas para prosseguir
         </Text>
