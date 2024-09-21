@@ -3,12 +3,13 @@ import {useEffect, useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
-import {documentsStatus} from '../../services/application';
+import {deactivateAccount, documentsStatus} from '../../services/application';
 import {useDialog} from '../../contexts/dialogContext';
 import {AxiosError} from 'axios';
 import {DocumentType} from '../../types/document';
 import Spinner from '../../components/spinner/spinner';
 import CustomButton from '../../components/customButton';
+import {useAuth} from '../../contexts/authContext';
 
 interface ListItemProps {
   title: string;
@@ -20,6 +21,8 @@ interface ListItemProps {
 export default function DocumentsScreen() {
   const {navigation, route} = useAppNavigation();
   const {showDialog, hideDialog} = useDialog();
+  const {logout} = useAuth();
+
   const [stepsCompleted, setStepsCompleted] = useState({
     document: false,
     selfie: false,
@@ -133,6 +136,53 @@ export default function DocumentsScreen() {
     }
   };
 
+  const handleDeactivateAccount = async () => {
+    setIsLoading(true);
+    try {
+      await deactivateAccount();
+      logout();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
+            : 'Ocorreu um erro inesperado';
+        showDialog({
+          title: message,
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    showDialog({
+      title: 'Tem certeza que deseja cancelar?',
+      description:
+        'Sua conta será desativada. Para ativar, basta fazer log in novamente',
+      confirm: {
+        confirmLabel: 'Não',
+        onConfirm: () => {
+          hideDialog();
+        },
+      },
+      cancel: {
+        cancelLabel: 'Sim',
+        onCancel: async () => {
+          await handleDeactivateAccount();
+          hideDialog();
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     const params =
       (route.params as {
@@ -231,7 +281,11 @@ export default function DocumentsScreen() {
         documentType: 'aboutMe',
       })}
 
-      <View className="mt-5 mb-10">
+      <View className="mt-1 mb-10">
+        <Text className="text-center text-accent my-2">
+          Conclua todas as etapas para prosseguir
+        </Text>
+
         <CustomButton
           label={'Prosseguir'}
           onPress={handleVerify}
@@ -241,9 +295,13 @@ export default function DocumentsScreen() {
           }
         />
 
-        <Text className="text-center text-accent mt-2">
-          Conclua todas as etapas para prosseguir
-        </Text>
+        <View className="mt-2">
+          <CustomButton
+            label={'Cancelar aplicação'}
+            onPress={handleCancel}
+            backgroundColor={colors.primary}
+          />
+        </View>
       </View>
     </ScrollView>
   );

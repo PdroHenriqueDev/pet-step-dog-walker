@@ -34,7 +34,12 @@ function CustomDialog({
       <View className="mb-2">
         <Dialog.Title titleStyle={styles.title} title={title} />
       </View>
-      {description && <Text style={styles.description}>{description}</Text>}
+
+      {description && (
+        <Text className="mb-3 text-center" style={styles.description}>
+          {description}
+        </Text>
+      )}
 
       <View className="flex-col">
         {confirm && confirm.confirmLabel && confirm.onConfirm && (
