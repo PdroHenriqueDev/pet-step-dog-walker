@@ -1,4 +1,10 @@
-import React, {createContext, useContext, useState, ReactNode} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+} from 'react';
 import CustomDialog from '../components/customDialog';
 
 interface DialogContextProps {
@@ -29,14 +35,14 @@ export const DialogProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogProps, setDialogProps] = useState<DialogProps | null>(null);
 
-  const showDialog = (props: DialogProps) => {
+  const showDialog = useCallback((props: DialogProps) => {
     setDialogProps(props);
     setDialogVisible(true);
-  };
+  }, []);
 
-  const hideDialog = () => {
+  const hideDialog = useCallback(() => {
     setDialogVisible(false);
-  };
+  }, []);
 
   return (
     <DialogContext.Provider value={{showDialog, hideDialog}}>

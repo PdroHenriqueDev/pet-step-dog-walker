@@ -1,14 +1,69 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import colors from '../styles/colors';
 import globalStyles from '../styles/globalStyles';
 import HomeStack from './homeStack';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import HomeIcon from '../components/icons/home';
+import messaging from '@react-native-firebase/messaging';
+import {useDialog} from '../contexts/dialogContext';
+import {useAuth} from '../contexts/authContext';
+import {updateDeviceToken} from '../services/dogWalkerService';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
 export function Tabs() {
+  const {user} = useAuth();
+  const {showDialog, hideDialog} = useDialog();
+
+  useEffect(() => {
+    const handleToken = async () => {
+      console.log('got here handleToken');
+      try {
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (!enabled) {
+          showDialog({
+            title: 'Permissão para notificações necessária',
+            description:
+              'Para garantir que você receba atualizações importantes e notificações em tempo real, precisamos da sua permissão para enviar notificações. Por favor, habilite-as nas configurações.',
+            confirm: {
+              confirmLabel: 'Entendi',
+              onConfirm: () => {
+                hideDialog();
+              },
+            },
+          });
+
+          return;
+        }
+
+        const token = await messaging().getToken();
+        if (!user?.deviceToken || token !== user?.deviceToken) {
+          await updateDeviceToken(token);
+        }
+      } catch (error) {
+        console.log('got here error token device', error);
+        showDialog({
+          title: 'Erro de conexão',
+          description:
+            'Houve um problema ao tentar configurar suas notificações. Por favor, tente novamente mais tarde.',
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    };
+
+    handleToken();
+  }, [hideDialog, showDialog, user?.deviceToken]);
+
   return (
     <Navigator
       screenOptions={() => ({

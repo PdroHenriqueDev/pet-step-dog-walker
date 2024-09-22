@@ -20,6 +20,7 @@ export interface DogWalker {
   date?: string;
   time?: string;
   profileUrl?: string;
+  deviceToken?: string;
 }
 
 export interface DogWalkerForm {

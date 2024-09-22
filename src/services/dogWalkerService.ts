@@ -20,3 +20,17 @@ export const getDogWalkerById = async (id: string): Promise<any> => {
     throw error;
   }
 };
+
+export const updateDeviceToken = async (deviceToken: string): Promise<any> => {
+  try {
+    const response = await api.put('/notification', {
+      role: 'dogWalker',
+      deviceToken,
+    });
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
