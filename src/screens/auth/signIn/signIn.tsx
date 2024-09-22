@@ -40,7 +40,7 @@ export default function SignIn() {
       });
 
       const {accessToken, refreshToken, user} = response;
-      await storeTokens(accessToken, refreshToken, user);
+      await storeTokens(accessToken, refreshToken, user._id);
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =

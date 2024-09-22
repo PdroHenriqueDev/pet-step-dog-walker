@@ -35,11 +35,13 @@ export default function ApplicationFeedbackScreen() {
     const statusMessages: {[key: string]: {title: string; message: string}} = {
       [DogWalkerApplicationStatus.PendingReview]: {
         title: 'Sua aplicação está sendo analisada',
-        message: 'Por favor, aguarde enquanto revisamos os seus documentos.',
+        message:
+          'Por favor, aguarde enquanto revisamos os seus documentos. Pode levar até 15 dias',
       },
       [DogWalkerApplicationStatus.Rejected]: {
         title: 'Sua aplicação foi rejeitada',
-        message: 'Infelizmente, sua aplicação não foi aprovada.',
+        message:
+          'Infelizmente, sua aplicação não foi aprovada. Você pode tentar novamente.',
       },
       [DogWalkerApplicationStatus.Approved]: {
         title: 'Parabéns, sua aplicação foi aprovada',
@@ -48,7 +50,7 @@ export default function ApplicationFeedbackScreen() {
       },
       default: {
         title: 'Aguardando processamento',
-        message: 'Estamos verificando seus documentos.',
+        message: 'Estamos verificando seus documentos. Pode levar até 15 dias.',
       },
     };
 

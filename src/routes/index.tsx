@@ -6,7 +6,6 @@ import SplashScreen from '../components/splash/splash';
 import {useAuth} from '../contexts/authContext';
 import {DocumentsStack} from './documentsStack';
 import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStatus';
-import {getDogWalkerById} from '../services/dogWalkerService';
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 
 function Routes() {
@@ -17,23 +16,13 @@ function Routes() {
     setAuthTSession,
     handleSetUser,
     user,
+    userId,
   } = useAuth();
 
   useEffect(() => {
     setAuthTSession();
-  }, [setAuthTSession]);
-
-  useEffect(() => {
-    const getDogWalker = async () => {
-      if (!user) return;
-      try {
-        const result = await getDogWalkerById(user?._id as string);
-        handleSetUser(result);
-      } catch (error) {}
-    };
-
-    getDogWalker();
-  }, []);
+    handleSetUser();
+  }, [handleSetUser, setAuthTSession]);
 
   // const {logout} = useAuth();
   // useEffect(() => {
@@ -45,7 +34,7 @@ function Routes() {
       return <SplashScreen />;
     }
 
-    if (!accessToken || !refreshToken || !user) {
+    if (!accessToken || !refreshToken || !userId) {
       return <AuthStack />;
     }
 

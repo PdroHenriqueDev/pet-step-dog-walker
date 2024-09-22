@@ -7,9 +7,11 @@ import React, {
 } from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {DogWalker} from '../interfaces/dogWalker';
+import {getDogWalkerById} from '../services/dogWalkerService';
 
 interface AuthContextProps {
   user: DogWalker | null;
+  userId: string | null;
   accessToken: string | null;
   refreshToken: string | null;
   isLoading: boolean;
@@ -19,13 +21,14 @@ interface AuthContextProps {
   storeTokens: (
     accessToken: string,
     refreshToken: string,
-    newUser: DogWalker,
+    userId: string,
   ) => Promise<void>;
-  handleSetUser: (owner: DogWalker) => void;
+  handleSetUser: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
+  userId: null,
   accessToken: null,
   refreshToken: null,
   isLoading: false,
@@ -33,11 +36,12 @@ export const AuthContext = createContext<AuthContextProps>({
   logout: () => {},
   setAuthTSession: async () => {},
   storeTokens: async () => {},
-  handleSetUser: async (_owner: DogWalker) => {},
+  handleSetUser: async () => {},
 });
 
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [user, setUser] = useState<DogWalker | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,17 +49,17 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const handleTokens = async (
     newAccessToken: string,
     newRefreshToken: string,
-    newUser: DogWalker,
+    newUserId: string,
   ) => {
     setIsLoading(true);
     try {
       await EncryptedStorage.setItem('accessToken', newAccessToken);
       await EncryptedStorage.setItem('refreshToken', newRefreshToken);
-      await EncryptedStorage.setItem('user', JSON.stringify(newUser));
+      await EncryptedStorage.setItem('userId', newUserId);
 
       setAccessToken(newAccessToken);
       setRefreshToken(newRefreshToken);
-      setUser(newUser);
+      setUserId(newUserId);
     } finally {
       setIsLoading(false);
     }
@@ -66,12 +70,12 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     try {
       const resultAccessToken = await EncryptedStorage.getItem('accessToken');
       const resultRefreshToken = await EncryptedStorage.getItem('refreshToken');
-      const storedUser = await EncryptedStorage.getItem('user');
+      const resultUserId = await EncryptedStorage.getItem('userId');
 
-      if (resultAccessToken && resultRefreshToken && storedUser) {
+      if (resultAccessToken && resultRefreshToken && resultUserId) {
         setAccessToken(resultAccessToken);
         setRefreshToken(resultRefreshToken);
-        setUser(JSON.parse(storedUser));
+        setUserId(resultUserId);
       }
     } finally {
       setIsLoading(false);
@@ -87,11 +91,12 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     try {
       await EncryptedStorage.removeItem('accessToken');
       await EncryptedStorage.removeItem('refreshToken');
-      await EncryptedStorage.removeItem('user');
+      await EncryptedStorage.removeItem('userId');
       setAccessToken(null);
       setAccessToken(null);
       setRefreshToken(null);
       setUser(null);
+      setUserId(null);
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     } finally {
@@ -99,15 +104,25 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
-  const handleSetUser = async (newUser: DogWalker) => {
-    await EncryptedStorage.setItem('user', JSON.stringify(newUser));
-    setUser(newUser);
-  };
+  const handleSetUser = useCallback(async () => {
+    console.log('got here handleSetUser');
+    if (!userId) return;
+    setIsLoading(true);
+    try {
+      const result = await getDogWalkerById(userId);
+      setUser(result);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        userId,
         accessToken,
         refreshToken,
         isLoading,
