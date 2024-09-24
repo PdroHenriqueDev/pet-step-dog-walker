@@ -1,16 +1,21 @@
 import React from 'react';
-import styles from './styles';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, Modal, View} from 'react-native';
 import colors from '../../styles/colors';
 
 export default function Spinner({
+  visible,
   size = 'large',
+  transparent = false,
 }: {
+  visible: boolean;
+  transparent?: boolean;
   size?: number | 'small' | 'large' | undefined;
 }) {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator color={colors.secondary} size={size} />
-    </View>
+    <Modal animationType="fade" transparent={transparent} visible={visible}>
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator color={colors.secondary} size={size} />
+      </View>
+    </Modal>
   );
 }

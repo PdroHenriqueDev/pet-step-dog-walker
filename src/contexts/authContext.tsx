@@ -92,13 +92,14 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       await EncryptedStorage.removeItem('accessToken');
       await EncryptedStorage.removeItem('refreshToken');
       await EncryptedStorage.removeItem('userId');
+
       setAccessToken(null);
       setAccessToken(null);
       setRefreshToken(null);
       setUser(null);
       setUserId(null);
     } catch (error) {
-      console.error('Erro ao fazer logout:', error);
+      console.error('Erro ao fazer logout');
     } finally {
       setIsLoading(false);
     }

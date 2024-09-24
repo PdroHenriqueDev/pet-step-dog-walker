@@ -21,6 +21,7 @@ export interface DogWalker {
   time?: string;
   profileUrl?: string;
   deviceToken?: string;
+  stripeAccountId?: string;
 }
 
 export interface DogWalkerForm {

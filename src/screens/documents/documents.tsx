@@ -225,7 +225,7 @@ export default function DocumentsScreen() {
   );
 
   if (isLoading) {
-    return <Spinner />;
+    return <Spinner visible={isLoading} />;
   }
 
   return (

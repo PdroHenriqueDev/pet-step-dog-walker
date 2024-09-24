@@ -3,7 +3,7 @@ import {StackHeaderProps, createStackNavigator} from '@react-navigation/stack';
 import NotificationHeader from '../components/header/notificationHeader';
 import CustomHeader from '../components/header/customHeader';
 import {useAppNavigation} from '../hooks/useAppNavigation';
-import Home from '../screens/home';
+import HomeScreen from '../screens/home/homeScreen';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -32,7 +32,7 @@ function HomeStack() {
     <Navigator>
       <Screen
         name="HomeScreen"
-        component={Home}
+        component={HomeScreen}
         options={{
           header: notificationHeader,
         }}
