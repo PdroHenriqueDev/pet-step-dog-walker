@@ -12,6 +12,7 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import {Linking} from 'react-native';
 import GetLocation from 'react-native-get-location';
 import {updateAvailability} from '../../services/dogWalkerService';
+import {ActivityIndicator} from 'react-native';
 
 export default function HomeScreen() {
   const {user} = useAuth();
@@ -26,6 +27,7 @@ export default function HomeScreen() {
     useCallback(() => {
       if (!user?.stripeAccountId) return;
       setIsLoading(true);
+      setIsOnline(user?.isOnline ?? false);
       const fetchBalance = async () => {
         try {
           const data = await balance(user.stripeAccountId!);
@@ -55,7 +57,7 @@ export default function HomeScreen() {
       };
 
       fetchBalance();
-    }, [hideDialog, showDialog, user?.stripeAccountId]),
+    }, [hideDialog, showDialog, user?.isOnline, user?.stripeAccountId]),
   );
 
   const openSettings = async () => {
@@ -198,14 +200,19 @@ export default function HomeScreen() {
       )}
 
       <View className="flex-row items-center mt-6">
-        <Switch
-          trackColor={{false: '#E6E6E6', true: colors.green}}
-          thumbColor={isOnline ? colors.dark : colors.primary}
-          ios_backgroundColor="#E6E6E6'"
-          onValueChange={handleToggleSwitch}
-          value={isOnline}
-          disabled={switchLoading}
-        />
+        {switchLoading ? (
+          <ActivityIndicator color={colors.secondary} size={'small'} />
+        ) : (
+          <Switch
+            trackColor={{false: '#E6E6E6', true: colors.green}}
+            thumbColor={isOnline ? colors.dark : colors.primary}
+            ios_backgroundColor="#E6E6E6'"
+            onValueChange={handleToggleSwitch}
+            value={isOnline}
+            disabled={switchLoading}
+          />
+        )}
+
         <Text className="ml-3 text-base text-dark font-semibold">
           Estou aceitando passeios
         </Text>
