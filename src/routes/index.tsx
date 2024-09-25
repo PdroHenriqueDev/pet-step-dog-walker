@@ -7,6 +7,7 @@ import {useAuth} from '../contexts/authContext';
 import {DocumentsStack} from './documentsStack';
 import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStatus';
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
+import TermsOfService from '../components/termsOfService/termsOfService';
 
 function Routes() {
   const {
@@ -14,15 +15,15 @@ function Routes() {
     refreshToken,
     isLoading,
     setAuthTSession,
-    handleSetUser,
+    fetchUser,
     user,
     userId,
   } = useAuth();
 
   useEffect(() => {
     setAuthTSession();
-    handleSetUser();
-  }, [handleSetUser, setAuthTSession]);
+    fetchUser();
+  }, [fetchUser, setAuthTSession]);
 
   // const {logout} = useAuth();
   // useEffect(() => {
@@ -47,6 +48,10 @@ function Routes() {
       user?.status === DogWalkerApplicationStatus.Rejected
     ) {
       return <ApplicationFeedbackScreen />;
+    }
+
+    if (user?.status === DogWalkerApplicationStatus.PendingTerms) {
+      return <TermsOfService />;
     }
 
     return <Tabs />;

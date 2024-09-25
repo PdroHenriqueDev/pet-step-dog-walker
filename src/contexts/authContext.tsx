@@ -23,7 +23,8 @@ interface AuthContextProps {
     refreshToken: string,
     userId: string,
   ) => Promise<void>;
-  handleSetUser: () => void;
+  handleSetUser: (newUser: DogWalker) => void;
+  fetchUser: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -36,7 +37,8 @@ export const AuthContext = createContext<AuthContextProps>({
   logout: () => {},
   setAuthTSession: async () => {},
   storeTokens: async () => {},
-  handleSetUser: async () => {},
+  handleSetUser: (_newUser: DogWalker) => {},
+  fetchUser: async () => {},
 });
 
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
@@ -105,8 +107,8 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
-  const handleSetUser = useCallback(async () => {
-    console.log('got here handleSetUser');
+  const fetchUser = useCallback(async () => {
+    console.log('got here fetchUser');
     if (!userId) return;
     setIsLoading(true);
     try {
@@ -118,6 +120,10 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setIsLoading(false);
     }
   }, [userId]);
+
+  const handleSetUser = (newUser: DogWalker) => {
+    setUser(newUser);
+  };
 
   return (
     <AuthContext.Provider
@@ -131,6 +137,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         logout: handleLogout,
         setAuthTSession,
         storeTokens: handleTokens,
+        fetchUser,
         handleSetUser,
       }}>
       {children}

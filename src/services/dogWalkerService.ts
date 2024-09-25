@@ -57,3 +57,14 @@ export const updateAvailability = async ({
     throw error;
   }
 };
+
+export const termsAcceptance = async (): Promise<any> => {
+  try {
+    const response = await api.post('/dog-walker/accept-terms');
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
