@@ -9,6 +9,8 @@ import messaging from '@react-native-firebase/messaging';
 import {useDialog} from '../contexts/dialogContext';
 import {useAuth} from '../contexts/authContext';
 import {updateDeviceToken} from '../services/dogWalkerService';
+import HistoryStack from './historyStack';
+import HistorytIcon from '../components/icons/history';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -82,6 +84,24 @@ export function Tabs() {
 
           return {
             tabBarIcon: HomeIcon,
+            headerShown: false,
+            tabBarStyle: {
+              ...globalStyles.tabar,
+              display: isHiddenRoute ? 'none' : 'flex',
+            },
+          };
+        }}
+      />
+      <Screen
+        name="Histórico"
+        component={HistoryStack}
+        options={({route}) => {
+          const routeName =
+            getFocusedRouteNameFromRoute(route) ?? 'HistoryScreen';
+          const isHiddenRoute = routeName !== 'HistoryScreen';
+
+          return {
+            tabBarIcon: HistorytIcon,
             headerShown: false,
             tabBarStyle: {
               ...globalStyles.tabar,

@@ -1,3 +1,5 @@
+import {RideEvents} from '../enum/ride';
+
 export interface DogWalker {
   _id?: string;
   name?: string;
@@ -22,6 +24,14 @@ export interface DogWalker {
   profileUrl?: string;
   deviceToken?: string;
   stripeAccountId?: string;
+  currentWalk?: {
+    requestId?: string;
+    status?: RideEvents;
+  } | null;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface DogWalkerForm {

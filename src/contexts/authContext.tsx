@@ -122,6 +122,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   }, [userId]);
 
   const handleSetUser = (newUser: DogWalker) => {
+    console.log('got here handleSetUser');
     setUser(newUser);
   };
 

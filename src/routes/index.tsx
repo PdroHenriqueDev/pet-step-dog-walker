@@ -8,6 +8,8 @@ import {DocumentsStack} from './documentsStack';
 import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStatus';
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 import TermsOfService from '../components/termsOfService/termsOfService';
+import messaging from '@react-native-firebase/messaging';
+import {WalkStack} from './walkStack';
 
 function Routes() {
   const {
@@ -18,6 +20,7 @@ function Routes() {
     fetchUser,
     user,
     userId,
+    handleSetUser,
   } = useAuth();
 
   useEffect(() => {
@@ -29,6 +32,88 @@ function Routes() {
   // useEffect(() => {
   //   logout();
   // }, []);
+
+  // useEffect(() => {
+  //   async function requestPermission() {
+  //     const authStatus = await messaging().requestPermission();
+  //     const enabled =
+  //       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  //     if (enabled) {
+  //       console.log('Authorization status:', authStatus);
+  //     } else {
+  //       console.log('Permissão de notificação negada.');
+  //     }
+  //   }
+
+  //   requestPermission();
+  // }, []);
+
+  useEffect(() => {
+    // const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //   console.log('A new FCM message arrived!', remoteMessage);
+    // });
+
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      const requestId = remoteMessage?.data?.requestId as string;
+      console.log('A new FCM message arrived in foreground!', remoteMessage);
+      if (requestId) {
+        if (!user) return;
+
+        handleSetUser({
+          ...user,
+          currentWalk: {
+            requestId,
+          },
+        });
+      }
+    });
+
+    const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
+      remoteMessage => {
+        const requestId = remoteMessage?.data?.requestId as string;
+        console.log('Notification opened, requestId =>', requestId);
+        if (requestId) {
+          if (!user) return;
+
+          handleSetUser({
+            ...user,
+            currentWalk: {
+              requestId,
+            },
+          });
+        }
+      },
+    );
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          const requestId = remoteMessage?.data?.requestId as string;
+          console.log(
+            'App opened from terminated state, requestId =>',
+            requestId,
+          );
+          if (requestId) {
+            if (!user) return;
+
+            handleSetUser({
+              ...user,
+              currentWalk: {
+                requestId,
+              },
+            });
+          }
+        }
+      });
+
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeNotificationOpened();
+    };
+  }, [handleSetUser, user]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -52,6 +137,10 @@ function Routes() {
 
     if (user?.status === DogWalkerApplicationStatus.PendingTerms) {
       return <TermsOfService />;
+    }
+
+    if (user?.currentWalk) {
+      return <WalkStack />;
     }
 
     return <Tabs />;
