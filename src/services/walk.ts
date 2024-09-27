@@ -10,3 +10,25 @@ export const getRequestById = async (requestId: string) => {
     throw error;
   }
 };
+
+export const denyRequest = async (requestId: string) => {
+  try {
+    const response = await api.delete(`/walk/cancel/${requestId}`);
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const acceptRequest = async (requestId: string) => {
+  try {
+    const response = await api.post(`/walk/accept/${requestId}`);
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

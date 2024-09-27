@@ -139,6 +139,18 @@ export default function TermsOfService() {
             informada. Ao colaborar conosco, você também estará ajudando a fazer
             a diferença na vida de muitos animais em necessidade!
           </Text>
+
+          <Text className="font-bold text-dark mb-3">
+            Importância de Não Cancelar Passeios
+          </Text>
+          <Text className="text-base text-dark mb-3">
+            9. É importante que você evite cancelar passeios após aceitar uma
+            solicitação. O cancelamento sem um motivo válido pode prejudicar a
+            experiência dos tutores e afetar a reputação da plataforma. Cancele
+            passeios apenas por motivos de força maior. Cancelamentos
+            recorrentes podem resultar em penalidades, como a redução da sua
+            avaliação ou até mesmo o banimento da plataforma.
+          </Text>
         </ScrollView>
 
         <CheckBox

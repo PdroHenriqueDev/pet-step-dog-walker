@@ -25,8 +25,8 @@ export interface DogWalker {
   deviceToken?: string;
   stripeAccountId?: string;
   currentWalk?: {
-    requestId?: string;
-    status?: RideEvents;
+    requestId: string;
+    status: RideEvents;
   } | null;
   location?: {
     latitude: number;

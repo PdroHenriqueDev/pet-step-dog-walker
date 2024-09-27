@@ -1,28 +1,36 @@
 import {Text, View} from 'react-native';
 import {useEffect, useState} from 'react';
-import {getRequestById} from '../../services/walk';
-import {useAuth} from '../../contexts/authContext';
-import {useDialog} from '../../contexts/dialogContext';
+import {
+  acceptRequest,
+  denyRequest,
+  getRequestById,
+} from '../../../services/walk';
+import {useAuth} from '../../../contexts/authContext';
+import {useDialog} from '../../../contexts/dialogContext';
 import {AxiosError} from 'axios';
-import Spinner from '../../components/spinner/spinner';
-import {WalkDetails} from '../../interfaces/walk';
+import Spinner from '../../../components/spinner/spinner';
+import {WalkDetails} from '../../../interfaces/walk';
 import {Icon} from '@rneui/base';
-import colors from '../../styles/colors';
-import {calculateDistance} from '../../services/adress';
-import CustomButton from '../../components/customButton';
+import colors from '../../../styles/colors';
+import {calculateDistance} from '../../../services/adress';
+import CustomButton from '../../../components/customButton';
+import {useAppNavigation} from '../../../hooks/useAppNavigation';
 
 export default function WalkRequestScreen() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [details, setDetails] = useState<WalkDetails>();
   const [distance, setDistance] = useState('');
+  const [distanceIsLoading, setDistanceIsLoading] = useState(true);
+  const [denyIsLoading, setDenyIsLoading] = useState(false);
+  const [acceptIsLoading, setAcceptIsLoading] = useState(false);
 
-  const {user} = useAuth();
+  const {user, handleSetUser} = useAuth();
   const {showDialog, hideDialog} = useDialog();
+  const {navigation} = useAppNavigation();
 
   useEffect(() => {
     const handleData = async () => {
       if (!user?.currentWalk?.requestId) return;
-      setIsLoading(true);
       try {
         const requestData = await getRequestById(user?.currentWalk?.requestId);
         const {displayData} = requestData;
@@ -33,7 +41,7 @@ export default function WalkRequestScreen() {
           error instanceof AxiosError &&
           typeof error.response?.data?.data === 'string'
             ? error.response?.data?.data
-            : 'Ocorreu um erro inesperado';
+            : 'Ocorreu um erro inesperado ao carregar os detalhes';
         showDialog({
           title: errorMessage,
           confirm: {
@@ -75,7 +83,7 @@ export default function WalkRequestScreen() {
           error instanceof AxiosError &&
           typeof error.response?.data?.data === 'string'
             ? error.response?.data?.data
-            : 'Ocorreu um erro inesperado';
+            : 'Ocorreu um erro inesperado ao calcular a distância';
         showDialog({
           title: errorMessage,
           confirm: {
@@ -86,14 +94,67 @@ export default function WalkRequestScreen() {
           },
         });
       } finally {
+        setDistanceIsLoading(false);
       }
     };
 
     handleDistance();
   }, [details, hideDialog, showDialog, user]);
 
-  const handleAccept = async () => {};
-  const handleDeny = async () => {};
+  const handleAccept = async () => {
+    if (!user?.currentWalk?.requestId) return;
+    setAcceptIsLoading(true);
+    try {
+      await acceptRequest(user?.currentWalk?.requestId);
+      navigation.navigate('WalkInProgress');
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado';
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setAcceptIsLoading(false);
+    }
+  };
+
+  const handleDeny = async () => {
+    if (!user?.currentWalk?.requestId) return;
+    setDenyIsLoading(true);
+    try {
+      await denyRequest(user?.currentWalk?.requestId);
+      handleSetUser({
+        ...user,
+        currentWalk: null,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado';
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setDenyIsLoading(false);
+    }
+  };
 
   return (
     <View className="bg-primary flex-1 p-5">
@@ -137,7 +198,9 @@ export default function WalkRequestScreen() {
         <View className="flex-row items-center">
           <Text className="text-base text-dark font-semibold">Distância:</Text>
           <Text className="ml-1 text-base text-accent text-center">
-            {distance || 'calculando...'}
+            {distanceIsLoading
+              ? 'calculando...'
+              : distance || 'não foi possível calcular'}
           </Text>
         </View>
       </View>
@@ -152,11 +215,16 @@ export default function WalkRequestScreen() {
       </View>
 
       <View className="mt-5">
-        <CustomButton label={'Aceitar passeio'} onPress={handleAccept} />
+        <CustomButton
+          label={'Aceitar passeio'}
+          onPress={handleAccept}
+          isLoading={acceptIsLoading}
+        />
         <CustomButton
           label={'Negar passeio'}
           onPress={handleDeny}
           backgroundColor={colors.primary}
+          isLoading={denyIsLoading}
         />
       </View>
 

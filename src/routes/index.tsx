@@ -9,7 +9,7 @@ import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStat
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 import TermsOfService from '../components/termsOfService/termsOfService';
 import messaging from '@react-native-firebase/messaging';
-import {WalkStack} from './walkStack';
+import {RideEvents} from '../enum/ride';
 
 function Routes() {
   const {
@@ -51,13 +51,8 @@ function Routes() {
   // }, []);
 
   useEffect(() => {
-    // const unsubscribe = messaging().onMessage(async remoteMessage => {
-    //   console.log('A new FCM message arrived!', remoteMessage);
-    // });
-
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const requestId = remoteMessage?.data?.requestId as string;
-      console.log('A new FCM message arrived in foreground!', remoteMessage);
       if (requestId) {
         if (!user) return;
 
@@ -65,6 +60,7 @@ function Routes() {
           ...user,
           currentWalk: {
             requestId,
+            status: RideEvents.PENDING,
           },
         });
       }
@@ -73,7 +69,6 @@ function Routes() {
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
       remoteMessage => {
         const requestId = remoteMessage?.data?.requestId as string;
-        console.log('Notification opened, requestId =>', requestId);
         if (requestId) {
           if (!user) return;
 
@@ -81,6 +76,7 @@ function Routes() {
             ...user,
             currentWalk: {
               requestId,
+              status: RideEvents.PENDING,
             },
           });
         }
@@ -92,10 +88,6 @@ function Routes() {
       .then(remoteMessage => {
         if (remoteMessage) {
           const requestId = remoteMessage?.data?.requestId as string;
-          console.log(
-            'App opened from terminated state, requestId =>',
-            requestId,
-          );
           if (requestId) {
             if (!user) return;
 
@@ -103,6 +95,7 @@ function Routes() {
               ...user,
               currentWalk: {
                 requestId,
+                status: RideEvents.PENDING,
               },
             });
           }
@@ -137,10 +130,6 @@ function Routes() {
 
     if (user?.status === DogWalkerApplicationStatus.PendingTerms) {
       return <TermsOfService />;
-    }
-
-    if (user?.currentWalk) {
-      return <WalkStack />;
     }
 
     return <Tabs />;

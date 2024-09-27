@@ -13,7 +13,8 @@ type RootStackParamList = {
   AboutMe: undefined;
   ApplicationFeedback: undefined;
   Profile: undefined;
-  WalkScreen: {requestId: string};
+  WalkRequest: undefined;
+  WalkInProgress: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

@@ -35,12 +35,13 @@ export const calculateDistance = async ({
     const data = response.data;
 
     if (data.status === 'OK') {
-      const distance = data.rows[0].elements[0].distance.text;
+      const distance = data.rows[0].elements[0]?.distance?.text ?? '';
       return distance;
     } else {
       throw new Error('Erro ao calcular a distância');
     }
   } catch (error) {
+    console.log('got error =>>>', error);
     throw new Error('Erro ao calcular a distância');
   }
 };

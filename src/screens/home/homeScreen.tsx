@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Platform, Switch, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import {useFocusEffect} from '@react-navigation/native';
@@ -13,10 +13,15 @@ import {Linking} from 'react-native';
 import GetLocation from 'react-native-get-location';
 import {updateAvailability} from '../../services/dogWalkerService';
 import {ActivityIndicator} from 'react-native';
+import {useAppNavigation} from '../../hooks/useAppNavigation';
+import {RideEvents} from '../../enum/ride';
+import CustomButton from '../../components/customButton';
 
 export default function HomeScreen() {
   const {user} = useAuth();
   const {showDialog, hideDialog} = useDialog();
+  const {navigation} = useAppNavigation();
+
   const [isOnline, setIsOnline] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [switchLoading, setSwitchLoading] = useState(false);
@@ -59,6 +64,19 @@ export default function HomeScreen() {
       fetchBalance();
     }, [hideDialog, showDialog, user?.isOnline, user?.stripeAccountId]),
   );
+
+  useEffect(() => {
+    if (user?.currentWalk) {
+      const {status} = user?.currentWalk;
+      navigation.navigate(
+        status === RideEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
+      );
+    }
+  }, [navigation, user?.currentWalk]);
+
+  const goToWalkInProgress = () => {
+    navigation.navigate('WalkInProgress');
+  };
 
   const openSettings = async () => {
     try {
@@ -176,47 +194,61 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-primary p-5">
       <Spinner visible={isLoading} transparent={true} />
-      <Text className="text-2xl font-bold text-dark mb-2">Seus ganhos</Text>
-      {!user?.stripeAccountId ? (
-        <Text className="text-danger text-lg">
-          Você precisa adicionar um conta para ver seus ganhos
-        </Text>
-      ) : (
-        <View className="flex-row justify-between">
-          <View className="w-36 justify-center py-6 px-2 border border-gray-300 rounded-2xl">
-            <Text className="font-semibold text-2xl text-dark">
-              R$ {availableBalance.toFixed(2)}
-            </Text>
-            <Text className="text-xs text-green">Disponível</Text>
-          </View>
-
-          <View className="w-36 justify-center py-6 px-2 border border-gray-300 rounded-2xl">
-            <Text className="font-semibold text-2xl text-dark">
-              R$ {pendingBalance.toFixed(2)}
-            </Text>
-            <Text className="text-xs text-danger">Em processamento</Text>
-          </View>
-        </View>
-      )}
-
-      <View className="flex-row items-center mt-6">
-        {switchLoading ? (
-          <ActivityIndicator color={colors.secondary} size={'small'} />
-        ) : (
-          <Switch
-            trackColor={{false: '#E6E6E6', true: colors.green}}
-            thumbColor={isOnline ? colors.dark : colors.primary}
-            ios_backgroundColor="#E6E6E6'"
-            onValueChange={handleToggleSwitch}
-            value={isOnline}
-            disabled={switchLoading}
+      {user?.currentWalk?.status === RideEvents.ACCEPTED_SUCCESSFULLY ? (
+        <View className="flex-1 items-center">
+          <Text className="text-2xl font-bold text-dark mb-2 text-center">
+            Você tem um passeio em andamento
+          </Text>
+          <CustomButton
+            label={'Ir para a tela do passeio'}
+            onPress={goToWalkInProgress}
           />
-        )}
+        </View>
+      ) : (
+        <>
+          <Text className="text-2xl font-bold text-dark mb-2">Seus ganhos</Text>
+          {!user?.stripeAccountId ? (
+            <Text className="text-danger text-lg">
+              Você precisa adicionar um conta para ver seus ganhos
+            </Text>
+          ) : (
+            <View className="flex-row justify-between">
+              <View className="w-36 justify-center py-6 px-2 border border-gray-300 rounded-2xl">
+                <Text className="font-semibold text-2xl text-dark">
+                  R$ {availableBalance.toFixed(2)}
+                </Text>
+                <Text className="text-xs text-green">Disponível</Text>
+              </View>
 
-        <Text className="ml-3 text-base text-dark font-semibold">
-          Estou aceitando passeios
-        </Text>
-      </View>
+              <View className="w-36 justify-center py-6 px-2 border border-gray-300 rounded-2xl">
+                <Text className="font-semibold text-2xl text-dark">
+                  R$ {pendingBalance.toFixed(2)}
+                </Text>
+                <Text className="text-xs text-danger">Em processamento</Text>
+              </View>
+            </View>
+          )}
+
+          <View className="flex-row items-center mt-6">
+            {switchLoading ? (
+              <ActivityIndicator color={colors.secondary} size={'small'} />
+            ) : (
+              <Switch
+                trackColor={{false: '#E6E6E6', true: colors.green}}
+                thumbColor={isOnline ? colors.dark : colors.primary}
+                ios_backgroundColor="#E6E6E6'"
+                onValueChange={handleToggleSwitch}
+                value={isOnline}
+                disabled={switchLoading}
+              />
+            )}
+
+            <Text className="ml-3 text-base text-dark font-semibold">
+              Estou aceitando passeios
+            </Text>
+          </View>
+        </>
+      )}
     </View>
   );
 }

@@ -2,12 +2,14 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {logoutSerivce} from './auth';
+import {UserRole} from '../enum/role';
 
 const api = axios.create({
   baseURL: Config.API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000,
 });
 
 api.interceptors.request.use(
@@ -49,6 +51,7 @@ api.interceptors.response.use(
           `${Config.API_BASE_URL}/auth/renew-token`,
           {
             refreshToken,
+            role: UserRole.DogWalker,
           },
         );
 

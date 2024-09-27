@@ -1,0 +1,142 @@
+import {Alert, Linking, Platform, Text, View} from 'react-native';
+import CustomButton from '../../../components/customButton';
+import {useEffect, useState} from 'react';
+import {useAuth} from '../../../contexts/authContext';
+import {WalkDetails} from '../../../interfaces/walk';
+import {getRequestById} from '../../../services/walk';
+import {AxiosError} from 'axios';
+import {useDialog} from '../../../contexts/dialogContext';
+import Spinner from '../../../components/spinner/spinner';
+import colors from '../../../styles/colors';
+
+export default function WalkInProgressScreen() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [details, setDetails] = useState<WalkDetails>();
+
+  const {showDialog, hideDialog} = useDialog();
+
+  const {user} = useAuth();
+
+  useEffect(() => {
+    const handleData = async () => {
+      if (!user?.currentWalk?.requestId) return;
+      try {
+        const requestData = await getRequestById(user?.currentWalk?.requestId);
+        const {displayData} = requestData;
+        setDetails(displayData);
+      } catch (error) {
+        const errorMessage =
+          error instanceof AxiosError &&
+          typeof error.response?.data?.data === 'string'
+            ? error.response?.data?.data
+            : 'Ocorreu um erro inesperado ao carregar os detalhes';
+        showDialog({
+          title: errorMessage,
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: () => {
+              hideDialog();
+            },
+          },
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleData();
+  }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
+
+  const openAppleMaps = () => {
+    if (!details) return;
+
+    const {walk} = details;
+    const url = `maps:0,0?q=${walk.receivedLocation.latitude},${walk.receivedLocation.longitude}`;
+    Linking.openURL(url);
+  };
+
+  const openGoogleMaps = () => {
+    if (!details) return;
+
+    const {walk} = details;
+
+    const url = `https://www.google.com/maps/search/?api=1&query=${walk.receivedLocation.latitude},${walk.receivedLocation.longitude}`;
+    Linking.openURL(url);
+  };
+
+  const handleIOSMaps = () => {
+    Alert.alert(
+      'Escolha o Mapa',
+      'Qual aplicativo de mapas você quer usar?',
+      [
+        {text: 'Apple Maps', onPress: openAppleMaps},
+        {text: 'Google Maps', onPress: openGoogleMaps},
+        {text: 'Cancelar', style: 'cancel'},
+      ],
+      {cancelable: true},
+    );
+  };
+
+  const handleMap = () => {
+    Platform.OS === 'ios' ? handleIOSMaps() : openGoogleMaps();
+  };
+
+  const startWalk = () => {};
+  const openChat = () => {};
+
+  const cancelWalk = () => {
+    showDialog({
+      title: 'Tem certeza?',
+      description:
+        'Tem certeza de que deseja cancelar o passeio? Cancelar logo após aceitar pode impactar sua avaliação na plataforma.',
+      confirm: {
+        confirmLabel: 'Entendi',
+        onConfirm: () => {
+          hideDialog();
+        },
+      },
+    });
+  };
+
+  return (
+    <View className="bg-primary flex-1 p-5 flex-col justify-between">
+      <Spinner visible={isLoading} transparent={true} />
+      <View>
+        <Text className="text-2xl font-bold text-dark mb-2 text-center">
+          Passeio em andamento
+        </Text>
+
+        <Text className="text-base text-danger">
+          Assim que estiver com o cão, lembre-se de iniciar o passeio para
+          começar o acompanhamento.
+        </Text>
+
+        <View className="my-5 flex-row">
+          <View className="flex-row items-center">
+            <Text className="text-base text-dark font-semibold">Endereço:</Text>
+            <Text className="ml-1 text-base text-accent ">
+              {details?.walk.receivedLocation.description}
+            </Text>
+          </View>
+        </View>
+
+        <CustomButton label={'Abrir endereço no mapa'} onPress={handleMap} />
+      </View>
+
+      <View>
+        <CustomButton
+          backgroundColor={colors.danger}
+          textColor={colors.primary}
+          label={'Iniciar o passeio'}
+          onPress={startWalk}
+        />
+        <CustomButton label={'Conversar com o tutor'} onPress={openChat} />
+        <CustomButton
+          backgroundColor={colors.primary}
+          label={'Cancelar o passeio'}
+          onPress={cancelWalk}
+        />
+      </View>
+    </View>
+  );
+}

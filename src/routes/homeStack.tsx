@@ -4,6 +4,8 @@ import NotificationHeader from '../components/header/notificationHeader';
 import CustomHeader from '../components/header/customHeader';
 import {useAppNavigation} from '../hooks/useAppNavigation';
 import HomeScreen from '../screens/home/homeScreen';
+import WalkInProgressScreen from '../screens/home/walkInProgress/walkInProgress';
+import WalkRequestScreen from '../screens/home/walk/walkRequestScreen';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -36,6 +38,16 @@ function HomeStack() {
         options={{
           header: notificationHeader,
         }}
+      />
+      <Screen
+        name="WalkRequest"
+        component={WalkRequestScreen}
+        options={{headerShown: false}}
+      />
+      <Screen
+        name="WalkInProgress"
+        component={WalkInProgressScreen}
+        options={{header: customHeader, headerTransparent: true}}
       />
     </Navigator>
   );
