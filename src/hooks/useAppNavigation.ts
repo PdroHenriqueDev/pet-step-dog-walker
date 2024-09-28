@@ -15,6 +15,7 @@ type RootStackParamList = {
   Profile: undefined;
   WalkRequest: undefined;
   WalkInProgress: undefined;
+  WalkMap: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

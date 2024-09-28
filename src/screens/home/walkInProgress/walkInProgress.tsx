@@ -3,12 +3,13 @@ import CustomButton from '../../../components/customButton';
 import {useEffect, useState} from 'react';
 import {useAuth} from '../../../contexts/authContext';
 import {WalkDetails} from '../../../interfaces/walk';
-import {cancelWalk, getRequestById} from '../../../services/walk';
+import {cancelWalk, getRequestById, startWalk} from '../../../services/walk';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
 import Spinner from '../../../components/spinner/spinner';
 import colors from '../../../styles/colors';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
+import {WalkEvents} from '../../../enum/walk';
 
 export default function WalkInProgressScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -82,7 +83,39 @@ export default function WalkInProgressScreen() {
     Platform.OS === 'ios' ? handleIOSMaps() : openGoogleMaps();
   };
 
-  const startWalk = () => {};
+  const handleStartWalk = async () => {
+    if (!user?.currentWalk) return;
+    setIsLoading(true);
+    try {
+      await startWalk(user?.currentWalk?.requestId);
+      handleSetUser({
+        ...user,
+        currentWalk: {
+          ...user?.currentWalk,
+          status: WalkEvents.IN_PROGRESS,
+        },
+      });
+      navigation.navigate('WalkMap');
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado ao iniciar';
+
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const openChat = () => {};
 
   const confirmCancelWalk = async () => {
@@ -171,7 +204,7 @@ export default function WalkInProgressScreen() {
           backgroundColor={colors.danger}
           textColor={colors.primary}
           label={'Iniciar o passeio'}
-          onPress={startWalk}
+          onPress={handleStartWalk}
           disabled={isLoading}
         />
         <CustomButton

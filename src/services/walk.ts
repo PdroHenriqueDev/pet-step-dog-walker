@@ -43,3 +43,14 @@ export const cancelWalk = async (requestId: string) => {
     throw error;
   }
 };
+
+export const startWalk = async (requestId: string) => {
+  try {
+    const response = await api.post(`/walk/start/${requestId}`);
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

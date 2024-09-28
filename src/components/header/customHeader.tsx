@@ -8,7 +8,9 @@ import colors from '../../styles/colors';
 function CustomHeader({navigation, route, options, back}: StackHeaderProps) {
   const handleBackPress = () => {
     const isWalkScreen =
-      route.name === 'WalkRequest' || route.name === 'WalkInProgress';
+      route.name === 'WalkRequest' ||
+      route.name === 'WalkInProgress' ||
+      route.name === 'WalkMap';
 
     isWalkScreen ? navigation.navigate('HomeScreen') : navigation.goBack();
   };
