@@ -13,7 +13,7 @@ export const getRequestById = async (requestId: string) => {
 
 export const denyRequest = async (requestId: string) => {
   try {
-    const response = await api.delete(`/walk/cancel/${requestId}`);
+    const response = await api.delete(`/walk/deny/${requestId}`);
 
     const {data} = response.data;
     return data;
@@ -25,6 +25,17 @@ export const denyRequest = async (requestId: string) => {
 export const acceptRequest = async (requestId: string) => {
   try {
     const response = await api.post(`/walk/accept/${requestId}`);
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cancelWalk = async (requestId: string) => {
+  try {
+    const response = await api.delete(`/walk/cancel/${requestId}`);
 
     const {data} = response.data;
     return data;

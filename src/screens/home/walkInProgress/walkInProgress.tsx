@@ -3,19 +3,20 @@ import CustomButton from '../../../components/customButton';
 import {useEffect, useState} from 'react';
 import {useAuth} from '../../../contexts/authContext';
 import {WalkDetails} from '../../../interfaces/walk';
-import {getRequestById} from '../../../services/walk';
+import {cancelWalk, getRequestById} from '../../../services/walk';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
 import Spinner from '../../../components/spinner/spinner';
 import colors from '../../../styles/colors';
+import {useAppNavigation} from '../../../hooks/useAppNavigation';
 
 export default function WalkInProgressScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [details, setDetails] = useState<WalkDetails>();
 
   const {showDialog, hideDialog} = useDialog();
-
-  const {user} = useAuth();
+  const {user, handleSetUser} = useAuth();
+  const {navigation} = useAppNavigation();
 
   useEffect(() => {
     const handleData = async () => {
@@ -84,15 +85,53 @@ export default function WalkInProgressScreen() {
   const startWalk = () => {};
   const openChat = () => {};
 
-  const cancelWalk = () => {
+  const confirmCancelWalk = async () => {
+    if (!user?.currentWalk?.requestId) return;
+    setIsLoading(true);
+    try {
+      await cancelWalk(user?.currentWalk?.requestId);
+      handleSetUser({
+        ...user,
+        currentWalk: null,
+      });
+      navigation.navigate('HomeScreen');
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado ao cancelar';
+
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancelWalk = () => {
     showDialog({
       title: 'Tem certeza?',
       description:
         'Tem certeza de que deseja cancelar o passeio? Cancelar logo após aceitar pode impactar sua avaliação na plataforma.',
       confirm: {
-        confirmLabel: 'Entendi',
+        confirmLabel: 'Irei continuar o passeio',
         onConfirm: () => {
           hideDialog();
+        },
+      },
+      cancel: {
+        cancelLabel: 'Sim, quero cancelar',
+        onCancel: async () => {
+          hideDialog();
+          await confirmCancelWalk();
         },
       },
     });
@@ -129,12 +168,18 @@ export default function WalkInProgressScreen() {
           textColor={colors.primary}
           label={'Iniciar o passeio'}
           onPress={startWalk}
+          disabled={isLoading}
         />
-        <CustomButton label={'Conversar com o tutor'} onPress={openChat} />
+        <CustomButton
+          label={'Conversar com o tutor'}
+          onPress={openChat}
+          disabled={isLoading}
+        />
         <CustomButton
           backgroundColor={colors.primary}
           label={'Cancelar o passeio'}
-          onPress={cancelWalk}
+          onPress={handleCancelWalk}
+          disabled={isLoading}
         />
       </View>
     </View>

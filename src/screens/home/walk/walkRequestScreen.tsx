@@ -1,5 +1,5 @@
-import {Text, View} from 'react-native';
-import {useEffect, useState} from 'react';
+import {BackHandler, Text, View} from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
 import {
   acceptRequest,
   denyRequest,
@@ -15,6 +15,8 @@ import colors from '../../../styles/colors';
 import {calculateDistance} from '../../../services/adress';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
+import {RideEvents} from '../../../enum/ride';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function WalkRequestScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,6 +29,19 @@ export default function WalkRequestScreen() {
   const {user, handleSetUser} = useAuth();
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
 
   useEffect(() => {
     const handleData = async () => {
@@ -106,6 +121,13 @@ export default function WalkRequestScreen() {
     setAcceptIsLoading(true);
     try {
       await acceptRequest(user?.currentWalk?.requestId);
+      handleSetUser({
+        ...user,
+        currentWalk: {
+          requestId: user?.currentWalk?.requestId,
+          status: RideEvents.ACCEPTED_SUCCESSFULLY,
+        },
+      });
       navigation.navigate('WalkInProgress');
     } catch (error) {
       const errorMessage =
@@ -136,6 +158,7 @@ export default function WalkRequestScreen() {
         ...user,
         currentWalk: null,
       });
+      navigation.goBack();
     } catch (error) {
       const errorMessage =
         error instanceof AxiosError &&

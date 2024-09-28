@@ -75,7 +75,12 @@ export default function HomeScreen() {
   }, [navigation, user?.currentWalk]);
 
   const goToWalkInProgress = () => {
-    navigation.navigate('WalkInProgress');
+    if (user?.currentWalk) {
+      const {status} = user?.currentWalk;
+      navigation.navigate(
+        status === RideEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
+      );
+    }
   };
 
   const openSettings = async () => {
@@ -194,7 +199,7 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-primary p-5">
       <Spinner visible={isLoading} transparent={true} />
-      {user?.currentWalk?.status === RideEvents.ACCEPTED_SUCCESSFULLY ? (
+      {user?.currentWalk ? (
         <View className="flex-1 items-center">
           <Text className="text-2xl font-bold text-dark mb-2 text-center">
             Você tem um passeio em andamento
