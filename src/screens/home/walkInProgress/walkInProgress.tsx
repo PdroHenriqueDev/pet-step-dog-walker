@@ -159,7 +159,11 @@ export default function WalkInProgressScreen() {
           </View>
         </View>
 
-        <CustomButton label={'Abrir endereço no mapa'} onPress={handleMap} />
+        <CustomButton
+          label={'Abrir endereço no mapa'}
+          onPress={handleMap}
+          disabled={isLoading}
+        />
       </View>
 
       <View>

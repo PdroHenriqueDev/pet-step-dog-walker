@@ -1,4 +1,4 @@
-import {RideEvents} from '../enum/ride';
+import {WalkEvents} from '../enum/walk';
 
 export interface DogWalker {
   _id?: string;
@@ -26,7 +26,7 @@ export interface DogWalker {
   stripeAccountId?: string;
   currentWalk?: {
     requestId: string;
-    status: RideEvents;
+    status: WalkEvents;
   } | null;
   location?: {
     latitude: number;

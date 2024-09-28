@@ -14,7 +14,7 @@ import GetLocation from 'react-native-get-location';
 import {updateAvailability} from '../../services/dogWalkerService';
 import {ActivityIndicator} from 'react-native';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
-import {RideEvents} from '../../enum/ride';
+import {WalkEvents} from '../../enum/walk';
 import CustomButton from '../../components/customButton';
 
 export default function HomeScreen() {
@@ -69,7 +69,7 @@ export default function HomeScreen() {
     if (user?.currentWalk) {
       const {status} = user?.currentWalk;
       navigation.navigate(
-        status === RideEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
+        status === WalkEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
       );
     }
   }, [navigation, user?.currentWalk]);
@@ -78,7 +78,7 @@ export default function HomeScreen() {
     if (user?.currentWalk) {
       const {status} = user?.currentWalk;
       navigation.navigate(
-        status === RideEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
+        status === WalkEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
       );
     }
   };

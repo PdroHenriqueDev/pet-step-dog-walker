@@ -9,7 +9,7 @@ import {DogWalkerApplicationStatus} from '../interfaces/dogWalkerApplicationStat
 import ApplicationFeedbackScreen from '../screens/documents/applicationFeedback/applicationFeedbackScreen';
 import TermsOfService from '../components/termsOfService/termsOfService';
 import messaging from '@react-native-firebase/messaging';
-import {RideEvents} from '../enum/ride';
+import {WalkEvents} from '../enum/walk';
 
 function Routes() {
   const {
@@ -60,7 +60,7 @@ function Routes() {
           ...user,
           currentWalk: {
             requestId,
-            status: RideEvents.PENDING,
+            status: WalkEvents.PENDING,
           },
         });
       }
@@ -76,7 +76,7 @@ function Routes() {
             ...user,
             currentWalk: {
               requestId,
-              status: RideEvents.PENDING,
+              status: WalkEvents.PENDING,
             },
           });
         }
@@ -95,7 +95,7 @@ function Routes() {
               ...user,
               currentWalk: {
                 requestId,
-                status: RideEvents.PENDING,
+                status: WalkEvents.PENDING,
               },
             });
           }

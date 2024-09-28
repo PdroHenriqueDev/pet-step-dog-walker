@@ -15,7 +15,7 @@ import colors from '../../../styles/colors';
 import {calculateDistance} from '../../../services/adress';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
-import {RideEvents} from '../../../enum/ride';
+import {WalkEvents} from '../../../enum/walk';
 import {useFocusEffect} from '@react-navigation/native';
 
 export default function WalkRequestScreen() {
@@ -125,7 +125,7 @@ export default function WalkRequestScreen() {
         ...user,
         currentWalk: {
           requestId: user?.currentWalk?.requestId,
-          status: RideEvents.ACCEPTED_SUCCESSFULLY,
+          status: WalkEvents.ACCEPTED_SUCCESSFULLY,
         },
       });
       navigation.navigate('WalkInProgress');
