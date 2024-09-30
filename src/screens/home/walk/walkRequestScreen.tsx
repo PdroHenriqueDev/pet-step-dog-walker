@@ -1,5 +1,5 @@
-import {BackHandler, Text, View} from 'react-native';
-import {useCallback, useEffect, useState} from 'react';
+import {BackHandler, Text, Vibration, View} from 'react-native';
+import {useEffect, useState} from 'react';
 import {
   acceptRequest,
   denyRequest,
@@ -16,7 +16,7 @@ import {calculateDistance} from '../../../services/adress';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import {WalkEvents} from '../../../enum/walk';
-import {useFocusEffect} from '@react-navigation/native';
+import Sound from 'react-native-sound';
 
 export default function WalkRequestScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,18 +30,25 @@ export default function WalkRequestScreen() {
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
 
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        return true;
-      };
+  useEffect(() => {
+    const sound = new Sound('ping_sound.mp3', Sound.MAIN_BUNDLE, error => {
+      if (!error) sound.setNumberOfLoops(-1).play();
+    });
 
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    const vibrateInterval = setInterval(() => {
+      Vibration.vibrate(1000);
+    }, 1500);
 
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, []),
-  );
+    const onBackPress = () => true;
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => {
+      sound.stop(() => sound.release());
+      clearInterval(vibrateInterval);
+      Vibration.cancel();
+      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    };
+  }, []);
 
   useEffect(() => {
     const handleData = async () => {

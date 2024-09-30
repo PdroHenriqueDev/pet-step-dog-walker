@@ -17,6 +17,12 @@ import {useAppNavigation} from '../../hooks/useAppNavigation';
 import {WalkEvents} from '../../enum/walk';
 import CustomButton from '../../components/customButton';
 
+const walkScreens = {
+  [WalkEvents.PENDING]: 'WalkRequest',
+  [WalkEvents.ACCEPTED_SUCCESSFULLY]: 'WalkInProgress',
+  [WalkEvents.IN_PROGRESS]: 'WalkMap',
+} as any;
+
 export default function HomeScreen() {
   const {user} = useAuth();
   const {showDialog, hideDialog} = useDialog();
@@ -68,18 +74,15 @@ export default function HomeScreen() {
   useEffect(() => {
     if (user?.currentWalk) {
       const {status} = user?.currentWalk;
-      navigation.navigate(
-        status === WalkEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
-      );
+
+      navigation.navigate(walkScreens[status]);
     }
   }, [navigation, user?.currentWalk]);
 
   const goToWalkInProgress = () => {
     if (user?.currentWalk) {
       const {status} = user?.currentWalk;
-      navigation.navigate(
-        status === WalkEvents.PENDING ? 'WalkRequest' : 'WalkInProgress',
-      );
+      navigation.navigate(walkScreens[status]);
     }
   };
 
