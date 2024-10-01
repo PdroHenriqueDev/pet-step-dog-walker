@@ -1,5 +1,5 @@
 import {BackHandler, Text, Vibration, View} from 'react-native';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   acceptRequest,
   denyRequest,
@@ -30,21 +30,28 @@ export default function WalkRequestScreen() {
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
 
+  const soundRef = useRef<Sound | null>(null);
+  const vibrateIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const sound = new Sound('ping_sound.mp3', Sound.MAIN_BUNDLE, error => {
       if (!error) sound.setNumberOfLoops(-1).play();
     });
+    soundRef.current = sound;
 
     const vibrateInterval = setInterval(() => {
       Vibration.vibrate(1000);
     }, 1500);
 
+    vibrateIntervalRef.current = vibrateInterval;
+
     const onBackPress = () => true;
     BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
     return () => {
-      sound.stop(() => sound.release());
-      clearInterval(vibrateInterval);
+      soundRef.current?.stop(() => soundRef.current?.release());
+
+      clearInterval(vibrateIntervalRef.current!);
       Vibration.cancel();
       BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     };
@@ -123,6 +130,12 @@ export default function WalkRequestScreen() {
     handleDistance();
   }, [details, hideDialog, showDialog, user]);
 
+  const stopSoundAndVibration = () => {
+    soundRef.current?.stop(() => soundRef.current?.release());
+    clearInterval(vibrateIntervalRef.current!);
+    Vibration.cancel();
+  };
+
   const handleAccept = async () => {
     if (!user?.currentWalk?.requestId) return;
     setAcceptIsLoading(true);
@@ -135,6 +148,7 @@ export default function WalkRequestScreen() {
           status: WalkEvents.ACCEPTED_SUCCESSFULLY,
         },
       });
+      stopSoundAndVibration();
       navigation.navigate('WalkInProgress');
     } catch (error) {
       const errorMessage =
@@ -165,6 +179,7 @@ export default function WalkRequestScreen() {
         ...user,
         currentWalk: null,
       });
+      stopSoundAndVibration();
       navigation.goBack();
     } catch (error) {
       const errorMessage =
