@@ -3,9 +3,10 @@ import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {logoutSerivce} from './auth';
 import {UserRole} from '../enum/role';
+import { Platform } from 'react-native';
 
 const api = axios.create({
-  baseURL: Config.API_BASE_URL,
+  baseURL: Platform.OS === 'ios' ? Config.API_BASE_URL : 'http://10.0.2.2:3000',
   headers: {
     'Content-Type': 'application/json',
   },

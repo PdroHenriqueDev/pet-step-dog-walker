@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAIRnhOfO6J7EeG6sAiwXCPygSWOfyc1w0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>267971645685</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.pedro.petStepDogWalker</string>
+	<key>PROJECT_ID</key>
+	<string>dog-walker-9dd47</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dog-walker-9dd47.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:267971645685:ios:b6c17695c2c3e6d89335bc</string>
+	<key>DATABASE_URL</key>
+	<string>https://dog-walker-9dd47-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

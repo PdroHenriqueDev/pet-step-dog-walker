@@ -80,9 +80,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.pedro.trackmap"
+    namespace "com.pedro.petStepDogWalker"
     defaultConfig {
-        applicationId "com.pedro.trackmap"
+        applicationId "com.pedro.petStepDogWalker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -1,4 +1,4 @@
-package com.pedro.trackmap
+package com.pedro.petStepDogWalker
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "267971645685",
+    "firebase_url": "https://dog-walker-9dd47-default-rtdb.firebaseio.com",
     "project_id": "dog-walker-9dd47",
     "storage_bucket": "dog-walker-9dd47.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:267971645685:android:886150ac5d029af39335bc",
+        "mobilesdk_app_id": "1:267971645685:android:03bf96f3ceada1509335bc",
         "android_client_info": {
-          "package_name": "com.pedro.trackmap"
+          "package_name": "com.pedro.petStepDogWalker"
         }
       },
       "oauth_client": [],
