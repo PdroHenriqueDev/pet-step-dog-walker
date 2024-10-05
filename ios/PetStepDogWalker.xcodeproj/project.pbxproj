@@ -46,6 +46,7 @@
 		A0549AB323474D20EA0825CF /* Pods-PetStepDogWalker-PetStepDogWalkerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetStepDogWalker-PetStepDogWalkerTests.debug.xcconfig"; path = "Target Support Files/Pods-PetStepDogWalker-PetStepDogWalkerTests/Pods-PetStepDogWalker-PetStepDogWalkerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C9A0D5ED726A49D67AA73F7E /* Pods-PetStepDogWalker-PetStepDogWalkerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetStepDogWalker-PetStepDogWalkerTests.release.xcconfig"; path = "Target Support Files/Pods-PetStepDogWalker-PetStepDogWalkerTests/Pods-PetStepDogWalker-PetStepDogWalkerTests.release.xcconfig"; sourceTree = "<group>"; };
 		DE15E5FF2CAD861D0074A5AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DE1CF2A52CB1741600211CC2 /* PetStepDogWalker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PetStepDogWalker.entitlements; path = PetStepDogWalker/PetStepDogWalker.entitlements; sourceTree = "<group>"; };
 		EAEE97B829F8812C78907092 /* Pods-PetStepDogWalker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetStepDogWalker.release.xcconfig"; path = "Target Support Files/Pods-PetStepDogWalker/Pods-PetStepDogWalker.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F1033FD6790C0269004548F5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = PetStepDogWalker/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -91,6 +92,7 @@
 		13B07FAE1A68108700A75B9A /* PetStepDogWalker */ = {
 			isa = PBXGroup;
 			children = (
+				DE1CF2A52CB1741600211CC2 /* PetStepDogWalker.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -491,7 +493,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = PetStepDogWalker/PetStepDogWalker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -521,7 +525,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = PetStepDogWalker/PetStepDogWalker.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PetStepDogWalker/Info.plist;

@@ -20,8 +20,11 @@ export function Tabs() {
 
   useEffect(() => {
     const handleToken = async () => {
-      console.log('got here handleToken');
       try {
+        if (!messaging().isDeviceRegisteredForRemoteMessages) {
+          await messaging().registerDeviceForRemoteMessages();
+        }
+
         const authStatus = await messaging().requestPermission();
         const enabled =
           authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
