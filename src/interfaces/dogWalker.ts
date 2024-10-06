@@ -6,7 +6,7 @@ export interface DogWalker {
   email?: string;
   phone?: string;
   document?: string;
-  address: {
+  address?: {
     zipCode?: string;
     street: string;
     neighborhood: string;

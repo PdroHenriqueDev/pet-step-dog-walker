@@ -20,3 +20,17 @@ export interface WalkDetails {
     totalCost: string;
   };
 }
+
+export interface WalkInProgressProps {
+  dogWalker?: {
+    _id?: string;
+    name?: string;
+    rate?: number;
+  };
+  owner?: {
+    _id?: string;
+    name?: string;
+    rate?: number;
+  };
+  durationMinutes?: number;
+}

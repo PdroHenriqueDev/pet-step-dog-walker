@@ -3,11 +3,11 @@ import {ActivityIndicator, Modal, View} from 'react-native';
 import colors from '../../styles/colors';
 
 export default function Spinner({
-  visible,
+  visible = true,
   size = 'large',
   transparent = false,
 }: {
-  visible: boolean;
+  visible?: boolean;
   transparent?: boolean;
   size?: number | 'small' | 'large' | undefined;
 }) {

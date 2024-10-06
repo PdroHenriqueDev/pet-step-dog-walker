@@ -24,7 +24,7 @@ const walkScreens = {
 } as any;
 
 export default function HomeScreen() {
-  const {user} = useAuth();
+  const {user, handleSetUser} = useAuth();
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
 
@@ -139,6 +139,14 @@ export default function HomeScreen() {
         isOnline: true,
         longitude,
         latitude,
+      });
+      handleSetUser({
+        ...user,
+        isOnline: true,
+        location: {
+          latitude,
+          longitude,
+        },
       });
       return true;
     } catch (error) {

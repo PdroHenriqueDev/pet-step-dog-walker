@@ -54,3 +54,13 @@ export const startWalk = async (requestId: string) => {
     throw error;
   }
 };
+
+export const walkById = async (requestId: string): Promise<any> => {
+  try {
+    const response = await api.get(`/walk/${requestId}`);
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

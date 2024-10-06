@@ -1,12 +1,14 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
-
+#import <GoogleMaps/GoogleMaps.h>
+#import "RNCConfig.h"
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey: [RNCConfig envFor:@"GOOGLE_MAPS_API_KEY"]];
   [FIRApp configure];
   self.moduleName = @"PetStepDogWalker";
   // You can add your custom initial props in the dictionary below.

@@ -64,7 +64,6 @@ export default function WalkRequestScreen() {
         const requestData = await getRequestById(user?.currentWalk?.requestId);
         const {displayData} = requestData;
         setDetails(displayData);
-        console.log('got here handleData =>', displayData);
       } catch (error) {
         const errorMessage =
           error instanceof AxiosError &&
