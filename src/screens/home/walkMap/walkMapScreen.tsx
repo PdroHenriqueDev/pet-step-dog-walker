@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Linking, Platform, Text, TouchableOpacity, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import styles from './styles';
 import colors from '../../../styles/colors';
@@ -11,11 +11,23 @@ import {walkById} from '../../../services/walk';
 import {AxiosError} from 'axios';
 import Spinner from '../../../components/spinner/spinner';
 import {truncateText} from '../../../utils/textUtils';
+import {
+  connectSocket,
+  disconnectSocket,
+  emitEvent,
+} from '../../../services/socketService';
+import BackgroundTimer from 'react-native-background-timer';
+import {PERMISSIONS, request} from 'react-native-permissions';
+import GetLocation from 'react-native-get-location';
+import {SocketResponse} from '../../../enum/socketResponse';
+import {PlataformEnum} from '../../../enum/platform.enum';
+
+const LOCATION_UPDATE_INTERVAL = 8000;
 
 export default function WalkMapScreen() {
   const {user} = useAuth();
   const {showDialog, hideDialog} = useDialog();
-
+  const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState({
     longitude: user?.location?.longitude ?? -23.5505,
     latitude: user?.location?.latitude ?? -46.6333,
@@ -26,9 +38,11 @@ export default function WalkMapScreen() {
   const [walkData, setWalkData] = useState({
     owner: {
       name: '',
+      profileUrl: '',
     },
     durationMinutes: '',
   });
+  const [isRequestingLocation, setIsRequestingLocation] = useState(false);
 
   const navigateToChat = () => {};
 
@@ -46,6 +60,8 @@ export default function WalkMapScreen() {
       cancel: {
         cancelLabel: 'Sim, tudo certo',
         onCancel: () => {
+          disconnectSocket();
+          BackgroundTimer.stopBackgroundTimer();
           hideDialog();
         },
       },
@@ -55,7 +71,6 @@ export default function WalkMapScreen() {
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.currentWalk?.requestId) return;
-      console.log('got here fetchData');
       try {
         const walk = await walkById(user?.currentWalk?.requestId);
         if (walk) {
@@ -63,6 +78,7 @@ export default function WalkMapScreen() {
           setWalkData({
             owner: {
               name: owner.name,
+              profileUrl: owner?.profileUrl,
             },
             durationMinutes,
           });
@@ -89,6 +105,97 @@ export default function WalkMapScreen() {
 
     fetchData();
   }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
+
+  const openSettings = async () => {
+    try {
+      await Linking.openSettings();
+    } catch (error) {
+      console.error('Erro ao abrir as configurações');
+    }
+  };
+
+  useEffect(() => {
+    const setupLocationServices = async () => {
+      const requestResponse = await request(
+        Platform.OS === PlataformEnum.IOS
+          ? PERMISSIONS.IOS.LOCATION_ALWAYS
+          : PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION,
+      );
+
+      if (['denied', 'blocked'].includes(requestResponse)) {
+        showDialog({
+          title: 'Permissão de Localização Necessária',
+          description:
+            'Para compartilhar com o tutor, precisamos acessar sua localização. Por favor, habilite a localização nas configurações do seu dispositivo.',
+          confirm: {
+            confirmLabel: 'Abrir Configurações',
+            onConfirm: async () => {
+              await openSettings();
+              hideDialog();
+            },
+          },
+          cancel: {
+            cancelLabel: 'Cancelar',
+            onCancel: () => {
+              hideDialog();
+            },
+          },
+        });
+
+        return;
+      }
+
+      connectSocket(user?.currentWalk?.requestId!);
+      sendLocationToServer();
+      startBackgroundTimer();
+    };
+
+    setupLocationServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const sendLocationToServer = async () => {
+    if (isRequestingLocation) return;
+
+    setIsRequestingLocation(true);
+    try {
+      const location = await GetLocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 6000,
+      });
+
+      const {latitude, longitude} = location;
+
+      if (
+        Math.abs(latitude - region.latitude) > 0.0001 ||
+        Math.abs(longitude - region.longitude) > 0.0001
+      ) {
+        emitEvent(SocketResponse.DogWalkerLocation, {latitude, longitude});
+
+        const newRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta,
+        };
+        setRegion(newRegion);
+
+        mapRef.current?.animateCamera({
+          center: {latitude, longitude},
+        });
+      }
+    } catch (error) {
+      console.warn('Erro ao enviar localização:', error);
+    } finally {
+      setIsRequestingLocation(false);
+    }
+  };
+
+  const startBackgroundTimer = () => {
+    BackgroundTimer.runBackgroundTimer(() => {
+      sendLocationToServer();
+    }, LOCATION_UPDATE_INTERVAL);
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -121,7 +228,9 @@ export default function WalkMapScreen() {
             <Avatar
               rounded
               source={{
-                uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+                uri:
+                  walkData.owner?.profileUrl ??
+                  'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
               }}
             />
             <Text className="font-semibold text-base text-dark ml-2.5">

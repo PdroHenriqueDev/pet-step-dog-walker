@@ -46,14 +46,17 @@ export default function WalkRequestScreen() {
     vibrateIntervalRef.current = vibrateInterval;
 
     const onBackPress = () => true;
-    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress,
+    );
 
     return () => {
       soundRef.current?.stop(() => soundRef.current?.release());
 
       clearInterval(vibrateIntervalRef.current!);
       Vibration.cancel();
-      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      subscription.remove();
     };
   }, []);
 

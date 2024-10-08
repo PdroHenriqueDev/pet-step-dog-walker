@@ -8,8 +8,8 @@ import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 // import notifee from '@notifee/react-native';
 
-import ReactNativeForegroundService from '@supersami/rn-foreground-service';
-ReactNativeForegroundService.register();
+// import ReactNativeForegroundService from '@supersami/rn-foreground-service';
+// ReactNativeForegroundService.register();
 
 // async function onDisplayNotification({title, body}: any) {
 //   // Request permissions (required for iOS)
