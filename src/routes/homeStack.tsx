@@ -7,6 +7,7 @@ import HomeScreen from '../screens/home/homeScreen';
 import WalkInProgressScreen from '../screens/home/walkInProgress/walkInProgress';
 import WalkRequestScreen from '../screens/home/walk/walkRequestScreen';
 import WalkMapScreen from '../screens/home/walkMap/walkMapScreen';
+import Chat from '../screens/home/chat/chat';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -53,6 +54,11 @@ function HomeStack() {
       <Screen
         name="WalkMap"
         component={WalkMapScreen}
+        options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="Chat"
+        component={Chat}
         options={{header: customHeader, headerTransparent: true}}
       />
     </Navigator>

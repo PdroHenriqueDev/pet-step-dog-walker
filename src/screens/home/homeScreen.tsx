@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform, Switch, Text, View} from 'react-native';
+import {Alert, Platform, Switch, Text, View} from 'react-native';
 import colors from '../../styles/colors';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigationState} from '@react-navigation/native';
 import {useAuth} from '../../contexts/authContext';
 import {balance} from '../../services/payment';
 import {AxiosError} from 'axios';
@@ -16,6 +16,7 @@ import {ActivityIndicator} from 'react-native';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
 import {WalkEvents} from '../../enum/walk';
 import CustomButton from '../../components/customButton';
+import messaging from '@react-native-firebase/messaging';
 
 const walkScreens = {
   [WalkEvents.PENDING]: 'WalkRequest',
@@ -33,6 +34,11 @@ export default function HomeScreen() {
   const [switchLoading, setSwitchLoading] = useState(false);
   const [availableBalance, setAvailableBalance] = useState(0);
   const [pendingBalance, setPendingBalance] = useState(0);
+
+  const currentRouteName = useNavigationState(state => {
+    const route = state.routes[state.index];
+    return route.name;
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -78,6 +84,36 @@ export default function HomeScreen() {
       navigation.navigate(walkScreens[status]);
     }
   }, [navigation, user?.currentWalk]);
+
+  useEffect(() => {
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      const chatId = remoteMessage?.data?.chatId as string;
+
+      if (chatId && currentRouteName !== 'Chat') {
+        showDialog({
+          title: 'Nova mensagem',
+          description: remoteMessage?.notification?.body,
+          confirm: {
+            confirmLabel: 'Ir para o chat',
+            onConfirm: () => {
+              navigation.navigate('Chat');
+              hideDialog();
+            },
+          },
+          cancel: {
+            cancelLabel: 'Fechar',
+            onCancel: () => {
+              hideDialog();
+            },
+          },
+        });
+      }
+    });
+
+    return () => {
+      unsubscribeOnMessage();
+    };
+  }, [currentRouteName, hideDialog, navigation, showDialog]);
 
   const goToWalkInProgress = () => {
     if (user?.currentWalk) {

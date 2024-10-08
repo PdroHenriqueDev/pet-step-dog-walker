@@ -21,11 +21,13 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import GetLocation from 'react-native-get-location';
 import {SocketResponse} from '../../../enum/socketResponse';
 import {PlataformEnum} from '../../../enum/platform.enum';
+import {useAppNavigation} from '../../../hooks/useAppNavigation';
 
 const LOCATION_UPDATE_INTERVAL = 8000;
 
 export default function WalkMapScreen() {
   const {user} = useAuth();
+  const {navigation} = useAppNavigation();
   const {showDialog, hideDialog} = useDialog();
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState({
@@ -44,7 +46,9 @@ export default function WalkMapScreen() {
   });
   const [isRequestingLocation, setIsRequestingLocation] = useState(false);
 
-  const navigateToChat = () => {};
+  const navigateToChat = () => {
+    navigation.navigate('Chat');
+  };
 
   const completeWalk = () => {
     showDialog({
@@ -161,7 +165,7 @@ export default function WalkMapScreen() {
     try {
       const location = await GetLocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 6000,
+        timeout: 60000,
       });
 
       const {latitude, longitude} = location;
@@ -185,7 +189,7 @@ export default function WalkMapScreen() {
         });
       }
     } catch (error) {
-      console.warn('Erro ao enviar localização:', error);
+      // console.warn('Erro ao enviar localização:', error);
     } finally {
       setIsRequestingLocation(false);
     }

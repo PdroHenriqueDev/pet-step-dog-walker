@@ -10,6 +10,9 @@ import Spinner from '../../../components/spinner/spinner';
 import colors from '../../../styles/colors';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import {WalkEvents} from '../../../enum/walk';
+import messaging from '@react-native-firebase/messaging';
+import {ref, update} from 'firebase/database';
+import {database} from '../../../../firebaseConfig';
 
 export default function WalkInProgressScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +51,27 @@ export default function WalkInProgressScreen() {
 
     handleData();
   }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
+
+  useEffect(() => {
+    const updateNotificationToken = async () => {
+      if (!user?.currentWalk?.requestId) return;
+      console.log('got here updateNotificationToken');
+      try {
+        const token = await messaging().getToken();
+        const tokenRef = ref(database, `chats/${user?.currentWalk?.requestId}`);
+
+        await update(tokenRef, {
+          dogWalkerToken: token,
+        });
+
+        console.log('Token de notificação atualizado:', token);
+      } catch (error) {
+        console.log('Erro ao atualizar o token:', error);
+      }
+    };
+
+    updateNotificationToken();
+  }, [user?.currentWalk?.requestId]);
 
   const openAppleMaps = () => {
     if (!details) return;
