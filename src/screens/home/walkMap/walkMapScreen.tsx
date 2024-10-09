@@ -16,12 +16,17 @@ import {
   disconnectSocket,
   emitEvent,
 } from '../../../services/socketService';
-import BackgroundTimer from 'react-native-background-timer';
+// import BackgroundTimer from 'react-native-background-timer';
 import {PERMISSIONS, request} from 'react-native-permissions';
 import GetLocation from 'react-native-get-location';
 import {SocketResponse} from '../../../enum/socketResponse';
 import {PlataformEnum} from '../../../enum/platform.enum';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
+import BackgroundService from 'react-native-background-actions';
+import {delay} from '../../../utils/delay';
+
+// import {LogBox} from 'react-native';
+// LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const LOCATION_UPDATE_INTERVAL = 8000;
 
@@ -151,7 +156,6 @@ export default function WalkMapScreen() {
 
       connectSocket(user?.currentWalk?.requestId!);
       sendLocationToServer();
-      startBackgroundTimer();
     };
 
     setupLocationServices();
@@ -195,11 +199,49 @@ export default function WalkMapScreen() {
     }
   };
 
-  const startBackgroundTimer = () => {
-    BackgroundTimer.runBackgroundTimer(() => {
-      sendLocationToServer();
-    }, LOCATION_UPDATE_INTERVAL);
-  };
+  // const startBackgroundTimer = () => {
+  //   BackgroundTimer.runBackgroundTimer(() => {
+  //     sendLocationToServer();
+  //   }, LOCATION_UPDATE_INTERVAL);
+  // };
+
+  useEffect(() => {
+    const handleBackground = async () => {
+      const options = {
+        taskName: 'BackgroundTask',
+        taskTitle: 'Localização',
+        taskDesc: 'Enviando localização em segundo plano para o tutor.',
+        taskIcon: {
+          name: 'ic_launcher',
+          type: 'mipmap',
+        },
+        color: '#F7CE45',
+        linkingURI: 'petstep://home',
+        parameters: {
+          delay: LOCATION_UPDATE_INTERVAL,
+        },
+        progressBar: {
+          max: 100,
+          value: 100,
+        },
+      };
+
+      const veryIntensiveTask = async (_taskData?: {delay: number}) => {
+        while (BackgroundService.isRunning()) {
+          await sendLocationToServer();
+          await delay(LOCATION_UPDATE_INTERVAL);
+        }
+      };
+
+      await BackgroundService.start(veryIntensiveTask, options);
+      await BackgroundService.updateNotification({
+        taskDesc: 'Localização sendo enviada',
+      });
+    };
+
+    handleBackground();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return <Spinner />;
