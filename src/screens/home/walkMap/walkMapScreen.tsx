@@ -347,12 +347,14 @@ export default function WalkMapScreen() {
           </Text>
         </View>
 
-        <CustomButton
-          label={'Finalizar passeio'}
-          onPress={completeWalk}
-          backgroundColor={colors.danger}
-          textColor={colors.primary}
-        />
+        <View className={Platform.OS === 'ios' ? 'mb-5' : ''}>
+          <CustomButton
+            label={'Finalizar passeio'}
+            onPress={completeWalk}
+            backgroundColor={colors.danger}
+            textColor={colors.primary}
+          />
+        </View>
       </View>
     </View>
   );

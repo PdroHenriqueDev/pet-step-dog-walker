@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     backgroundColor: colors.primary,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: Platform.OS === 'ios' ? 60 : 20,
   },
   iconContainer: {
     position: 'relative',
