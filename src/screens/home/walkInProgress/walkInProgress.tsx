@@ -13,6 +13,7 @@ import {WalkEvents} from '../../../enum/walk';
 import messaging from '@react-native-firebase/messaging';
 import {ref, update} from 'firebase/database';
 import {database} from '../../../../firebaseConfig';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function WalkInProgressScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -55,16 +56,31 @@ export default function WalkInProgressScreen() {
   useEffect(() => {
     const updateNotificationToken = async () => {
       if (!user?.currentWalk?.requestId) return;
-      console.log('got here updateNotificationToken');
       try {
+        const storedTokensRaw =
+          await EncryptedStorage.getItem('notificationTokens');
+        const storedTokens = storedTokensRaw ? JSON.parse(storedTokensRaw) : [];
+
+        if (storedTokens.length > 1) {
+          storedTokens.shift();
+        }
+
         const token = await messaging().getToken();
+
+        const isAlreadyStored = storedTokens.includes(token);
+        if (isAlreadyStored) return;
+
         const tokenRef = ref(database, `chats/${user?.currentWalk?.requestId}`);
 
         await update(tokenRef, {
           dogWalkerToken: token,
         });
 
-        console.log('Token de notificação atualizado:', token);
+        storedTokens.push(token);
+        await EncryptedStorage.setItem(
+          'notificationTokens',
+          JSON.stringify(storedTokens),
+        );
       } catch (error) {
         console.log('Erro ao atualizar o token:', error);
       }

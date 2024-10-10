@@ -87,7 +87,7 @@ export default function WalkMapScreen() {
       const storedRequests = storedRequestsRaw
         ? JSON.parse(storedRequestsRaw)
         : [];
-      if (storedRequests.length >= 2) {
+      if (storedRequests.length > 1) {
         storedRequests.shift();
       }
       const isAlreadyShown = storedRequests.includes(
