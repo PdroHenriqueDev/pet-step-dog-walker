@@ -1,5 +1,6 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import colors from '../../styles/colors';
+import {PlataformEnum} from '../../enum/platform.enum';
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
   },
   headerInvisible: {
     padding: 10,
+    paddingTop: Platform.OS === PlataformEnum.IOS ? 50 : 10,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },

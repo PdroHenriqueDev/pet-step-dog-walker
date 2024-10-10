@@ -24,6 +24,7 @@ import {PlataformEnum} from '../../../enum/platform.enum';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import BackgroundService from 'react-native-background-actions';
 import {delay} from '../../../utils/delay';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 // import {LogBox} from 'react-native';
 // LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -70,12 +71,51 @@ export default function WalkMapScreen() {
         cancelLabel: 'Sim, tudo certo',
         onCancel: () => {
           disconnectSocket();
-          BackgroundTimer.stopBackgroundTimer();
+          // BackgroundTimer.stopBackgroundTimer();
+          BackgroundService.stop();
           hideDialog();
         },
       },
     });
   };
+
+  useEffect(() => {
+    const checkAndShowDialog = async () => {
+      if (!user?.currentWalk?.requestId) return;
+      const storedRequestsRaw =
+        await EncryptedStorage.getItem('modalShownRequests');
+      const storedRequests = storedRequestsRaw
+        ? JSON.parse(storedRequestsRaw)
+        : [];
+      if (storedRequests.length >= 2) {
+        storedRequests.shift();
+      }
+      const isAlreadyShown = storedRequests.includes(
+        user?.currentWalk?.requestId,
+      );
+
+      if (!isAlreadyShown) {
+        showDialog({
+          title: 'Atenção!',
+          description:
+            'Para manter a localização atualizada para o tutor, você deve entrar periodicamente no aplicativo. Alguns dispositivos podem ter atrasos na atualização da localização quando o app está em segundo plano.',
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: async () => {
+              storedRequests.push(user?.currentWalk?.requestId);
+              await EncryptedStorage.setItem(
+                'modalShownRequests',
+                JSON.stringify(storedRequests),
+              );
+              hideDialog();
+            },
+          },
+        });
+      }
+    };
+
+    checkAndShowDialog();
+  }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,10 +195,11 @@ export default function WalkMapScreen() {
       }
 
       connectSocket(user?.currentWalk?.requestId!);
-      sendLocationToServer();
+      // sendLocationToServer();
     };
 
     setupLocationServices();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

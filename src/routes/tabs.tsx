@@ -11,12 +11,21 @@ import {useAuth} from '../contexts/authContext';
 import {updateDeviceToken} from '../services/dogWalkerService';
 import HistoryStack from './historyStack';
 import HistorytIcon from '../components/icons/history';
+import {Linking} from 'react-native';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
 export function Tabs() {
   const {user} = useAuth();
   const {showDialog, hideDialog} = useDialog();
+
+  const openSettings = async () => {
+    try {
+      await Linking.openSettings();
+    } catch (error) {
+      console.error('Erro ao abrir as configurações');
+    }
+  };
 
   useEffect(() => {
     const handleToken = async () => {
@@ -36,8 +45,9 @@ export function Tabs() {
             description:
               'Para garantir que você receba atualizações importantes e notificações em tempo real, precisamos da sua permissão para enviar notificações. Por favor, habilite-as nas configurações.',
             confirm: {
-              confirmLabel: 'Entendi',
-              onConfirm: () => {
+              confirmLabel: 'Abrir Configurações',
+              onConfirm: async () => {
+                await openSettings();
                 hideDialog();
               },
             },

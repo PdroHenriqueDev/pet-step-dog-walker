@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, Platform, Switch, Text, View} from 'react-native';
+import {Platform, Switch, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import {useFocusEffect, useNavigationState} from '@react-navigation/native';
 import {useAuth} from '../../contexts/authContext';
