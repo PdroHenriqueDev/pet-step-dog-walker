@@ -7,6 +7,8 @@ import {login} from '../../../services/auth';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
 import {useAuth} from '../../../contexts/authContext';
+import {signInWithCustomToken} from 'firebase/auth';
+import {auth} from '../../../../firebaseConfig';
 
 export default function SignIn() {
   const {setIsLoading, storeTokens, isLoading} = useAuth();
@@ -39,7 +41,9 @@ export default function SignIn() {
         password,
       });
 
-      const {accessToken, refreshToken, user} = response;
+      const {accessToken, refreshToken, firebaseToken, user} = response;
+
+      await signInWithCustomToken(auth, firebaseToken);
       await storeTokens(accessToken, refreshToken, user._id);
     } catch (error) {
       if (error instanceof AxiosError) {

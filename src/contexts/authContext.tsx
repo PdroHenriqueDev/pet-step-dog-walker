@@ -108,7 +108,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const fetchUser = useCallback(async () => {
-    console.log('got here fetchUser');
     if (!userId) return;
     setIsLoading(true);
     try {
@@ -122,7 +121,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   }, [userId]);
 
   const handleSetUser = (newUser: DogWalker) => {
-    console.log('got here handleSetUser');
     setUser(newUser);
   };
 
