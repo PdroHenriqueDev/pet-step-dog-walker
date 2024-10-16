@@ -1,6 +1,6 @@
 import {Icon, ListItem} from '@rneui/base';
 import {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 import colors from '../../styles/colors';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
 import {deactivateAccount, documentsStatus} from '../../services/application';
@@ -229,7 +229,8 @@ export default function DocumentsScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-primary p-5">
+    <ScrollView
+      className={`flex-1 bg-primary ${Platform.OS === 'ios' ? 'p-20 px-5' : 'p-5'}`}>
       <View className="items-center">
         <Text className="font-bold text-xl text-dark">Estamos quase lá!</Text>
         <Text className="text-base text-accent">

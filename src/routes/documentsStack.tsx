@@ -29,13 +29,13 @@ export function DocumentsStack() {
         options={{header: customHeader, headerTransparent: true}}
       />
       <Screen
-        name="ApplicationFeedback"
-        component={ApplicationFeedbackScreen}
-        options={{headerShown: false}}
-      />
-      <Screen
         name="Profile"
         component={ProfileScreen}
+        options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="ApplicationFeedback"
+        component={ApplicationFeedbackScreen}
         options={{headerShown: false}}
       />
     </Navigator>

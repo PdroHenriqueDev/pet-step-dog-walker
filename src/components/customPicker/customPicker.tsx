@@ -21,10 +21,7 @@ export default function CustomPicker({
   return (
     <View>
       <View className="border border-border rounded-lg">
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={onValueChange}
-          style={{color: colors.dark}}>
+        <Picker selectedValue={selectedValue} onValueChange={onValueChange}>
           <Picker.Item
             style={{color: colors.accent}}
             key=""

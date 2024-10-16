@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
 import {useForm, Controller} from 'react-hook-form';
 import CustomButton from '../../../components/customButton';
@@ -13,6 +13,8 @@ import {AxiosError} from 'axios';
 import {fetchAddress} from '../../../services/adress';
 import {brazilStates} from '../../../utils/brazilStates';
 import CustomPicker from '../../../components/customPicker/customPicker';
+import styles from './styles';
+import colors from '../../../styles/colors';
 
 export default function SignUp({onRegister}: {onRegister: () => void}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -177,6 +179,19 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDatePicker = () => {
+    if (isLoading && Platform.OS !== 'android') return;
+    setShowDatePicker(true);
+  };
+
+  const formatDateForDisplay = (value: Date) => {
+    const adjustedDate = new Date(value);
+    adjustedDate.setMinutes(
+      adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset(),
+    );
+    return adjustedDate.toLocaleDateString();
   };
 
   return (
@@ -396,24 +411,50 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               isAdult(value) || 'Você deve ter mais de 18 anos',
           }}
           render={({field: {value}}) => (
-            <TouchableOpacity
-              onPress={isLoading ? undefined : () => setShowDatePicker(true)}
-              disabled={isLoading}>
-              <CustomTextInput
-                value={value ? new Date(value).toLocaleDateString() : ''}
-                placeholder="Data de nascimento"
-                error={errors.birthdate?.message}
-                isEditable={false}
-              />
-            </TouchableOpacity>
+            <>
+              {Platform.OS === 'ios' ? (
+                <>
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="inline"
+                    onChange={onDateChange}
+                    maximumDate={new Date()}
+                    textColor={colors.dark}
+                    accentColor={colors.secondary}
+                    style={styles.datePicker}
+                  />
+                  <Text className="text-danger text-sm mt-1">
+                    {errors.birthdate?.message}
+                  </Text>
+                </>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleDatePicker}
+                  disabled={isLoading}>
+                  <CustomTextInput
+                    value={value ? formatDateForDisplay(new Date(value)) : ''}
+                    placeholder="Data de nascimento"
+                    error={errors.birthdate?.message}
+                    isEditable={false}
+                  />
+                </TouchableOpacity>
+              )}
+            </>
           )}
         />
-        {showDatePicker && (
+
+        {Platform.OS !== 'ios' && showDatePicker && (
           <DateTimePicker
             value={date}
             mode="date"
             display="default"
-            onChange={onDateChange}
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                onDateChange(event, selectedDate);
+              }
+            }}
             maximumDate={new Date()}
           />
         )}

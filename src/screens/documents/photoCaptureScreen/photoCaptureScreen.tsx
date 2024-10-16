@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Alert} from 'react-native';
+import {View, Text, Image, Alert, Platform} from 'react-native';
 import {
   MediaType,
   launchCamera,
@@ -96,7 +96,7 @@ export default function PhotoCaptureScreen() {
     }
   };
 
-  const openCamera = () => {
+  const openCamera = async () => {
     const options = {
       mediaType: 'photo' as MediaType,
       includeBase64: false,
@@ -121,7 +121,8 @@ export default function PhotoCaptureScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 px-5 pt-16 items-center">
+    <View
+      className={`bg-primary flex-1 items-center ${Platform.OS === 'ios' ? 'py-28 px-5' : 'px-5 pt-16'}`}>
       <Text className="font-bold text-xl text-dark text-center">
         {documentType === 'selfie'
           ? 'Tire sua selfie'

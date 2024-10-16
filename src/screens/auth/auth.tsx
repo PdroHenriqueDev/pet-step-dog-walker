@@ -1,6 +1,6 @@
 import {ButtonGroup} from '@rneui/base';
 import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 import styles from './styles';
 import SignIn from './signIn/signIn';
 import SignUp from './signUp/signUp';
@@ -15,7 +15,8 @@ export default function AuthScreen() {
   };
 
   return (
-    <View className="flex-1 p-5 bg-primary justify-center">
+    <View
+      className={`flex-1  bg-primary justify-center ${Platform.OS === 'ios' ? 'py-20 px-5' : 'p-5'}`}>
       <Text className="text-2xl font-bold text-center mb-2 text-dark">
         {selectedIndex === 0 ? 'Entre na sua conta 👋' : 'Crie uma nova conta'}
       </Text>

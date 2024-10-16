@@ -50,14 +50,14 @@
 <!-- 🚨 Keep only the permissions specified in `setup_permissions` 🚨 -->
   <key>NSCameraUsageDescription</key>
   <string>Precisamos de acesso à sua câmera para você tirar fotos dos documentos para análise.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Precisamos de acesso à sua biblioteca de fotos para você enviar fotos dos documentos.</string>
   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
   <string>Precisamos da sua localização para compartilhar com o tutor durante o passeio e garantir a segurança do serviço.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Precisamos da sua localização para compartilhar com o tutor durante o passeio.</string>
   <key>NSLocationAlwaysUsageDescription</key>
   <string>Precisamos da sua localização para compartilhar com o tutor durante o passeio.</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>Precisamos de acesso à sua biblioteca de fotos para você enviar fotos dos documentos.</string>
 
   <key>UIAppFonts</key>
 	<array>

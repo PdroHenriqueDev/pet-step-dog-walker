@@ -50,7 +50,7 @@ export default function ApplicationFeedbackScreen() {
       },
       default: {
         title: 'Aguardando processamento',
-        message: 'Estamos verificando seus documentos. Pode levar até 15 dias.',
+        message: 'Estamos verificando seus documentos. Pode levar até 30 dias.',
       },
     };
 

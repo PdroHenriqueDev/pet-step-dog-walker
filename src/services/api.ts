@@ -7,6 +7,7 @@ import {Platform} from 'react-native';
 
 const api = axios.create({
   baseURL: Platform.OS === 'ios' ? Config.API_BASE_URL : 'http://10.0.2.2:3000',
+  // baseURL: 'https://api.petstepapp.com',
   headers: {
     'Content-Type': 'application/json',
   },

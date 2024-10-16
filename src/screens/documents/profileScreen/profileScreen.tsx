@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import CustomPicker from '../../../components/customPicker/customPicker';
@@ -53,67 +53,71 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 px-5 pt-16">
-      <Text className="font-bold text-xl text-dark text-center mb-5">
-        Seu Perfil
-      </Text>
+    <ScrollView
+      contentContainerStyle={{flexGrow: 1}}
+      className="bg-primary flex-1 px-5 pt-16">
+      <View className="flex-1 mb-32">
+        <Text className="font-bold text-xl text-dark text-center mb-5">
+          Seu Perfil
+        </Text>
 
-      <Text className="text-base text-dark mb-3">Disponibilidade</Text>
-      <View className="bg-accent rounded-2xl mb-5">
-        <CustomPicker
-          selectedValue={availability}
-          onValueChange={itemValue => setAvailability(itemValue)}
-          label="Selecione sua disponibilidade"
-          items={[
-            {label: 'Todos os dias', value: 'everyDay'},
-            {label: 'Apenas esporadicamente', value: 'occasionally'},
-            {label: 'Fins de semana', value: 'weekends'},
-          ]}
+        <Text className="text-base text-dark mb-3">Disponibilidade</Text>
+        <View className="bg-accent rounded-2xl mb-5">
+          <CustomPicker
+            selectedValue={availability}
+            onValueChange={itemValue => setAvailability(itemValue)}
+            label="Selecione sua disponibilidade"
+            items={[
+              {label: 'Todos os dias', value: 'everyDay'},
+              {label: 'Apenas esporadicamente', value: 'occasionally'},
+              {label: 'Fins de semana', value: 'weekends'},
+            ]}
+          />
+        </View>
+
+        <Text className="text-base text-dark mb-1">Meios de Locomoção</Text>
+        <Text className="text-sm text-accent mb-2">
+          A locomoção não é importante para o passeio em si, mas é essencial
+          para chegar rapidamente até o tutor do dog.
+        </Text>
+        <View className="bg-accent rounded-2xl mb-5">
+          <CustomPicker
+            selectedValue={transport}
+            onValueChange={itemValue => setTransport(itemValue)}
+            label="Selecione seu meio de locomoção"
+            items={[
+              {label: 'Carro/Motocicleta', value: 'carMotorcycle'},
+              {label: 'Aplicativos de transporte', value: 'rideSharing'},
+              {label: 'Bicicleta', value: 'bicycle'},
+              {label: 'A pé', value: 'onFoot'},
+            ]}
+          />
+        </View>
+
+        <Text className="text-base text-dark mb-3">Experiência com cães</Text>
+        <View className="bg-accent rounded-2xl mb-5">
+          <CustomPicker
+            selectedValue={dogExperience}
+            onValueChange={itemValue => setDogExperience(itemValue)}
+            label="Selecione sua experiência com cães"
+            items={[
+              {
+                label: 'Confortável com todos os tipos de cães',
+                value: 'allDogs',
+              },
+              {label: 'Confortável com cães mansos', value: 'calmDogs'},
+            ]}
+          />
+        </View>
+
+        <CustomButton
+          label="Enviar"
+          onPress={handleSubmit}
+          isLoading={isLoading}
+          disabled={!isFormComplete}
+          backgroundColor={isFormComplete ? colors.secondary : colors.accent}
         />
       </View>
-
-      <Text className="text-base text-dark mb-1">Meios de Locomoção</Text>
-      <Text className="text-sm text-accent mb-2">
-        A locomoção não é importante para o passeio em si, mas é essencial para
-        chegar rapidamente até o tutor do dog.
-      </Text>
-      <View className="bg-accent rounded-2xl mb-5">
-        <CustomPicker
-          selectedValue={transport}
-          onValueChange={itemValue => setTransport(itemValue)}
-          label="Selecione seu meio de locomoção"
-          items={[
-            {label: 'Carro/Motocicleta', value: 'carMotorcycle'},
-            {label: 'Aplicativos de transporte', value: 'rideSharing'},
-            {label: 'Bicicleta', value: 'bicycle'},
-            {label: 'A pé', value: 'onFoot'},
-          ]}
-        />
-      </View>
-
-      <Text className="text-base text-dark mb-3">Experiência com cães</Text>
-      <View className="bg-accent rounded-2xl mb-5">
-        <CustomPicker
-          selectedValue={dogExperience}
-          onValueChange={itemValue => setDogExperience(itemValue)}
-          label="Selecione sua experiência com cães"
-          items={[
-            {
-              label: 'Confortável com todos os tipos de cães',
-              value: 'allDogs',
-            },
-            {label: 'Confortável com cães mansos', value: 'calmDogs'},
-          ]}
-        />
-      </View>
-
-      <CustomButton
-        label="Enviar"
-        onPress={handleSubmit}
-        isLoading={isLoading}
-        disabled={!isFormComplete}
-        backgroundColor={isFormComplete ? colors.secondary : colors.accent}
-      />
-    </View>
+    </ScrollView>
   );
 }

@@ -61,7 +61,6 @@ export function Tabs() {
           await updateDeviceToken(token);
         }
       } catch (error) {
-        console.log('got here error token device', error);
         showDialog({
           title: 'Erro de conexão',
           description:

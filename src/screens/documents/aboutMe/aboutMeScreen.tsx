@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput} from 'react-native';
+import {View, Text, TextInput, Platform} from 'react-native';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import colors from '../../../styles/colors';
@@ -49,7 +49,8 @@ export default function AboutMeScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 px-5 pt-16">
+    <View
+      className={`bg-primary flex-1  ${Platform.OS === 'ios' ? 'py-28 px-5' : 'px-5 pt-16'}`}>
       <Text className="font-bold text-xl text-dark text-center">
         Fale um pouco sobre você
       </Text>
