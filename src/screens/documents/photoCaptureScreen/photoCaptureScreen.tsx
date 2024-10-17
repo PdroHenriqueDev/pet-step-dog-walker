@@ -13,6 +13,7 @@ import {UploadableFile} from '../../../interfaces/document';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
 import DocumentPicker from 'react-native-document-picker';
+import colors from '../../../styles/colors';
 
 export default function PhotoCaptureScreen() {
   const [photoUri, setPhotoUri] = useState<string | undefined>();
@@ -30,6 +31,8 @@ export default function PhotoCaptureScreen() {
     criminalRecord: 'certidão negativa de antecedentes criminais',
     aboutMe: 'sobre mim',
   };
+
+  const documentSelected = photoUri || fileUri;
 
   const selectFile = async () => {
     if (documentType === 'criminalRecord') {
@@ -104,16 +107,15 @@ export default function PhotoCaptureScreen() {
 
     setIsLoading(true);
 
-    const filePath =
-      documentType === 'criminalRecord'
-        ? (fileUri as string)
-        : (photoUri as string);
-    const fileName = filePath.split('/').pop() as string;
-    const fileType = filePath.endsWith('.pdf')
+    const filePath = fileUri || photoUri;
+    const fileName = filePath?.split('/').pop() as string;
+    const fileType = filePath?.endsWith('.pdf')
       ? 'application/pdf'
-      : filePath.endsWith('.png')
+      : filePath?.endsWith('.png')
         ? 'image/png'
         : 'image/jpeg';
+
+    if (!filePath) return;
 
     const file: UploadableFile = {
       uri: filePath,
@@ -175,6 +177,11 @@ export default function PhotoCaptureScreen() {
     });
   };
 
+  const removeDocument = () => {
+    fileUri && setFileUri('');
+    photoUri && setPhotoUri('');
+  };
+
   return (
     <View
       className={`bg-primary flex-1 items-center ${Platform.OS === 'ios' ? 'py-28 px-5' : 'px-5 pt-16'}`}>
@@ -209,6 +216,16 @@ export default function PhotoCaptureScreen() {
         onPress={photoUri || fileUri ? handleUploadDocument : selectFile}
         isLoading={isLoading}
       />
+
+      {documentSelected && (
+        <CustomButton
+          label={'Excluir'}
+          onPress={removeDocument}
+          disabled={isLoading}
+          backgroundColor={colors.danger}
+          textColor={colors.primary}
+        />
+      )}
     </View>
   );
 }
