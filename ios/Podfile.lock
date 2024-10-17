@@ -1331,6 +1331,27 @@ PODS:
     - react-native-config/App (= 1.5.3)
   - react-native-config/App (1.5.3):
     - React-Core
+  - react-native-document-picker (9.3.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-encrypted-storage (4.0.3):
     - React-Core
   - react-native-geolocation (3.4.0):
@@ -1846,6 +1867,7 @@ DEPENDENCIES:
   - react-native-background-actions (from `../node_modules/react-native-background-actions`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-encrypted-storage (from `../node_modules/react-native-encrypted-storage`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -1988,6 +2010,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-timer"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-encrypted-storage:
     :path: "../node_modules/react-native-encrypted-storage"
   react-native-geolocation:
@@ -2134,6 +2158,7 @@ SPEC CHECKSUMS:
   react-native-background-actions: ea5bab231a28710eea614acb9ca595594415a5ec
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
+  react-native-document-picker: 1928548d8b19bbc9f2219b01f1d350aa8ff76508
   react-native-encrypted-storage: db300a3f2f0aba1e818417c1c0a6be549038deb7
   react-native-geolocation: cc79f2a7a8c6616db25b9728670bbb2011ded918
   react-native-google-maps: ee48410bb3f1390abfa20592a44db5d6ada83e4d
@@ -2183,6 +2208,6 @@ SPEC CHECKSUMS:
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 36d44f1d31d7c11be1067e5c7a70a12c2eed355c
 
-PODFILE CHECKSUM: 4b8acc2956985e6e412dbb7daa1e7679be7d49e1
+PODFILE CHECKSUM: 3403b44735c47d6c4607ad94a8040d9a5a296ace
 
 COCOAPODS: 1.15.2

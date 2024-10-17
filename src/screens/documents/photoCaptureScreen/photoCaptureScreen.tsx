@@ -12,9 +12,11 @@ import {DocumentType} from '../../../types/document';
 import {UploadableFile} from '../../../interfaces/document';
 import {AxiosError} from 'axios';
 import {useDialog} from '../../../contexts/dialogContext';
+import DocumentPicker from 'react-native-document-picker';
 
 export default function PhotoCaptureScreen() {
   const [photoUri, setPhotoUri] = useState<string | undefined>();
+  const [fileUri, setFileUri] = useState<string>();
   const {route, navigation} = useAppNavigation();
   const {documentType} = route.params as {documentType: DocumentType};
   const {showDialog, hideDialog} = useDialog();
@@ -27,6 +29,52 @@ export default function PhotoCaptureScreen() {
     residence: 'comprovante de residência',
     criminalRecord: 'certidão negativa de antecedentes criminais',
     aboutMe: 'sobre mim',
+  };
+
+  const selectFile = async () => {
+    if (documentType === 'criminalRecord') {
+      Alert.alert(
+        'Escolher Documento',
+        'Selecione a origem do documento',
+        [
+          {
+            text: 'Câmera',
+            onPress: openCamera,
+          },
+          {
+            text: 'Galeria',
+            onPress: openGallery,
+          },
+          {
+            text: 'Selecionar PDF',
+            onPress: openDocumentPicker,
+          },
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: true},
+      );
+    } else {
+      selectImage();
+    }
+  };
+
+  const openDocumentPicker = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.pdf],
+      });
+
+      setFileUri(res[0].uri);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled document picker');
+      } else {
+        throw err;
+      }
+    }
   };
 
   const selectImage = () => {
@@ -52,13 +100,20 @@ export default function PhotoCaptureScreen() {
   };
 
   const handleUploadDocument = async () => {
-    if (!documentType || !photoUri) return;
+    if (!documentType || (!photoUri && !fileUri)) return;
 
     setIsLoading(true);
 
-    const filePath = photoUri as string;
+    const filePath =
+      documentType === 'criminalRecord'
+        ? (fileUri as string)
+        : (photoUri as string);
     const fileName = filePath.split('/').pop() as string;
-    const fileType = 'image/jpeg';
+    const fileType = filePath.endsWith('.pdf')
+      ? 'application/pdf'
+      : filePath.endsWith('.png')
+        ? 'image/png'
+        : 'image/jpeg';
 
     const file: UploadableFile = {
       uri: filePath,
@@ -132,11 +187,17 @@ export default function PhotoCaptureScreen() {
         Verifique se todas as informações estão legíveis
       </Text>
 
-      {photoUri ? (
-        <Image
-          source={{uri: photoUri}}
-          className="bg-accent h-80 w-full justify-center items-center mb-5"
-        />
+      {photoUri || fileUri ? (
+        fileUri && fileUri.endsWith('.pdf') ? (
+          <View className="bg-accent h-80 w-full justify-center items-center mb-5">
+            <Text>PDF selecionado: {fileUri.split('/').pop()}</Text>
+          </View>
+        ) : (
+          <Image
+            source={{uri: photoUri || fileUri}}
+            className="bg-accent h-80 w-full justify-center items-center mb-5"
+          />
+        )
       ) : (
         <View className="bg-accent h-80 w-full justify-center items-center mb-5">
           <Text>Imagem não disponível</Text>
@@ -144,8 +205,8 @@ export default function PhotoCaptureScreen() {
       )}
 
       <CustomButton
-        label={photoUri ? 'Enviar' : 'Selecionar Imagem'}
-        onPress={photoUri ? handleUploadDocument : selectImage}
+        label={photoUri || fileUri ? 'Enviar' : 'Selecionar Documento'}
+        onPress={photoUri || fileUri ? handleUploadDocument : selectFile}
         isLoading={isLoading}
       />
     </View>

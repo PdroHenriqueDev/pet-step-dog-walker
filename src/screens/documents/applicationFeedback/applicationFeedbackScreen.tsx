@@ -1,4 +1,4 @@
-import {Modal, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import CustomButton from '../../../components/customButton';
 import {useAuth} from '../../../contexts/authContext';
 import {useDialog} from '../../../contexts/dialogContext';
@@ -63,15 +63,11 @@ export default function ApplicationFeedbackScreen() {
   }, [user?.status]);
 
   return (
-    <Modal animationType="slide" transparent={false} visible={true}>
-      <View className="flex-1 justify-center items-center bg-primary p-5">
-        <Text className="text-dark text-xl font-bold">{title}</Text>
-        <Text className="text-base text-accent text-center my-4">
-          {message}
-        </Text>
+    <View className="flex-1 justify-center items-center bg-primary p-5">
+      <Text className="text-dark text-xl font-bold">{title}</Text>
+      <Text className="text-base text-accent text-center my-4">{message}</Text>
 
-        <CustomButton label={'Sair'} onPress={handleLogOut} />
-      </View>
-    </Modal>
+      <CustomButton label={'Sair'} onPress={handleLogOut} />
+    </View>
   );
 }

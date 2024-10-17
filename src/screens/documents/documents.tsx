@@ -238,6 +238,14 @@ export default function DocumentsScreen() {
         </Text>
       </View>
 
+      <View className="my-4 px-2">
+        <Text className="text-sm text-center text-danger">
+          Ao enviar seus documentos, você concorda que o Pet Step armazene suas
+          informações para fins de análise e segurança dos tutores. Garantimos
+          que apenas o Pet Step terá acesso a essas informações.
+        </Text>
+      </View>
+
       {renderItem({
         title: 'RG ou CNH',
         description: 'Tire uma foto dos seus documentos.',
