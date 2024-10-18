@@ -12,6 +12,8 @@ import {updateDeviceToken} from '../services/dogWalkerService';
 import HistoryStack from './historyStack';
 import HistorytIcon from '../components/icons/history';
 import {Linking} from 'react-native';
+import AccountStack from './accountStac';
+import AccountIcon from '../components/icons/account';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -114,6 +116,24 @@ export function Tabs() {
 
           return {
             tabBarIcon: HistorytIcon,
+            headerShown: false,
+            tabBarStyle: {
+              ...globalStyles.tabar,
+              display: isHiddenRoute ? 'none' : 'flex',
+            },
+          };
+        }}
+      />
+      <Screen
+        name="Conta"
+        component={AccountStack}
+        options={({route}) => {
+          const routeName =
+            getFocusedRouteNameFromRoute(route) ?? 'AccountScreen';
+          const isHiddenRoute = routeName !== 'AccountScreen';
+
+          return {
+            tabBarIcon: AccountIcon,
             headerShown: false,
             tabBarStyle: {
               ...globalStyles.tabar,
