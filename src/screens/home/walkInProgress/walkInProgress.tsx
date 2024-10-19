@@ -10,10 +10,10 @@ import Spinner from '../../../components/spinner/spinner';
 import colors from '../../../styles/colors';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import {WalkEvents} from '../../../enum/walk';
-import messaging from '@react-native-firebase/messaging';
-import {ref, update} from 'firebase/database';
-import {database} from '../../../../firebaseConfig';
-import EncryptedStorage from 'react-native-encrypted-storage';
+// import messaging from '@react-native-firebase/messaging';
+// import {ref, update} from 'firebase/database';
+// import {database} from '../../../../firebaseConfig';
+// import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function WalkInProgressScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -53,41 +53,41 @@ export default function WalkInProgressScreen() {
     handleData();
   }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
 
-  useEffect(() => {
-    const updateNotificationToken = async () => {
-      if (!user?.currentWalk?.requestId) return;
-      try {
-        const storedTokensRaw =
-          await EncryptedStorage.getItem('notificationTokens');
-        const storedTokens = storedTokensRaw ? JSON.parse(storedTokensRaw) : [];
+  // useEffect(() => {
+  //   const updateNotificationToken = async () => {
+  //     if (!user?.currentWalk?.requestId) return;
+  //     try {
+  //       const storedTokensRaw =
+  //         await EncryptedStorage.getItem('notificationTokens');
+  //       const storedTokens = storedTokensRaw ? JSON.parse(storedTokensRaw) : [];
 
-        if (storedTokens.length > 1) {
-          storedTokens.shift();
-        }
+  //       if (storedTokens.length > 1) {
+  //         storedTokens.shift();
+  //       }
 
-        const token = await messaging().getToken();
+  //       const token = await messaging().getToken();
 
-        const isAlreadyStored = storedTokens.includes(token);
-        if (isAlreadyStored) return;
+  //       const isAlreadyStored = storedTokens.includes(token);
+  //       if (isAlreadyStored) return;
 
-        const tokenRef = ref(database, `chats/${user?.currentWalk?.requestId}`);
+  //       const tokenRef = ref(database, `chats/${user?.currentWalk?.requestId}`);
 
-        await update(tokenRef, {
-          dogWalkerToken: token,
-        });
+  //       await update(tokenRef, {
+  //         dogWalkerToken: token,
+  //       });
 
-        storedTokens.push(token);
-        await EncryptedStorage.setItem(
-          'notificationTokens',
-          JSON.stringify(storedTokens),
-        );
-      } catch (error) {
-        console.log('Erro ao atualizar o token:', error);
-      }
-    };
+  //       storedTokens.push(token);
+  //       await EncryptedStorage.setItem(
+  //         'notificationTokens',
+  //         JSON.stringify(storedTokens),
+  //       );
+  //     } catch (error) {
+  //       console.log('Erro ao atualizar o token:', error);
+  //     }
+  //   };
 
-    updateNotificationToken();
-  }, [user?.currentWalk?.requestId]);
+  //   updateNotificationToken();
+  // }, [user?.currentWalk?.requestId]);
 
   const openAppleMaps = () => {
     if (!details) return;
@@ -156,7 +156,9 @@ export default function WalkInProgressScreen() {
       setIsLoading(false);
     }
   };
-  const openChat = () => {};
+  const openChat = () => {
+    navigation.navigate('Chat');
+  };
 
   const confirmCancelWalk = async () => {
     if (!user?.currentWalk?.requestId) return;
@@ -211,7 +213,8 @@ export default function WalkInProgressScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 p-5 flex-col justify-between">
+    <View
+      className={`bg-primary flex-1 flex-col justify-between ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
       <Spinner visible={isLoading} transparent={true} />
       <View>
         <Text className="text-2xl font-bold text-dark mb-2 text-center">

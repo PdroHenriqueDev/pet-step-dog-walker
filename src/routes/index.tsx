@@ -53,7 +53,6 @@ function Routes() {
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const requestId = remoteMessage?.data?.requestId as string;
-
       if (requestId) {
         if (!user) return;
 

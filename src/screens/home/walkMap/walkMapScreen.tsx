@@ -1,5 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Linking, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Linking,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import styles from './styles';
 import colors from '../../../styles/colors';
@@ -7,7 +14,7 @@ import {Avatar, Icon} from '@rneui/base';
 import {useAuth} from '../../../contexts/authContext';
 import CustomButton from '../../../components/customButton';
 import {useDialog} from '../../../contexts/dialogContext';
-import {walkById} from '../../../services/walk';
+import {finalizeWalk, walkById} from '../../../services/walk';
 import {AxiosError} from 'axios';
 import Spinner from '../../../components/spinner/spinner';
 import {truncateText} from '../../../utils/textUtils';
@@ -32,7 +39,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 const LOCATION_UPDATE_INTERVAL = 8000;
 
 export default function WalkMapScreen() {
-  const {user} = useAuth();
+  const {user, handleSetUser} = useAuth();
   const {navigation} = useAppNavigation();
   const {showDialog, hideDialog} = useDialog();
   const mapRef = useRef<MapView>(null);
@@ -43,6 +50,7 @@ export default function WalkMapScreen() {
     longitudeDelta: 0.005,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isFinalizing, setIsFinalizing] = useState(false);
   const [walkData, setWalkData] = useState({
     owner: {
       name: '',
@@ -69,53 +77,90 @@ export default function WalkMapScreen() {
       },
       cancel: {
         cancelLabel: 'Sim, tudo certo',
-        onCancel: () => {
+        onCancel: async () => {
+          await handleFinalizeWalk();
           disconnectSocket();
-          // BackgroundTimer.stopBackgroundTimer();
           BackgroundService.stop();
           hideDialog();
+          // BackgroundTimer.stopBackgroundTimer();
         },
       },
     });
   };
 
+  const handleFinalizeWalk = async () => {
+    if (!user?.currentWalk?.requestId) return;
+
+    setIsFinalizing(true);
+    try {
+      await finalizeWalk(user?.currentWalk?.requestId);
+      handleSetUser({
+        ...user,
+        currentWalk: null,
+      });
+      navigation.navigate('HomeScreen');
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado';
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setIsFinalizing(false);
+    }
+  };
+
   useEffect(() => {
     const checkAndShowDialog = async () => {
       if (!user?.currentWalk?.requestId) return;
-      const storedRequestsRaw =
-        await EncryptedStorage.getItem('modalShownRequests');
-      const storedRequests = storedRequestsRaw
-        ? JSON.parse(storedRequestsRaw)
-        : [];
-      if (storedRequests.length > 1) {
-        storedRequests.shift();
-      }
-      const isAlreadyShown = storedRequests.includes(
-        user?.currentWalk?.requestId,
-      );
 
-      if (!isAlreadyShown) {
-        showDialog({
-          title: 'Atenção!',
-          description:
+      try {
+        const storedRequestsRaw =
+          await EncryptedStorage.getItem('modalShownRequests');
+        const storedRequests = storedRequestsRaw
+          ? JSON.parse(storedRequestsRaw)
+          : [];
+        if (storedRequests.length > 1) {
+          storedRequests.shift();
+        }
+        const isAlreadyShown = storedRequests.includes(
+          user?.currentWalk?.requestId,
+        );
+        if (!isAlreadyShown) {
+          Alert.alert(
+            'Atenção!',
             'Para manter a localização atualizada para o tutor, você deve entrar periodicamente no aplicativo. Alguns dispositivos podem ter atrasos na atualização da localização quando o app está em segundo plano.',
-          confirm: {
-            confirmLabel: 'Entendi',
-            onConfirm: async () => {
-              storedRequests.push(user?.currentWalk?.requestId);
-              await EncryptedStorage.setItem(
-                'modalShownRequests',
-                JSON.stringify(storedRequests),
-              );
-              hideDialog();
-            },
-          },
-        });
+            [
+              {
+                text: 'Entendi',
+                onPress: async () => {
+                  storedRequests.push(user?.currentWalk?.requestId);
+                  await EncryptedStorage.setItem(
+                    'modalShownRequests',
+                    JSON.stringify(storedRequests),
+                  );
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      } catch {
+        console.log('got error here');
       }
     };
 
     checkAndShowDialog();
-  }, [hideDialog, showDialog, user?.currentWalk?.requestId]);
+  }, [user?.currentWalk?.requestId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -316,7 +361,7 @@ export default function WalkMapScreen() {
               rounded
               source={{
                 uri:
-                  walkData.owner?.profileUrl ??
+                  walkData.owner?.profileUrl ||
                   'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
               }}
             />
@@ -327,17 +372,19 @@ export default function WalkMapScreen() {
               })}
             </Text>
           </View>
-          <TouchableOpacity
-            className="flex-row items-center border border-border rounded-2xl p-2"
-            onPress={navigateToChat}>
-            <Icon
-              className="mt-0.5 mr-1"
-              type="material"
-              name="message"
-              size={14}
-            />
-            <Text className="text-sm text-dark">Conversar</Text>
-          </TouchableOpacity>
+          {!isFinalizing && (
+            <TouchableOpacity
+              className="flex-row items-center border border-border rounded-2xl p-2"
+              onPress={navigateToChat}>
+              <Icon
+                className="mt-0.5 mr-1"
+                type="material"
+                name="message"
+                size={14}
+              />
+              <Text className="text-sm text-dark">Conversar</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="flex-row my-2">
@@ -353,6 +400,7 @@ export default function WalkMapScreen() {
             onPress={completeWalk}
             backgroundColor={colors.danger}
             textColor={colors.primary}
+            isLoading={isFinalizing}
           />
         </View>
       </View>

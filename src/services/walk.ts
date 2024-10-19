@@ -64,3 +64,23 @@ export const walkById = async (requestId: string): Promise<any> => {
     throw error;
   }
 };
+
+export const finalizeWalk = async (requestId: string): Promise<any> => {
+  try {
+    const response = await api.post(`/walk/finalize/${requestId}`);
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const walkByDogWalkers = async (page = 1): Promise<any> => {
+  try {
+    const response = await api.get(`/walk/dog-walker/list?page=${page}`);
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

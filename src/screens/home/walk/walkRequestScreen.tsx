@@ -1,4 +1,4 @@
-import {BackHandler, Text, Vibration, View} from 'react-native';
+import {BackHandler, Platform, Text, Vibration, View} from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {
   acceptRequest,
@@ -204,7 +204,8 @@ export default function WalkRequestScreen() {
   };
 
   return (
-    <View className="bg-primary flex-1 p-5">
+    <View
+      className={`bg-primary flex-1 ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
       <Spinner visible={isLoading} />
       <Text className="text-xl font-bold text-dark text-center">
         Detalhe do passeio
