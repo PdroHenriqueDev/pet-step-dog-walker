@@ -115,6 +115,19 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     setValue('state', uf);
   };
 
+  const handleDatePicker = () => {
+    if (isLoading && Platform.OS !== 'android') return;
+    setShowDatePicker(true);
+  };
+
+  const formatDateForDisplay = (value: Date) => {
+    const adjustedDate = new Date(value);
+    adjustedDate.setMinutes(
+      adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset(),
+    );
+    return adjustedDate.toLocaleDateString();
+  };
+
   const onSubmit = async (data: DogWalkerForm) => {
     console.log('got here', data);
     setIsLoading(true);
@@ -162,6 +175,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       });
     } catch (error) {
       if (error instanceof AxiosError) {
+        console.log('got here error =>', error);
         const message =
           typeof error.response?.data?.data === 'string'
             ? error.response?.data?.data
@@ -179,19 +193,6 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleDatePicker = () => {
-    if (isLoading && Platform.OS !== 'android') return;
-    setShowDatePicker(true);
-  };
-
-  const formatDateForDisplay = (value: Date) => {
-    const adjustedDate = new Date(value);
-    adjustedDate.setMinutes(
-      adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset(),
-    );
-    return adjustedDate.toLocaleDateString();
   };
 
   return (

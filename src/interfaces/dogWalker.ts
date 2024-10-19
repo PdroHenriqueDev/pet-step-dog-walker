@@ -32,6 +32,7 @@ export interface DogWalker {
     latitude: number;
     longitude: number;
   };
+  bank?: any;
 }
 
 export interface DogWalkerForm {

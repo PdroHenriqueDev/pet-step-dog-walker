@@ -1,8 +1,12 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, StackHeaderProps} from '@react-navigation/stack';
 import Account from '../screens/account/account';
+import UpdateUser from '../screens/account/updateUser/updateUser';
+import CustomHeader from '../components/header/customHeader';
 
 const {Navigator, Screen} = createStackNavigator();
+
+const customHeader = (props: StackHeaderProps) => <CustomHeader {...props} />;
 
 function AccountStack() {
   return (
@@ -13,6 +17,11 @@ function AccountStack() {
         options={{
           headerShown: false,
         }}
+      />
+      <Screen
+        name="UpdateUserScreen"
+        component={UpdateUser}
+        options={{header: customHeader, headerTransparent: true}}
       />
     </Navigator>
   );

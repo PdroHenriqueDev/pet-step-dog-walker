@@ -5,6 +5,7 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {DocumentType} from '../types/document';
+import {FieldsUser} from '../interfaces/fieldsUser';
 
 type RootStackParamList = {
   HomeScreen: undefined;
@@ -17,6 +18,7 @@ type RootStackParamList = {
   WalkInProgress: undefined;
   WalkMap: undefined;
   Chat: undefined;
+  UpdateUserScreen: {field: FieldsUser};
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;
