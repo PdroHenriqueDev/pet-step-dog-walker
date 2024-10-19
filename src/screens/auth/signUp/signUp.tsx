@@ -418,11 +418,10 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
                   <DateTimePicker
                     value={date}
                     mode="date"
-                    display="inline"
+                    display="spinner"
                     onChange={onDateChange}
-                    maximumDate={new Date()}
                     textColor={colors.dark}
-                    accentColor={colors.secondary}
+                    accentColor={colors.dark}
                     style={styles.datePicker}
                   />
                   <Text className="text-danger text-sm mt-1">

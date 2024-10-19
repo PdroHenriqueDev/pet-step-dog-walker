@@ -504,6 +504,7 @@
 				DEVELOPMENT_TEAM = 3US6GLMZ3G;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PetStepDogWalker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pet Step - Parceiro";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -535,6 +536,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3US6GLMZ3G;
 				INFOPLIST_FILE = PetStepDogWalker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pet Step - Parceiro";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
