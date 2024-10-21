@@ -53,6 +53,12 @@ export function Tabs() {
                 hideDialog();
               },
             },
+            cancel: {
+              cancelLabel: 'Não quero receber notificacões',
+              onCancel() {
+                hideDialog();
+              },
+            },
           });
 
           return;
