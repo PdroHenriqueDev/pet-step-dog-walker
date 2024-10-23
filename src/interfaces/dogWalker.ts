@@ -3,6 +3,8 @@ import {WalkEvents} from '../enum/walk';
 export interface DogWalker {
   _id?: string;
   name?: string;
+  lastName?: string;
+  birthdate?: string;
   email?: string;
   phone?: string;
   document?: string;

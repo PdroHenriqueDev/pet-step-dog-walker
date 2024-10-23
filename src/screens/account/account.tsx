@@ -1,5 +1,10 @@
 import {FlatList, Platform, Text, View} from 'react-native';
-import {truncateText} from '../../utils/textUtils';
+import {
+  formatCPF,
+  formatDate,
+  formatPhoneNumber,
+  truncateText,
+} from '../../utils/textUtils';
 import {useAuth} from '../../contexts/authContext';
 import globalStyles from '../../styles/globalStyles';
 import {Icon, ListItem} from '@rneui/base';
@@ -17,16 +22,54 @@ export default function Account() {
       id: '1',
       label: 'Conta Bancária',
       value: user?.bank,
+      fieldType: 'bank',
     },
     {
       id: '2',
       label: 'Nome',
       value: user?.name,
+      fieldType: 'name',
     },
     {
       id: '3',
+      label: 'Sobrenome',
+      value: user?.lastName,
+      fieldType: 'lastName',
+    },
+    {
+      id: '4',
+      label: 'Data de Nascimento',
+      value: user?.birthdate,
+      displayNmae: formatDate(user?.birthdate),
+      fieldType: 'birthdate',
+    },
+    {
+      id: '5',
+      label: 'Celular',
+      value: user?.phone,
+      displayNmae: formatPhoneNumber(user?.phone),
+      fieldType: 'phone',
+    },
+    {
+      id: '6',
+      label: 'Endereço',
+      value: user?.address?.street,
+      fieldType: 'address',
+    },
+    {
+      id: '7',
+      label: 'CPF',
+      value: user?.document,
+      displayNmae: formatCPF(user?.document),
+      fieldType: 'document',
+    },
+    {
+      id: '8',
       label: 'Sair',
-      value: user?.name,
+    },
+    {
+      id: '9',
+      label: 'Desativar conta',
     },
   ];
 
@@ -38,34 +81,59 @@ export default function Account() {
     logout();
   };
 
-  const renderItem = ({item}: {item: FieldsUser}) => (
-    <>
-      {item.label === 'Sair' ? (
-        <View className="mt-5">
-          <CustomButton
-            label={item.label}
-            onPress={handleLogout}
-            backgroundColor={colors.danger}
-            textColor={colors.primary}
-          />
+  const handleDeactivateAccount = () => {};
+
+  const renderItem = ({item}: {item: FieldsUser}) => {
+    const renderButton = ({
+      label,
+      onPress,
+      backgroundColor = colors.danger,
+      textColor = colors.primary,
+    }: {
+      label: string;
+      onPress: () => void;
+      backgroundColor?: string;
+      textColor?: string;
+    }) => (
+      <View className="mt-5">
+        <CustomButton
+          label={label}
+          onPress={onPress}
+          backgroundColor={backgroundColor}
+          textColor={textColor}
+        />
+      </View>
+    );
+
+    if (item.label === 'Sair') {
+      return renderButton({label: item.label, onPress: handleLogout});
+    }
+
+    if (item.label === 'Desativar conta') {
+      return renderButton({
+        label: item.label,
+        onPress: handleDeactivateAccount,
+        backgroundColor: colors.primary,
+        textColor: colors.dark,
+      });
+    }
+
+    return (
+      <ListItem bottomDivider onPress={() => handlePress(item)}>
+        <ListItem.Content>
+          <ListItem.Title>{item.label}</ListItem.Title>
+        </ListItem.Content>
+        <View className="flex-row items-center justify-between">
+          <Text className="mr-2">
+            {!item?.hide && typeof item.value === 'string'
+              ? (item?.displayNmae ?? item.value)
+              : 'vazio'}
+          </Text>
+          <ListItem.Chevron />
         </View>
-      ) : (
-        <ListItem bottomDivider onPress={() => handlePress(item)}>
-          <ListItem.Content>
-            <ListItem.Title>{item.label}</ListItem.Title>
-          </ListItem.Content>
-          <View className="flex-row items-center justify-between">
-            <Text className="mr-2">
-              {!item?.hide &&
-                typeof item.value === 'string' &&
-                (item?.value ?? 'vazio')}
-            </Text>
-            <ListItem.Chevron />
-          </View>
-        </ListItem>
-      )}
-    </>
-  );
+      </ListItem>
+    );
+  };
 
   return (
     <View

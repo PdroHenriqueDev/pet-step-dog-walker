@@ -68,3 +68,20 @@ export const termsAcceptance = async (): Promise<any> => {
     throw error;
   }
 };
+
+export const updateUser = async (
+  field: string,
+  newValue: any,
+): Promise<any> => {
+  try {
+    const response = await api.put('/dog-walker/update', {
+      field,
+      newValue,
+    });
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

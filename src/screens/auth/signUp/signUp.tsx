@@ -13,8 +13,16 @@ import {AxiosError} from 'axios';
 import {fetchAddress} from '../../../services/adress';
 import {brazilStates} from '../../../utils/brazilStates';
 import CustomPicker from '../../../components/customPicker/customPicker';
-import styles from './styles';
 import colors from '../../../styles/colors';
+import {
+  formatCEP,
+  formatCPF,
+  formatPhoneNumber,
+  isAdult,
+  removeMask,
+  removePhoneMask,
+} from '../../../utils/textUtils';
+import globalStyles from '../../../styles/globalStyles';
 
 export default function SignUp({onRegister}: {onRegister: () => void}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -47,27 +55,6 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     },
   });
 
-  const formatPhoneNumber = (phone: string) => {
-    return phone
-      .replace(/\D/g, '')
-      .replace(/^(\d{2})(\d{2})(\d)/g, '+$1 ($2) $3')
-      .replace(/(\d{5})(\d)/, '$1-$2')
-      .replace(/(-\d{4})\d+?$/, '$1');
-  };
-
-  const isAdult = (birthdate: string | number | Date) => {
-    const today = new Date();
-    const birthDate = new Date(birthdate);
-
-    const adultMinimumDate = new Date(
-      today.getFullYear() - 18,
-      today.getMonth(),
-      today.getDate(),
-    );
-
-    return birthDate <= adultMinimumDate;
-  };
-
   const onDateChange = (
     event: DateTimePickerEvent,
     selectedDate?: Date | undefined,
@@ -78,32 +65,6 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     setValue('birthdate', currentDate.toISOString().split('T')[0], {
       shouldValidate: true,
     });
-  };
-
-  const formatCPF = (cpf: string) => {
-    return cpf
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1');
-  };
-
-  const removeMask = (value?: string) => {
-    if (!value) return;
-    return value.replace(/\D/g, '');
-  };
-
-  const removePhoneMask = (phone?: string) => {
-    if (!phone) return;
-    return phone.replace(/[^\d+]/g, '');
-  };
-
-  const formatCEP = (cep: string) => {
-    return cep
-      .replace(/\D/g, '')
-      .replace(/^(\d{5})(\d)/, '$1-$2')
-      .replace(/(-\d{3})\d+?$/, '$1');
   };
 
   const handleAddress = async (zipCode: string) => {
@@ -422,7 +383,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
                     onChange={onDateChange}
                     textColor={colors.dark}
                     accentColor={colors.dark}
-                    style={styles.datePicker}
+                    style={globalStyles.datePickerIos}
                   />
                   <Text className="text-danger text-sm mt-1">
                     {errors.birthdate?.message}

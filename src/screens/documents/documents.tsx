@@ -166,7 +166,7 @@ export default function DocumentsScreen() {
     showDialog({
       title: 'Tem certeza que deseja cancelar?',
       description:
-        'Sua conta será desativada. Para ativar, basta fazer log in novamente',
+        'Sua conta será deletada permanentemente em 30 dias automaticamente.Para reativá-la, basta fazer login novamente dentro desse período.',
       confirm: {
         confirmLabel: 'Não',
         onConfirm: () => {
