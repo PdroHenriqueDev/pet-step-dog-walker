@@ -47,19 +47,6 @@ export const formatCEP = (cep: string) => {
     .replace(/(-\d{3})\d+?$/, '$1');
 };
 
-export const isAdult = (birthdate: string | number | Date) => {
-  const today = new Date();
-  const birthDate = new Date(birthdate);
-
-  const adultMinimumDate = new Date(
-    today.getFullYear() - 18,
-    today.getMonth(),
-    today.getDate(),
-  );
-
-  return birthDate <= adultMinimumDate;
-};
-
 export const formatDate = (date?: string | number | Date) => {
   if (!date) return '';
   const newDate = new Date(date);

@@ -1,11 +1,8 @@
 import React, {useState} from 'react';
-import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Switch, Text, TouchableOpacity, View} from 'react-native';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
 import {useForm, Controller} from 'react-hook-form';
 import CustomButton from '../../../components/customButton';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import {DogWalker, DogWalkerForm} from '../../../interfaces/dogWalker';
 import {registerDogWalker} from '../../../services/dogWalkerService';
 import {useDialog} from '../../../contexts/dialogContext';
@@ -13,21 +10,17 @@ import {AxiosError} from 'axios';
 import {fetchAddress} from '../../../services/adress';
 import {brazilStates} from '../../../utils/brazilStates';
 import CustomPicker from '../../../components/customPicker/customPicker';
-import colors from '../../../styles/colors';
 import {
   formatCEP,
   formatCPF,
   formatPhoneNumber,
-  isAdult,
   removeMask,
   removePhoneMask,
 } from '../../../utils/textUtils';
-import globalStyles from '../../../styles/globalStyles';
+import colors from '../../../styles/colors';
 
 export default function SignUp({onRegister}: {onRegister: () => void}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const {showDialog, hideDialog} = useDialog();
 
@@ -49,23 +42,11 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       neighborhood: '',
       city: '',
       state: '',
-      birthdate: '',
       password: '',
       confirmPassword: '',
+      isAdult: false,
     },
   });
-
-  const onDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date | undefined,
-  ) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(false);
-    setDate(currentDate);
-    setValue('birthdate', currentDate.toISOString().split('T')[0], {
-      shouldValidate: true,
-    });
-  };
 
   const handleAddress = async (zipCode: string) => {
     const data = await fetchAddress(zipCode);
@@ -76,21 +57,19 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
     setValue('state', uf);
   };
 
-  const handleDatePicker = () => {
-    if (isLoading && Platform.OS !== 'android') return;
-    setShowDatePicker(true);
-  };
-
-  const formatDateForDisplay = (value: Date) => {
-    const adjustedDate = new Date(value);
-    adjustedDate.setMinutes(
-      adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset(),
-    );
-    return adjustedDate.toLocaleDateString();
-  };
-
   const onSubmit = async (data: DogWalkerForm) => {
-    console.log('got here', data);
+    if (!data.isAdult) {
+      showDialog({
+        title: 'Erro',
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => hideDialog(),
+        },
+        description: 'Você precisa ser maior de idade para usar a aplicação.',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const {
@@ -363,63 +342,6 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           )}
         />
       </View>
-      <View className="mb-3">
-        <Controller
-          control={control}
-          name="birthdate"
-          rules={{
-            required: 'Data de nascimento é obrigatória',
-            validate: value =>
-              isAdult(value) || 'Você deve ter mais de 18 anos',
-          }}
-          render={({field: {value}}) => (
-            <>
-              {Platform.OS === 'ios' ? (
-                <>
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="spinner"
-                    onChange={onDateChange}
-                    textColor={colors.dark}
-                    accentColor={colors.dark}
-                    style={globalStyles.datePickerIos}
-                  />
-                  <Text className="text-danger text-sm mt-1">
-                    {errors.birthdate?.message}
-                  </Text>
-                </>
-              ) : (
-                <TouchableOpacity
-                  onPress={handleDatePicker}
-                  disabled={isLoading}>
-                  <CustomTextInput
-                    value={value ? formatDateForDisplay(new Date(value)) : ''}
-                    placeholder="Data de nascimento"
-                    error={errors.birthdate?.message}
-                    isEditable={false}
-                  />
-                </TouchableOpacity>
-              )}
-            </>
-          )}
-        />
-
-        {Platform.OS !== 'ios' && showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) {
-                onDateChange(event, selectedDate);
-              }
-            }}
-            maximumDate={new Date()}
-          />
-        )}
-      </View>
 
       <View className="mb-3">
         <Controller
@@ -471,6 +393,31 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               error={errors.confirmPassword?.message}
               isEditable={!isLoading}
             />
+          )}
+        />
+      </View>
+
+      <View className="mb-3">
+        <Controller
+          control={control}
+          name="isAdult"
+          rules={{required: true}}
+          render={({field: {value, onChange}}) => (
+            <View>
+              <Text className="text-dark my-2">Você tem mais de 18 anos?</Text>
+              <Switch
+                trackColor={{false: '#E6E6E6', true: colors.green}}
+                thumbColor={value ? colors.dark : colors.primary}
+                value={value}
+                onValueChange={onChange}
+                disabled={isLoading}
+              />
+              {errors.isAdult && (
+                <Text className="text-danger text-sm mt-1">
+                  Você deve ser maior de idade para ser Dog Walker
+                </Text>
+              )}
+            </View>
           )}
         />
       </View>

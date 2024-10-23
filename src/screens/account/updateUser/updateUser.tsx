@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, Text, View} from 'react-native';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import CustomButton from '../../../components/customButton';
 import colors from '../../../styles/colors';
@@ -10,15 +10,12 @@ import {FieldsUser} from '../../../interfaces/fieldsUser';
 import {useAuth} from '../../../contexts/authContext';
 import {Controller, useForm} from 'react-hook-form';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   formatCEP,
   formatCPF,
   formatPhoneNumber,
-  isAdult,
   removeMask,
 } from '../../../utils/textUtils';
-import globalStyles from '../../../styles/globalStyles';
 import {fetchAddress} from '../../../services/adress';
 import CustomPicker from '../../../components/customPicker/customPicker';
 import {brazilStates} from '../../../utils/brazilStates';
@@ -30,8 +27,6 @@ export default function UpdateUser() {
   const {user, handleSetUser} = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [date, setDate] = useState(new Date());
 
   const {
     control,
@@ -49,13 +44,6 @@ export default function UpdateUser() {
       state: user?.address?.state || '',
     },
   });
-
-  useEffect(() => {
-    setValue('value', field?.value || '');
-    if (field?.fieldType === 'birthdate' && field?.value) {
-      setDate(new Date(field.value));
-    }
-  }, [field, setValue]);
 
   useEffect(() => {
     return () => {
@@ -113,24 +101,6 @@ export default function UpdateUser() {
 
   const handleCancel = () => {
     navigation.goBack();
-  };
-
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS !== 'ios') setShowDatePicker(false);
-
-    if (selectedDate) {
-      const localDate = new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate(),
-        12,
-      );
-
-      setDate(localDate);
-      setValue('value', localDate.toISOString().split('T')[0], {
-        shouldValidate: true,
-      });
-    }
   };
 
   const handleAddress = async (zipCode: string) => {
@@ -191,77 +161,6 @@ export default function UpdateUser() {
                 keyboardType="phone-pad"
                 isEditable={!isLoading}
               />
-            )}
-          />
-        );
-      case 'birthdate':
-        return (
-          <Controller
-            control={control}
-            name="value"
-            rules={{
-              required: 'Data de nascimento é obrigatória',
-              validate: value =>
-                isAdult(value) || 'Você deve ter mais de 18 anos',
-            }}
-            render={({field: {value, onChange}}) => (
-              <>
-                {Platform.OS === 'ios' ? (
-                  <>
-                    <DateTimePicker
-                      value={date}
-                      mode="date"
-                      display="spinner"
-                      onChange={(event, selectedDate) => {
-                        setShowDatePicker(false);
-                        if (selectedDate) {
-                          handleDateChange(event, selectedDate);
-                          onChange(selectedDate.toISOString().split('T')[0]);
-                        }
-                      }}
-                      textColor={colors.dark}
-                      accentColor={colors.dark}
-                      style={globalStyles.datePickerIos}
-                    />
-                    {errors.value && (
-                      <Text className="text-danger text-sm mt-1">
-                        {errors.value.message}
-                      </Text>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <TouchableOpacity
-                      onPress={() => setShowDatePicker(true)}
-                      disabled={isLoading}>
-                      <CustomTextInput
-                        value={
-                          value ? new Date(value).toLocaleDateString() : ''
-                        }
-                        placeholder="Data de nascimento"
-                        error={errors.value?.message}
-                        isEditable={false}
-                      />
-                    </TouchableOpacity>
-                  </>
-                )}
-
-                {Platform.OS !== 'ios' && showDatePicker && (
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                      setShowDatePicker(false);
-                      if (selectedDate) {
-                        handleDateChange(event, selectedDate);
-                        onChange(selectedDate.toISOString().split('T')[0]);
-                      }
-                    }}
-                    maximumDate={new Date()}
-                  />
-                )}
-              </>
             )}
           />
         );
@@ -418,17 +317,10 @@ export default function UpdateUser() {
       <CustomButton
         label={'Atualizar'}
         onPress={handleSubmit(handleSave)}
-        disabled={
-          isLoading ||
-          (!isDirty &&
-            field?.fieldType !== 'address' &&
-            field?.fieldType !== 'birthdate')
-        }
+        disabled={isLoading || (!isDirty && field?.fieldType !== 'address')}
         isLoading={isLoading}
         backgroundColor={
-          !isDirty &&
-          field?.fieldType !== 'address' &&
-          field?.fieldType !== 'birthdate'
+          !isDirty && field?.fieldType !== 'address'
             ? colors.accent
             : colors.secondary
         }

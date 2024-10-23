@@ -37,13 +37,6 @@ export default function Account() {
       fieldType: 'lastName',
     },
     {
-      id: '4',
-      label: 'Data de Nascimento',
-      value: user?.birthdate,
-      displayNmae: formatDate(user?.birthdate),
-      fieldType: 'birthdate',
-    },
-    {
       id: '5',
       label: 'Celular',
       value: user?.phone,

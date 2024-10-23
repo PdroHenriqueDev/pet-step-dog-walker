@@ -6,7 +6,6 @@ export interface FieldsUser {
   fieldType?:
     | 'name'
     | 'lastName'
-    | 'birthdate'
     | 'phone'
     | 'address'
     | 'document'

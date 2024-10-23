@@ -4,7 +4,6 @@ export interface DogWalker {
   _id?: string;
   name?: string;
   lastName?: string;
-  birthdate?: string;
   email?: string;
   phone?: string;
   document?: string;
@@ -49,4 +48,5 @@ export interface DogWalkerForm {
   state: string;
   password: string;
   confirmPassword: string;
+  isAdult: boolean;
 }
