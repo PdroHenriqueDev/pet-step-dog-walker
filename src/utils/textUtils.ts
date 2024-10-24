@@ -40,7 +40,8 @@ export const removePhoneMask = (phone?: string) => {
   return phone.replace(/[^\d+]/g, '');
 };
 
-export const formatCEP = (cep: string) => {
+export const formatCEP = (cep?: string) => {
+  if (!cep) return '';
   return cep
     .replace(/\D/g, '')
     .replace(/^(\d{5})(\d)/, '$1-$2')

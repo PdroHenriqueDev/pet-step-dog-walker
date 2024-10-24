@@ -51,17 +51,10 @@ export default function Account() {
     },
     {
       id: '7',
-      label: 'CPF',
-      value: user?.document,
-      displayNmae: formatCPF(user?.document),
-      fieldType: 'document',
-    },
-    {
-      id: '8',
       label: 'Sair',
     },
     {
-      id: '9',
+      id: '8',
       label: 'Desativar conta',
     },
   ];

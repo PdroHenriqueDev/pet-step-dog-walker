@@ -12,7 +12,6 @@ import {Controller, useForm} from 'react-hook-form';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
 import {
   formatCEP,
-  formatCPF,
   formatPhoneNumber,
   removeMask,
 } from '../../../utils/textUtils';
@@ -37,7 +36,7 @@ export default function UpdateUser() {
   } = useForm({
     defaultValues: {
       value: field?.value || '',
-      zipCode: user?.address?.zipCode || '',
+      zipCode: formatCEP(user?.address?.zipCode) || '',
       street: user?.address?.street || '',
       neighborhood: user?.address?.neighborhood || '',
       city: user?.address?.city || '',
@@ -59,7 +58,7 @@ export default function UpdateUser() {
     try {
       let cleanedData;
 
-      if (fieldType === 'document' || fieldType === 'phone') {
+      if (fieldType === 'phone') {
         cleanedData = removeMask(data.value) || '';
       } else if (fieldType === 'address') {
         cleanedData = {
@@ -133,30 +132,6 @@ export default function UpdateUser() {
                 value={formatPhoneNumber(value)}
                 onChangeText={text => onChange(text)}
                 placeholder="Seu telefone celular com DDI (ex: +55)"
-                error={errors.value?.message}
-                keyboardType="phone-pad"
-                isEditable={!isLoading}
-              />
-            )}
-          />
-        );
-      case 'document':
-        return (
-          <Controller
-            control={control}
-            name="value"
-            rules={{
-              required: 'CPF é obrigatório',
-              pattern: {
-                value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-                message: 'CPF inválido',
-              },
-            }}
-            render={({field: {value, onChange}}) => (
-              <CustomTextInput
-                value={formatCPF(value)}
-                onChangeText={text => onChange(formatCPF(text))}
-                placeholder="Seu CPF"
                 error={errors.value?.message}
                 keyboardType="phone-pad"
                 isEditable={!isLoading}
@@ -325,6 +300,7 @@ export default function UpdateUser() {
             : colors.secondary
         }
       />
+
       <CustomButton
         label={'Cancelar'}
         backgroundColor={colors.primary}
