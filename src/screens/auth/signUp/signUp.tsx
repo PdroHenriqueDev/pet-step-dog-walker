@@ -354,7 +354,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
               message: 'A senha deve ter no mínimo 8 caracteres',
             },
             pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])/,
               message:
                 'A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um caractere especial',
             },
