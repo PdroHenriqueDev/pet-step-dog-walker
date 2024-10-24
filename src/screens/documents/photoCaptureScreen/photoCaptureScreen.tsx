@@ -102,6 +102,24 @@ export default function PhotoCaptureScreen() {
     );
   };
 
+  const confirmUpload = () => {
+    Alert.alert(
+      'Confirmação',
+      `Você verificou ${documentType === 'selfie' ? 'a imagem' : 'o documento'} e tem certeza que deseja fazer o upload?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: handleUploadDocument,
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
   const handleUploadDocument = async () => {
     if (!documentType || (!photoUri && !fileUri)) return;
 
@@ -213,7 +231,7 @@ export default function PhotoCaptureScreen() {
 
       <CustomButton
         label={photoUri || fileUri ? 'Enviar' : 'Selecionar Documento'}
-        onPress={photoUri || fileUri ? handleUploadDocument : selectFile}
+        onPress={photoUri || fileUri ? confirmUpload : selectFile}
         isLoading={isLoading}
       />
 

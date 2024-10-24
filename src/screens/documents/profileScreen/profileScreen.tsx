@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, Alert} from 'react-native';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import CustomPicker from '../../../components/customPicker/customPicker';
@@ -18,6 +18,24 @@ export default function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const isFormComplete = availability && transport && dogExperience;
+
+  const confirm = () => {
+    Alert.alert(
+      'Confirmação',
+      'Você verificou as informações e tem certeza que deseja enviar?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: handleSubmit,
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -112,7 +130,7 @@ export default function ProfileScreen() {
 
         <CustomButton
           label="Enviar"
-          onPress={handleSubmit}
+          onPress={confirm}
           isLoading={isLoading}
           disabled={!isFormComplete}
           backgroundColor={isFormComplete ? colors.secondary : colors.accent}
