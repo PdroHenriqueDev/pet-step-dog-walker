@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Switch, Text, TouchableOpacity, View} from 'react-native';
+import {Switch, Text, View} from 'react-native';
 import CustomTextInput from '../../../components/customTextInput/customTextInput';
 import {useForm, Controller} from 'react-hook-form';
 import CustomButton from '../../../components/customButton';
@@ -39,6 +39,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       cpf: '',
       zipCode: '',
       street: '',
+      houseNumber: '',
       neighborhood: '',
       city: '',
       state: '',
@@ -78,6 +79,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
         cpf,
         zipCode,
         street,
+        houseNumber,
         neighborhood,
         city,
         state,
@@ -96,6 +98,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
         address: {
           zipCode: cep,
           street,
+          houseNumber,
           neighborhood,
           city,
           state,
@@ -293,6 +296,25 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       <View className="mb-3">
         <Controller
           control={control}
+          name="houseNumber"
+          rules={{required: 'Número da casa é obrigatório'}}
+          render={({field: {value}}) => (
+            <CustomTextInput
+              value={value}
+              onChangeText={(text: string) =>
+                setValue('houseNumber', text, {shouldValidate: true})
+              }
+              placeholder="Número da casa"
+              error={errors.houseNumber?.message}
+              isEditable={!isLoading}
+              keyboardType="numeric"
+            />
+          )}
+        />
+      </View>
+      <View className="mb-3">
+        <Controller
+          control={control}
           name="neighborhood"
           rules={{required: 'Bairro é obrigatório'}}
           render={({field: {value}}) => (
@@ -403,7 +425,7 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
           name="isAdult"
           rules={{required: true}}
           render={({field: {value, onChange}}) => (
-            <View>
+            <View className="flex-col items-start">
               <Text className="text-dark my-2">Você tem mais de 18 anos?</Text>
               <Switch
                 trackColor={{false: '#E6E6E6', true: colors.green}}

@@ -19,6 +19,10 @@ type RootStackParamList = {
   WalkMap: undefined;
   Chat: undefined;
   UpdateUserScreen: {field: FieldsUser};
+  BankFlowScreen: undefined;
+  BankScreen: undefined;
+  BankUploadDocumentScreen: undefined;
+  AccountScreen: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

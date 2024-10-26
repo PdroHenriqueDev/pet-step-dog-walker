@@ -79,6 +79,12 @@ const globalStyles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 10,
   },
+  datePickerIos: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    color: colors.dark,
+  },
 });
 
 export default globalStyles;

@@ -1,10 +1,5 @@
 import {FlatList, Platform, Text, View} from 'react-native';
-import {
-  formatCPF,
-  formatDate,
-  formatPhoneNumber,
-  truncateText,
-} from '../../utils/textUtils';
+import {formatPhoneNumber, truncateText} from '../../utils/textUtils';
 import {useAuth} from '../../contexts/authContext';
 import globalStyles from '../../styles/globalStyles';
 import {Icon, ListItem} from '@rneui/base';
@@ -21,7 +16,7 @@ export default function Account() {
     {
       id: '1',
       label: 'Conta Bancária',
-      value: user?.bank,
+      value: '',
       fieldType: 'bank',
     },
     {
@@ -60,7 +55,9 @@ export default function Account() {
   ];
 
   const handlePress = (field: FieldsUser) => {
-    navigation.navigate('UpdateUserScreen', {field});
+    field.fieldType === 'bank'
+      ? navigation.navigate('BankFlowScreen')
+      : navigation.navigate('UpdateUserScreen', {field});
   };
 
   const handleLogout = () => {

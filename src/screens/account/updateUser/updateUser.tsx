@@ -38,6 +38,7 @@ export default function UpdateUser() {
       value: field?.value || '',
       zipCode: formatCEP(user?.address?.zipCode) || '',
       street: user?.address?.street || '',
+      houseNumber: user?.address?.houseNumber || '',
       neighborhood: user?.address?.neighborhood || '',
       city: user?.address?.city || '',
       state: user?.address?.state || '',
@@ -64,6 +65,7 @@ export default function UpdateUser() {
         cleanedData = {
           zipCode: removeMask(data.zipCode),
           street: data.street,
+          houseNumber: data.houseNumber,
           neighborhood: data.neighborhood,
           city: data.city,
           state: data.state,
@@ -206,6 +208,25 @@ export default function UpdateUser() {
                     placeholder="Seu logradouro"
                     error={errors.street?.message}
                     isEditable={!isLoading}
+                  />
+                )}
+              />
+            </View>
+            <View className="mt-3">
+              <Controller
+                control={control}
+                name="houseNumber"
+                rules={{required: 'Número é obrigatório'}}
+                render={({field: {value}}) => (
+                  <CustomTextInput
+                    value={value}
+                    onChangeText={(text: string) =>
+                      setValue('houseNumber', text, {shouldValidate: true})
+                    }
+                    placeholder="Número"
+                    error={errors.houseNumber?.message}
+                    isEditable={!isLoading}
+                    keyboardType="numeric"
                   />
                 )}
               />

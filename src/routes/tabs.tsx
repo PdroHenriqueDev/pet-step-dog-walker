@@ -12,7 +12,7 @@ import {updateDeviceToken} from '../services/dogWalkerService';
 import HistoryStack from './historyStack';
 import HistorytIcon from '../components/icons/history';
 import {Linking} from 'react-native';
-import AccountStack from './accountStac';
+import AccountStack from './accountStack';
 import AccountIcon from '../components/icons/account';
 
 const {Navigator, Screen} = createBottomTabNavigator();
