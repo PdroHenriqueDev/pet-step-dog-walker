@@ -154,3 +154,23 @@ export const accountCheckStatus = async (): Promise<any> => {
     throw error;
   }
 };
+
+export const uploadProfileImage = async (
+  documentFile: UploadableFile,
+): Promise<string> => {
+  try {
+    const formData = new FormData();
+    formData.append('profile', documentFile);
+
+    const response = await api.post('/dog-walker/profile-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const {data} = response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

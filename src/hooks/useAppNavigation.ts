@@ -23,6 +23,7 @@ type RootStackParamList = {
   BankScreen: undefined;
   BankUploadDocumentScreen: undefined;
   AccountScreen: undefined;
+  UpdateProfileImgScreen: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

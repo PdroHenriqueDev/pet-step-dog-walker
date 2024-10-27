@@ -6,6 +6,7 @@ import CustomHeader from '../components/header/customHeader';
 import BankScreen from '../screens/account/bank/addBank/bankScreen';
 import BankFlowScreen from '../screens/account/bank/bankFlowScreen';
 import BankUploadDocument from '../screens/account/bank/uploadDocumentBank/uploadDocumentBank';
+import UpdateProfileImgScreen from '../screens/account/uploadProfileImg/uploadProfileImage';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -39,6 +40,11 @@ function AccountStack() {
       <Screen
         name="BankUploadDocumentScreen"
         component={BankUploadDocument}
+        options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="UpdateProfileImgScreen"
+        component={UpdateProfileImgScreen}
         options={{header: customHeader, headerTransparent: true}}
       />
     </Navigator>

@@ -2,7 +2,7 @@ import {FlatList, Platform, Text, View} from 'react-native';
 import {formatPhoneNumber, truncateText} from '../../utils/textUtils';
 import {useAuth} from '../../contexts/authContext';
 import globalStyles from '../../styles/globalStyles';
-import {Icon, ListItem} from '@rneui/base';
+import {Avatar, Icon, ListItem} from '@rneui/base';
 import colors from '../../styles/colors';
 import {FieldsUser} from '../../interfaces/fieldsUser';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
@@ -64,6 +64,10 @@ export default function Account() {
     logout();
   };
 
+  const navigateToImageSelector = () => {
+    navigation.navigate('UpdateProfileImgScreen');
+  };
+
   const handleDeactivateAccount = () => {};
 
   const renderItem = ({item}: {item: FieldsUser}) => {
@@ -122,6 +126,17 @@ export default function Account() {
     <View
       className={`flex-1 bg-primary ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
       <View className="flex-col items-center mb-5">
+        <Avatar
+          rounded
+          size={'large'}
+          onPress={navigateToImageSelector}
+          source={{
+            uri:
+              user?.profileUrl ||
+              'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+          }}
+        />
+
         <Text className="text-dark text-2xl font-bold">
           {truncateText({
             text: user?.name || '',
