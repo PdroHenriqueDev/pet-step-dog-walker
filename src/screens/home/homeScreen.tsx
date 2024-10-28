@@ -212,16 +212,29 @@ export default function HomeScreen() {
         const permissionGranted = await requestLocationPermission();
         if (!permissionGranted) {
           setIsOnline(false);
+          handleSetUser({
+            ...user,
+            isOnline: false,
+          });
           return;
         }
 
         const locationUpdated = await getLocationUpdate();
         setIsOnline(locationUpdated);
+        handleSetUser({
+          ...user,
+          isOnline: locationUpdated,
+        });
 
         return;
       }
 
       await updateAvailability({
+        isOnline: false,
+      });
+
+      handleSetUser({
+        ...user,
         isOnline: false,
       });
 
