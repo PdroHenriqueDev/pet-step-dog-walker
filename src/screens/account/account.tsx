@@ -13,12 +13,12 @@ export default function Account() {
   const {navigation} = useAppNavigation();
 
   const fields: FieldsUser[] = [
-    {
-      id: '1',
-      label: 'Conta Bancária',
-      value: '',
-      fieldType: 'bank',
-    },
+    // {
+    //   id: '1',
+    //   label: 'Conta Bancária',
+    //   value: '',
+    //   fieldType: 'bank',
+    // },
     {
       id: '2',
       label: 'Nome',
