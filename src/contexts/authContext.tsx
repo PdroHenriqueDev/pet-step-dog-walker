@@ -102,8 +102,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setRefreshToken(null);
       setUser(null);
       setUserId(null);
-    } catch (error) {
-      console.error('Erro ao fazer logout');
     } finally {
       setIsLoading(false);
     }

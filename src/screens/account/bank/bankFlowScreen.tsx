@@ -13,7 +13,7 @@ import {AxiosError} from 'axios';
 
 export default function BankFlowScreen() {
   const {showDialog, hideDialog} = useDialog();
-  const {user} = useAuth();
+  const {user, handleSetUser} = useAuth();
   const {navigation} = useAppNavigation();
 
   const [pendingRequirements, setPendingRequirements] = useState([]);
@@ -56,6 +56,15 @@ export default function BankFlowScreen() {
       try {
         const status = await accountCheckStatus();
         setDocumentStatus(status);
+        if (user?.bank && status === 'Verificado com sucesso') {
+          handleSetUser({
+            ...user,
+            bank: {
+              ...user.bank,
+              bankDocumentVerified: true,
+            },
+          });
+        }
       } catch (error) {
         const errorMessage =
           error instanceof AxiosError &&
@@ -107,13 +116,12 @@ export default function BankFlowScreen() {
         </View>
       </ListItem>
 
-      {user?.bank && !user.bank.bankDocumentVerified && (
+      {user?.bank && !user.bank?.bankDocumentVerified && (
         <ListItem bottomDivider onPress={() => handlePress('document')}>
           <ListItem.Content>
             <ListItem.Title>Documento</ListItem.Title>
           </ListItem.Content>
           <View className="flex-row items-center justify-between">
-            {/* <Text className="mr-2 text-dark font-bold">{documentStatus}</Text> */}
             <Text
               className={`mr-2 ${documentStatus === 'Verificado com sucesso' ? 'text-green' : 'text-danger'}  font-bold`}>
               {documentStatus}

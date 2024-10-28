@@ -65,8 +65,6 @@ function Map(): React.JSX.Element {
         longitudeDelta: region.longitudeDelta,
       };
       setRegion(newRegion);
-    } catch (error) {
-      console.warn(error);
     } finally {
       setIsRequestingLocation(false);
     }
@@ -94,8 +92,6 @@ function Map(): React.JSX.Element {
           longitude,
         },
       });
-    } catch (error) {
-      console.warn(error);
     } finally {
       setIsRequestingLocation(false);
     }

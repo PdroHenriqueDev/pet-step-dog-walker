@@ -66,9 +66,7 @@ export default function SignIn() {
     }
   };
 
-  const handleForgotPassword = () => {
-    console.log('Esqueceu a senha?');
-  };
+  const handleForgotPassword = () => {};
 
   return (
     <View>

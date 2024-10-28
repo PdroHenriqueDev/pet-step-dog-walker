@@ -70,7 +70,6 @@ export default function UpdateProfileImgScreen() {
 
     try {
       const url = await uploadProfileImage(file);
-      console.log('got here url =>', url);
       handleSetUser({
         ...user,
         profileUrl: `${url}?timestamp=${new Date().getTime()}`,

@@ -3,6 +3,8 @@ import {ActivityIndicator, FlatList, Platform, Text, View} from 'react-native';
 import {truncateText} from '../../utils/textUtils';
 import styles from './styles';
 import {walkByDogWalkers} from '../../services/walk';
+import {AxiosError} from 'axios';
+import {useDialog} from '../../contexts/dialogContext';
 
 export interface History {
   _id: string;
@@ -65,6 +67,8 @@ export default function History() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  const {showDialog, hideDialog} = useDialog();
+
   const loadHistory = async () => {
     if (isLoading || !hasMore) return;
 
@@ -74,12 +78,24 @@ export default function History() {
 
       const {hasMore: more, results} = data;
 
-      console.log('result data =>', {more, results});
       setHistory(prev => [...prev, ...results]);
       setHasMore(more);
       setPage(prevPage => prevPage + 1);
     } catch (error) {
-      console.log('Error loading history:', error);
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado';
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
     } finally {
       setIsLoading(false);
     }

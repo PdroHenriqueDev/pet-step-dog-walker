@@ -118,7 +118,6 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       });
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log('got here error =>', error);
         const message =
           typeof error.response?.data?.data === 'string'
             ? error.response?.data?.data

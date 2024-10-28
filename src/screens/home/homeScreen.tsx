@@ -88,7 +88,6 @@ export default function HomeScreen() {
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const chatId = remoteMessage?.data?.chatId as string;
-      console.log('new menssage: =>', chatId);
       if (chatId && currentRouteName !== 'Chat') {
         showDialog({
           title: 'Nova mensagem',

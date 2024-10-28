@@ -154,9 +154,7 @@ export default function WalkMapScreen() {
             {cancelable: false},
           );
         }
-      } catch {
-        console.log('got error here');
-      }
+      } catch {}
     };
 
     checkAndShowDialog();
@@ -279,7 +277,6 @@ export default function WalkMapScreen() {
         });
       }
     } catch (error) {
-      // console.warn('Erro ao enviar localização:', error);
     } finally {
       setIsRequestingLocation(false);
     }
