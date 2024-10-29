@@ -1,4 +1,11 @@
-import {BackHandler, Platform, Text, Vibration, View} from 'react-native';
+import {
+  BackHandler,
+  Platform,
+  ScrollView,
+  Text,
+  Vibration,
+  View,
+} from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {
   acceptRequest,
@@ -172,7 +179,27 @@ export default function WalkRequestScreen() {
     }
   };
 
-  const handleDeny = async () => {
+  const handleDeny = () => {
+    showDialog({
+      title: 'Tem certeza?',
+      description: 'Quer mesmo negar o passeio?',
+      confirm: {
+        confirmLabel: 'Não',
+        onConfirm: () => {
+          hideDialog();
+        },
+      },
+      cancel: {
+        cancelLabel: 'Sim',
+        onCancel: async () => {
+          await denyWalk();
+          hideDialog();
+        },
+      },
+    });
+  };
+
+  const denyWalk = async () => {
     if (!user?.currentWalk?.requestId) return;
     setDenyIsLoading(true);
     try {
@@ -204,8 +231,8 @@ export default function WalkRequestScreen() {
   };
 
   return (
-    <View
-      className={`bg-primary flex-1 ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
+    <ScrollView
+      className={`bg-primary flex-1 pb-40 ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
       <Spinner visible={isLoading} />
       <Text className="text-xl font-bold text-dark text-center">
         Detalhe do passeio
@@ -239,6 +266,22 @@ export default function WalkRequestScreen() {
           <Text className="ml-1 text-base text-accent">
             {details?.walk.numberOfDogs}
           </Text>
+        </View>
+      </View>
+
+      <View className="mt-5">
+        <View className="flex flex-row flex-wrap">
+          {details?.walk.dogs?.map((dog, index) => (
+            <View
+              key={index}
+              className="w-1/2 p-3 border rounded-lg border-border">
+              <Text className="text-dark text-base font-semibold">
+                Cão {index + 1}
+              </Text>
+              <Text className="text-dark text-sm">Raça: {dog.breed}</Text>
+              <Text className="text-dark text-sm">Porte: {dog.size}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
@@ -277,6 +320,6 @@ export default function WalkRequestScreen() {
       </View>
 
       <View />
-    </View>
+    </ScrollView>
   );
 }

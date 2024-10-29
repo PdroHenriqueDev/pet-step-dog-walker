@@ -18,6 +18,7 @@ export interface WalkDetails {
     receivedLocation: Address;
     serviceFee: number;
     totalCost: string;
+    dogs: Dog[];
   };
 }
 
@@ -33,4 +34,9 @@ export interface WalkInProgressProps {
     rate?: number;
   };
   durationMinutes?: number;
+}
+
+export interface Dog {
+  breed: string;
+  size: string;
 }
