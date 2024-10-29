@@ -174,6 +174,7 @@ export default function WalkRequestScreen() {
           },
         },
       });
+      navigation.goBack();
     } finally {
       setAcceptIsLoading(false);
     }
@@ -225,6 +226,7 @@ export default function WalkRequestScreen() {
           },
         },
       });
+      navigation.goBack();
     } finally {
       setDenyIsLoading(false);
     }

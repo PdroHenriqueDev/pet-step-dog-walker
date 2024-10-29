@@ -25,7 +25,7 @@ const walkScreens = {
 } as any;
 
 export default function HomeScreen() {
-  const {user, handleSetUser} = useAuth();
+  const {user, handleSetUser, refreshUserData} = useAuth();
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
 
@@ -75,6 +75,12 @@ export default function HomeScreen() {
 
       fetchBalance();
     }, [hideDialog, showDialog, user?.isOnline, user?.stripeAccountId]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshUserData();
+    }, [refreshUserData]),
   );
 
   useEffect(() => {

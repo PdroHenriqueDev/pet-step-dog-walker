@@ -173,6 +173,7 @@ export default function WalkInProgressScreen() {
           },
         },
       });
+      navigation.navigate('HomeScreen');
     } finally {
       setIsLoading(false);
     }
@@ -207,6 +208,7 @@ export default function WalkInProgressScreen() {
           },
         },
       });
+      navigation.navigate('HomeScreen');
     } finally {
       setIsLoading(false);
     }
