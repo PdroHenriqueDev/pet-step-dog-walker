@@ -7,10 +7,17 @@ import colors from '../../styles/colors';
 import {FieldsUser} from '../../interfaces/fieldsUser';
 import {useAppNavigation} from '../../hooks/useAppNavigation';
 import CustomButton from '../../components/customButton';
+import {removeAccount} from '../../services/auth';
+import {AxiosError} from 'axios';
+import {useDialog} from '../../contexts/dialogContext';
+import {useState} from 'react';
 
 export default function Account() {
   const {user, logout} = useAuth();
   const {navigation} = useAppNavigation();
+  const {showDialog, hideDialog} = useDialog();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const fields: FieldsUser[] = [
     {
@@ -68,7 +75,51 @@ export default function Account() {
     navigation.navigate('UpdateProfileImgScreen');
   };
 
-  const handleDeactivateAccount = () => {};
+  const handleDeactivateAccount = () => {
+    showDialog({
+      title: 'Tem certeza?',
+      description:
+        'Sua conta será deletada permanentemente em 30 dias automaticamente. Para reativá-la, basta fazer login novamente dentro desse período.?',
+      confirm: {
+        confirmLabel: 'Não quero desativar',
+        onConfirm: () => {
+          hideDialog();
+        },
+      },
+      cancel: {
+        cancelLabel: 'Sim',
+        onCancel: async () => {
+          hideDialog();
+          await deactivateAccount();
+        },
+      },
+    });
+  };
+
+  const deactivateAccount = async () => {
+    setIsLoading(true);
+    try {
+      await removeAccount();
+      logout();
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError &&
+        typeof error.response?.data?.data === 'string'
+          ? error.response?.data?.data
+          : 'Ocorreu um erro inesperado';
+      showDialog({
+        title: errorMessage,
+        confirm: {
+          confirmLabel: 'Entendi',
+          onConfirm: () => {
+            hideDialog();
+          },
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderItem = ({item}: {item: FieldsUser}) => {
     const renderButton = ({
@@ -88,6 +139,7 @@ export default function Account() {
           onPress={onPress}
           backgroundColor={backgroundColor}
           textColor={textColor}
+          isLoading={isLoading}
         />
       </View>
     );

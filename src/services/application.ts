@@ -72,6 +72,7 @@ export const profile = async ({
     throw error;
   }
 };
+
 export const deactivateAccount = async () => {
   try {
     const response = await api.post('/application/deactivate-account');

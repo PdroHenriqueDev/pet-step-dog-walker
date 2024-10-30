@@ -42,3 +42,14 @@ export const logoutSerivce = async () => {
     throw error;
   }
 };
+
+export const removeAccount = async () => {
+  try {
+    const response = await api.delete('/auth/remove-account');
+
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
