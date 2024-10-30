@@ -49,8 +49,8 @@ export default function HomeScreen() {
         try {
           const data = await balance(user.stripeAccountId!);
           if (data) {
-            setAvailableBalance(data.available[0].amount / 100);
-            setPendingBalance(data.pending[0].amount / 100);
+            setAvailableBalance(data.available / 100);
+            setPendingBalance(data.pending / 100);
           }
         } catch (error) {
           if (error instanceof AxiosError) {
@@ -279,7 +279,7 @@ export default function HomeScreen() {
           <Text className="text-2xl font-bold text-dark mb-2">Seus ganhos</Text>
           {!user?.stripeAccountId ? (
             <Text className="text-danger text-lg">
-              Você precisa adicionar uma conta para ver seus ganhos
+              Você precisa adicionar uma conta bancária para ver seus ganhos
             </Text>
           ) : (
             <View className="flex-row justify-between">
