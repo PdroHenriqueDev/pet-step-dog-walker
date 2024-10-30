@@ -1,5 +1,6 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from './api';
+import {UserRole} from '../enum/role';
 
 export const login = async ({
   email,
@@ -46,6 +47,20 @@ export const logoutSerivce = async () => {
 export const removeAccount = async () => {
   try {
     const response = await api.delete('/auth/remove-account');
+
+    const {data} = response;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendPasswordResetEmail = async (email: string) => {
+  try {
+    const response = await api.post('/auth/recovery-password', {
+      email,
+      role: UserRole.DogWalker,
+    });
 
     const {data} = response;
     return data;

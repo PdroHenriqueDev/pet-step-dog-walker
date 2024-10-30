@@ -25,6 +25,7 @@ type RootStackParamList = {
   AccountScreen: undefined;
   UpdateProfileImgScreen: undefined;
   HelpScreen: undefined;
+  ForgotPasswordScreen: undefined;
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;
