@@ -108,8 +108,9 @@ export default function SignUp({onRegister}: {onRegister: () => void}) {
       await registerDogWalker(dogWalker);
       showDialog({
         title: 'Cadastro feito com sucesso!',
+        description: 'Verifique seu e-mail antes de fazer login.',
         confirm: {
-          confirmLabel: 'Faça o login',
+          confirmLabel: 'Entendi',
           onConfirm: () => {
             hideDialog();
             onRegister();
