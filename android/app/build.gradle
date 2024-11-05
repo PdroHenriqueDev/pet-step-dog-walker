@@ -80,9 +80,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.pedro.petStepDogWalker"
+    namespace "com.softwarecastle.petstep.dogwalker"
     defaultConfig {
-        applicationId "com.pedro.petStepDogWalker"
+        applicationId "com.softwarecastle.petstep.dogwalker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

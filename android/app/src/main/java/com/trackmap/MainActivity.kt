@@ -1,4 +1,4 @@
-package com.pedro.petStepDogWalker
+package com.softwarecastle.petstep.dogwalker
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,4 +1,4 @@
-package com.pedro.petStepDogWalker
+package com.softwarecastle.petstep.dogwalker
 
 import android.app.Application
 import com.facebook.react.PackageList
