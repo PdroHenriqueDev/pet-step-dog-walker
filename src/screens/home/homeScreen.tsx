@@ -83,13 +83,13 @@ export default function HomeScreen() {
     }, [refreshUserData]),
   );
 
-  useEffect(() => {
-    if (user?.currentWalk) {
-      const {status} = user?.currentWalk;
+  // useEffect(() => {
+  //   if (user?.currentWalk) {
+  //     const {status} = user?.currentWalk;
 
-      navigation.navigate(walkScreens[status]);
-    }
-  }, [navigation, user?.currentWalk]);
+  //     navigation.navigate(walkScreens[status]);
+  //   }
+  // }, [navigation, user?.currentWalk]);
 
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {

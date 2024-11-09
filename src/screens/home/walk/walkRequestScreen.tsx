@@ -25,6 +25,12 @@ import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import {WalkEvents} from '../../../enum/walk';
 import Sound from 'react-native-sound';
 
+const sizeTranslate: {[key: string]: string} = {
+  small: 'pequeno',
+  medium: 'médio',
+  large: 'grande',
+};
+
 export default function WalkRequestScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [details, setDetails] = useState<WalkDetails>();
@@ -237,7 +243,7 @@ export default function WalkRequestScreen() {
       className={`bg-primary flex-1 pb-40 ${Platform.OS === 'ios' ? 'px-5 py-20' : 'p-5'}`}>
       <Spinner visible={isLoading} />
       <Text className="text-xl font-bold text-dark text-center">
-        Detalhe do passeio
+        Detalhes do passeio
       </Text>
       <View className="mt-5 flex-row justify-between">
         <View className="flex-row items-center">
@@ -280,8 +286,12 @@ export default function WalkRequestScreen() {
               <Text className="text-dark text-base font-semibold">
                 Cão {index + 1}
               </Text>
-              <Text className="text-dark text-sm">Raça: {dog.breed}</Text>
-              <Text className="text-dark text-sm">Porte: {dog.size}</Text>
+              <Text className="text-dark text-sm">
+                Raça: {dog.breed === 'unknown breed' ? 'SRD' : dog.breed}
+              </Text>
+              <Text className="text-dark text-sm">
+                Porte: {sizeTranslate[dog.size]}
+              </Text>
             </View>
           ))}
         </View>

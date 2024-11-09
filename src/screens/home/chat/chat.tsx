@@ -83,7 +83,7 @@ export default function Chat() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={globalStyles.text}>Chat</Text>
+        <Text className="text-dark text-2xl text-center">Chat</Text>
       </View>
       <FlatList
         ref={flatListRef}

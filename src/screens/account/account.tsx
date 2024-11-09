@@ -79,7 +79,7 @@ export default function Account() {
     showDialog({
       title: 'Tem certeza?',
       description:
-        'Sua conta será deletada permanentemente em 30 dias automaticamente. Para reativá-la, basta fazer login novamente dentro desse período.?',
+        'Sua conta será deletada permanentemente em 30 dias automaticamente. Para reativá-la, basta fazer login novamente dentro desse período.',
       confirm: {
         confirmLabel: 'Não quero desativar',
         onConfirm: () => {
