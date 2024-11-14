@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native';
 import {DocumentType} from '../types/document';
 import {FieldsUser} from '../interfaces/fieldsUser';
+import {Notification} from '../interfaces/notification';
 
 type RootStackParamList = {
   HomeScreen: undefined;
@@ -26,6 +27,8 @@ type RootStackParamList = {
   UpdateProfileImgScreen: undefined;
   HelpScreen: undefined;
   ForgotPasswordScreen: undefined;
+  NotificationList: undefined;
+  NotificationDetail: {notification: Notification};
 };
 
 type AppNavigationProp = NavigationProp<RootStackParamList>;

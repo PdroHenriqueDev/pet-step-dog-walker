@@ -28,11 +28,6 @@ function Routes() {
     fetchUser();
   }, [fetchUser, setAuthTSession]);
 
-  // const {logout} = useAuth();
-  // useEffect(() => {
-  //   logout();
-  // }, []);
-
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const requestId = remoteMessage?.data?.requestId as string;
