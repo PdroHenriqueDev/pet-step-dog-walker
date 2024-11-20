@@ -83,13 +83,19 @@ export default function HomeScreen() {
     }, [refreshUserData]),
   );
 
-  // useEffect(() => {
-  //   if (user?.currentWalk) {
-  //     const {status} = user?.currentWalk;
+  useEffect(() => {
+    const handleWalkRoute = () => {
+      if (user?.currentWalk) {
+        const {status} = user?.currentWalk;
 
-  //     navigation.navigate(walkScreens[status]);
-  //   }
-  // }, [navigation, user?.currentWalk]);
+        if (status === WalkEvents.PENDING) {
+          navigation.navigate('WalkRequest');
+        }
+      }
+    };
+
+    handleWalkRoute();
+  }, [navigation, user?.currentWalk]);
 
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {

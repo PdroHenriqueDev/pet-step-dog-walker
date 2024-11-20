@@ -10,7 +10,7 @@
 {
   [GMSServices provideAPIKey: [RNCConfig envFor:@"GOOGLE_MAPS_API_KEY"]];
   [FIRApp configure];
-  [application registerForRemoteNotifications]; 
+  [application registerForRemoteNotifications];
   self.moduleName = @"PetStepDogWalker";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
