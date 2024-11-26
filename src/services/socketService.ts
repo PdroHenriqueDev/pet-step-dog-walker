@@ -1,5 +1,6 @@
 import {io, Socket} from 'socket.io-client';
 import Config from 'react-native-config';
+import {Platform} from 'react-native';
 
 let socket: Socket | null = null;
 let isTryingToReconnect = false;
@@ -12,8 +13,8 @@ export const connectSocket = (requestId: string) => {
   }
   try {
     socket = io(
-      Config.API_BASE_URL,
-      // Platform.OS === 'ios' ? Config.API_BASE_URL : 'http://10.0.2.2:3000',
+      // Config.API_BASE_URL,
+      Platform.OS === 'ios' ? Config.API_BASE_URL : 'http://10.0.2.2:3000',
       {
         query: {request_id: requestId},
       },
