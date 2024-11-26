@@ -31,7 +31,8 @@ export default function ForgotPasswordScreen() {
       await sendPasswordResetEmail(email);
       showDialog({
         title: 'E-mail de recuperação enviado!',
-        description: 'Verifique sua caixa de entrada para recuperar sua senha.',
+        description:
+          'Se o e-mail fornecido estiver cadastrado em nossa base, você receberá instruções para redefinir sua senha em breve. Verifique sua caixa de entrada e a pasta de spam.',
         confirm: {
           confirmLabel: 'Entendi',
           onConfirm: () => {
