@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "release-build": "react-native build-android --mode=release",
+    "release-test": "yarn android --mode release"
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.2",
