@@ -7,22 +7,17 @@ import CustomTextInput from '../../../../components/customTextInput/customTextIn
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import colors from '../../../../styles/colors';
 import globalStyles from '../../../../styles/globalStyles';
 import {addAccount} from '../../../../services/dogWalkerService';
 import {AxiosError} from 'axios';
 import {isAdult} from '../../../../utils/textUtils';
-import banks from '../../../../utils/bancos.json';
 import CustomPicker from '../../../../components/customPicker/customPicker';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useAuth} from '../../../../contexts/authContext';
 import {useAppNavigation} from '../../../../hooks/useAppNavigation';
-
-const mappedBank = banks.map(bank => ({
-  label: `${bank.COMPE} - ${bank.ShortName}`,
-  value: bank.COMPE,
-}));
+import {listBanks} from '../../../../services/staticDataService';
 
 export default function BankScreen() {
   const {user, handleSetUser} = useAuth();
@@ -39,6 +34,7 @@ export default function BankScreen() {
       : new Date(),
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [banks, setBanks] = useState<{label: string; value: string}[]>([]);
 
   const {
     control,
@@ -59,6 +55,33 @@ export default function BankScreen() {
         : new Date(),
     },
   });
+
+  useEffect(() => {
+    const loadBanks = async () => {
+      setIsLoading(true);
+      try {
+        const response = await listBanks();
+        setBanks(response);
+      } catch (error) {
+        showDialog({
+          title: 'Erro ao carregar bancos',
+          confirm: {
+            confirmLabel: 'Entendi',
+            onConfirm: hideDialog,
+          },
+          description:
+            error instanceof AxiosError
+              ? error.response?.data?.data ||
+                'Erro inesperado ao carregar bancos'
+              : 'Erro inesperado ao carregar bancos',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadBanks();
+  }, [hideDialog, showDialog]);
 
   const onSubmit = (data: any) => {
     const birthdate = {
@@ -180,7 +203,7 @@ export default function BankScreen() {
               onValueChange={itemValue =>
                 setValue('bankCode', itemValue, {shouldValidate: true})
               }
-              items={mappedBank}
+              items={banks}
               label="Selecione o banco"
               error={errors.bankCode?.message}
             />
