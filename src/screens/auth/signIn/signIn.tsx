@@ -127,7 +127,7 @@ export default function SignIn() {
       </TouchableOpacity>
 
       <CustomButton
-        label="Entar"
+        label="Entrar"
         onPress={handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
