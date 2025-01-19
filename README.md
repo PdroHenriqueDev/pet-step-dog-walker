@@ -1,79 +1,111 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Pet Step - Dog Walker App
 
-# Getting Started
+## About the Project
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+**Pet Step - Dog Walker App** was a personal project designed to connect dog walkers with pet owners in need of reliable walking services. This app, as part of the **Pet Step** platform, allowed dog walkers to manage walk requests, communicate with pet owners, and track walks in real-time.
 
-## Step 1: Start the Metro Server
+Built using **React Native**, the app was designed to work seamlessly on both Android and iOS. Though no longer in production, it has been open-sourced to serve as a reference and learning resource.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+---
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Technologies Used
+
+### Frameworks and Tools
+
+- **React Native**: Cross-platform development for iOS and Android.
+- **TypeScript**: Strongly-typed JavaScript for robust development.
+- **Context API**: State management.
+- **NativeWind**: For styling components.
+- **Firebase Cloud Messaging (FCM)**: Push notifications for real-time updates.
+- **Firebase Realtime Database**: Managed real-time chat between dog walkers and pet owners.
+- **Stripe SDK**: Payment integration to receive payouts.
+
+### Backend Integration
+
+The app connected to the [Pet Step Backend](https://github.com/PdroHenriqueDev/pet-step-server), which handled:
+
+- Authentication and user management.
+- Payment processing with Stripe.
+- Notifications via Firebase.
+- Real-time tracking of walks.
+- Secure chat powered by **Firebase Realtime Database**.
+
+---
+
+## Features
+
+### For Dog Walkers
+
+- **Sign-Up and Login**: Secure authentication using email and password.
+- **Walk Management**: Accept or decline walk requests from nearby pet owners.
+- **Real-Time Tracking**: Share your location with pet owners during walks.
+- **Chat**: Communicate with pet owners in real-time, powered by Firebase Realtime Database.
+- **Ratings**: View feedback from pet owners and improve your service quality.
+- **Payout Management**: Receive payments directly through Stripe.
+
+### Notifications
+
+- **Push Notifications**: Get alerts for new walk request and chat messages.
+
+---
+
+## Prerequisites
+
+Before setting up the app, ensure you have the following:
+
+- **Node.js** (version 16 or higher)
+- **Android Studio** or **Xcode** (for emulator or device testing)
+- **Firebase Account** (to set up push notifications and real-time chat)
+- **Google Maps Key** (to enable real-time location tracking)
+- **Stripe Account** (to set up and test payouts)
+
+---
+
+## How to Run the Project
+
+### 1. Clone the Repository
 
 ```bash
-# using npm
-npm start
+git clone https://github.com/your-username/pet-step-dog-walker.git
+cd pet-step-dogwalker
+```
 
-# OR using Yarn
+### 2. Install Dependencies
+
+```bash
+yarn install
+```
+
+### 3. Configure Environment Variables
+
+Create the `.env` file:\*\* In the project's root directory, copy the `.env.example` file to create a new `.env` file
+
+```bash
+    cp .env.example .env
+```
+
+### 4. Start the App
+
+To run the app locally:
+
+```bash
 yarn start
 ```
 
-## Step 2: Start your Application
+---
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+## App Images
 
-### For Android
+### Home Screen
 
-```bash
-# using npm
-npm run android
+![Home Screen](./example-images/881847AA-2FAD-4664-8BAA-2A3A617BBDBC_1_105_c.jpeg)
 
-# OR using Yarn
-yarn android
-```
+### Walk Management
 
-### For iOS
+![Walk Management](./example-images/85F97D63-B378-4154-9342-DEDE07613D97_1_105_c.jpeg)
 
-```bash
-# using npm
-npm run ios
+### Apple Store
 
-# OR using Yarn
-yarn ios
-```
+![Apple Store](./example-images/IMG_9728.PNG)
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+---

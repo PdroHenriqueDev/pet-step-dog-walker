@@ -217,10 +217,6 @@ export default function BankScreen() {
           name="agencyNumber"
           rules={{
             required: 'Número da agência é obrigatório',
-            pattern: {
-              value: /^\d{4}$/,
-              message: 'O número da agência deve ter 4 dígitos',
-            },
           }}
           render={({field: {value}}) => (
             <CustomTextInput
@@ -243,10 +239,6 @@ export default function BankScreen() {
           name="accountNumber"
           rules={{
             required: 'Número da conta é obrigatório',
-            minLength: {
-              value: 6,
-              message: 'O número da conta deve ter no mínimo 6 dígitos',
-            },
           }}
           render={({field: {value}}) => (
             <CustomTextInput
