@@ -166,7 +166,7 @@ export default function DocumentsScreen() {
     showDialog({
       title: 'Tem certeza que deseja cancelar?',
       description:
-        'Sua conta será desativada. Para ativar, basta fazer log in novamente',
+        'Sua conta será deletada permanentemente em 30 dias automaticamente. Para reativá-la, basta fazer login novamente dentro desse período.',
       confirm: {
         confirmLabel: 'Não',
         onConfirm: () => {
@@ -230,7 +230,7 @@ export default function DocumentsScreen() {
 
   return (
     <ScrollView
-      className={`flex-1 bg-primary ${Platform.OS === 'ios' ? 'p-20 px-5' : 'p-5'}`}>
+      className={`flex-1 bg-primary ${Platform.OS === 'ios' ? 'py-20 px-5' : 'p-5'}`}>
       <View className="items-center">
         <Text className="font-bold text-xl text-dark">Estamos quase lá!</Text>
         <Text className="text-base text-accent">
@@ -304,7 +304,7 @@ export default function DocumentsScreen() {
           }
         />
 
-        <View className="mt-2">
+        <View className="mt-2 mb-20">
           <CustomButton
             label={'Cancelar aplicação'}
             onPress={handleCancel}

@@ -41,7 +41,6 @@ export const calculateDistance = async ({
       throw new Error('Erro ao calcular a distância');
     }
   } catch (error) {
-    console.log('got error =>>>', error);
     throw new Error('Erro ao calcular a distância');
   }
 };

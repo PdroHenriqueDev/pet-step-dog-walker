@@ -25,6 +25,7 @@ interface AuthContextProps {
   ) => Promise<void>;
   handleSetUser: (newUser: DogWalker) => void;
   fetchUser: () => void;
+  refreshUserData: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -39,6 +40,7 @@ export const AuthContext = createContext<AuthContextProps>({
   storeTokens: async () => {},
   handleSetUser: (_newUser: DogWalker) => {},
   fetchUser: async () => {},
+  refreshUserData: async () => {},
 });
 
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
@@ -100,8 +102,6 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
       setRefreshToken(null);
       setUser(null);
       setUserId(null);
-    } catch (error) {
-      console.error('Erro ao fazer logout');
     } finally {
       setIsLoading(false);
     }
@@ -124,6 +124,16 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
     setUser(newUser);
   };
 
+  const refreshUserData = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const result = await getDogWalkerById(userId);
+      setUser(result);
+    } catch (error) {
+      throw error;
+    }
+  }, [userId]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -137,6 +147,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
         setAuthTSession,
         storeTokens: handleTokens,
         fetchUser,
+        refreshUserData,
         handleSetUser,
       }}>
       {children}

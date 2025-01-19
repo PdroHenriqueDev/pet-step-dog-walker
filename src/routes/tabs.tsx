@@ -12,8 +12,10 @@ import {updateDeviceToken} from '../services/dogWalkerService';
 import HistoryStack from './historyStack';
 import HistorytIcon from '../components/icons/history';
 import {Linking} from 'react-native';
-import AccountStack from './accountStac';
+import AccountStack from './accountStack';
 import AccountIcon from '../components/icons/account';
+import HelpStack from './helpStack';
+import HelpIcon from '../components/icons/support';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -50,6 +52,12 @@ export function Tabs() {
               confirmLabel: 'Abrir Configurações',
               onConfirm: async () => {
                 await openSettings();
+                hideDialog();
+              },
+            },
+            cancel: {
+              cancelLabel: 'Não quero receber notificacões',
+              onCancel() {
                 hideDialog();
               },
             },
@@ -116,6 +124,23 @@ export function Tabs() {
 
           return {
             tabBarIcon: HistorytIcon,
+            headerShown: false,
+            tabBarStyle: {
+              ...globalStyles.tabar,
+              display: isHiddenRoute ? 'none' : 'flex',
+            },
+          };
+        }}
+      />
+      <Screen
+        name="Ajuda"
+        component={HelpStack}
+        options={({route}) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'HelpScreen';
+          const isHiddenRoute = routeName !== 'HelpScreen';
+
+          return {
+            tabBarIcon: HelpIcon,
             headerShown: false,
             tabBarStyle: {
               ...globalStyles.tabar,

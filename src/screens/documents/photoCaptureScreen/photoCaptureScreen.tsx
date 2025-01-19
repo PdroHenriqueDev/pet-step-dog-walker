@@ -102,6 +102,33 @@ export default function PhotoCaptureScreen() {
     );
   };
 
+  const confirmUpload = () => {
+    Alert.alert(
+      'Confirmação',
+      `Você verificou ${documentType === 'selfie' ? 'a imagem' : 'o documento'} e tem certeza que deseja fazer o upload?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: handleUploadDocument,
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
+  const getFileType = (path: string): string => {
+    if (Platform.OS === 'android' && path.startsWith('content://'))
+      return 'application/pdf';
+    if (path.endsWith('.pdf')) return 'application/pdf';
+    if (path.endsWith('.png')) return 'image/png';
+    if (path.endsWith('.jpg') || path.endsWith('.jpeg')) return 'image/jpeg';
+    return 'application/octet-stream';
+  };
+
   const handleUploadDocument = async () => {
     if (!documentType || (!photoUri && !fileUri)) return;
 
@@ -109,13 +136,10 @@ export default function PhotoCaptureScreen() {
 
     const filePath = fileUri || photoUri;
     const fileName = filePath?.split('/').pop() as string;
-    const fileType = filePath?.endsWith('.pdf')
-      ? 'application/pdf'
-      : filePath?.endsWith('.png')
-        ? 'image/png'
-        : 'image/jpeg';
 
     if (!filePath) return;
+
+    const fileType = getFileType(filePath);
 
     const file: UploadableFile = {
       uri: filePath,
@@ -213,7 +237,7 @@ export default function PhotoCaptureScreen() {
 
       <CustomButton
         label={photoUri || fileUri ? 'Enviar' : 'Selecionar Documento'}
-        onPress={photoUri || fileUri ? handleUploadDocument : selectFile}
+        onPress={photoUri || fileUri ? confirmUpload : selectFile}
         isLoading={isLoading}
       />
 

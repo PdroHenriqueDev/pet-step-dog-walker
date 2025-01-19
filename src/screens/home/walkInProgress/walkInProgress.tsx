@@ -123,7 +123,28 @@ export default function WalkInProgressScreen() {
     Platform.OS === 'ios' ? handleIOSMaps() : openGoogleMaps();
   };
 
-  const handleStartWalk = async () => {
+  const handleStartWalk = () => {
+    showDialog({
+      title: 'Confirmação de Início',
+      description:
+        'Você já está com o(s) cão(es) e pronto para iniciar o passeio?',
+      confirm: {
+        confirmLabel: 'Sim, estou pronto',
+        onConfirm: async () => {
+          await startWalkRequest();
+          hideDialog();
+        },
+      },
+      cancel: {
+        cancelLabel: 'Não',
+        onCancel: () => {
+          hideDialog();
+        },
+      },
+    });
+  };
+
+  const startWalkRequest = async () => {
     if (!user?.currentWalk) return;
     setIsLoading(true);
     try {
@@ -152,6 +173,7 @@ export default function WalkInProgressScreen() {
           },
         },
       });
+      navigation.navigate('HomeScreen');
     } finally {
       setIsLoading(false);
     }
@@ -186,6 +208,7 @@ export default function WalkInProgressScreen() {
           },
         },
       });
+      navigation.navigate('HomeScreen');
     } finally {
       setIsLoading(false);
     }

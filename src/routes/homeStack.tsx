@@ -1,6 +1,6 @@
 import React, {useLayoutEffect} from 'react';
 import {StackHeaderProps, createStackNavigator} from '@react-navigation/stack';
-import NotificationHeader from '../components/header/notificationHeader';
+import NotificationHeader from '../components/notificationHeader/notificationHeader';
 import CustomHeader from '../components/header/customHeader';
 import {useAppNavigation} from '../hooks/useAppNavigation';
 import HomeScreen from '../screens/home/homeScreen';
@@ -8,12 +8,12 @@ import WalkInProgressScreen from '../screens/home/walkInProgress/walkInProgress'
 import WalkRequestScreen from '../screens/home/walk/walkRequestScreen';
 import WalkMapScreen from '../screens/home/walkMap/walkMapScreen';
 import Chat from '../screens/home/chat/chat';
+import NotificationList from '../screens/home/notification/notificationList/notificationList';
+import NotificationDetail from '../screens/home/notification/notificationDetail/notificationDetail';
 
 const {Navigator, Screen} = createStackNavigator();
 
-const notificationHeader = (props: StackHeaderProps) => (
-  <NotificationHeader {...props} />
-);
+const notificationHeader = () => <NotificationHeader />;
 
 const customHeader = (props: StackHeaderProps) => <CustomHeader {...props} />;
 
@@ -60,6 +60,22 @@ function HomeStack() {
         name="Chat"
         component={Chat}
         options={{header: customHeader, headerTransparent: true}}
+      />
+      <Screen
+        name="NotificationList"
+        component={NotificationList}
+        options={{
+          header: customHeader,
+          headerTransparent: true,
+        }}
+      />
+      <Screen
+        name="NotificationDetail"
+        component={NotificationDetail}
+        options={{
+          header: customHeader,
+          headerTransparent: true,
+        }}
       />
     </Navigator>
   );

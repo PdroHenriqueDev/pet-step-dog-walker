@@ -25,7 +25,7 @@ const walkScreens = {
 } as any;
 
 export default function HomeScreen() {
-  const {user, handleSetUser} = useAuth();
+  const {user, handleSetUser, refreshUserData} = useAuth();
   const {showDialog, hideDialog} = useDialog();
   const {navigation} = useAppNavigation();
 
@@ -49,8 +49,8 @@ export default function HomeScreen() {
         try {
           const data = await balance(user.stripeAccountId!);
           if (data) {
-            setAvailableBalance(data.available[0].amount / 100);
-            setPendingBalance(data.pending[0].amount / 100);
+            setAvailableBalance(data.available / 100);
+            setPendingBalance(data.pending / 100);
           }
         } catch (error) {
           if (error instanceof AxiosError) {
@@ -77,18 +77,29 @@ export default function HomeScreen() {
     }, [hideDialog, showDialog, user?.isOnline, user?.stripeAccountId]),
   );
 
-  useEffect(() => {
-    if (user?.currentWalk) {
-      const {status} = user?.currentWalk;
+  useFocusEffect(
+    useCallback(() => {
+      refreshUserData();
+    }, [refreshUserData]),
+  );
 
-      navigation.navigate(walkScreens[status]);
-    }
+  useEffect(() => {
+    const handleWalkRoute = () => {
+      if (user?.currentWalk) {
+        const {status} = user?.currentWalk;
+
+        if (status === WalkEvents.PENDING) {
+          navigation.navigate('WalkRequest');
+        }
+      }
+    };
+
+    handleWalkRoute();
   }, [navigation, user?.currentWalk]);
 
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const chatId = remoteMessage?.data?.chatId as string;
-      console.log('new menssage: =>', chatId);
       if (chatId && currentRouteName !== 'Chat') {
         showDialog({
           title: 'Nova mensagem',
@@ -213,16 +224,29 @@ export default function HomeScreen() {
         const permissionGranted = await requestLocationPermission();
         if (!permissionGranted) {
           setIsOnline(false);
+          handleSetUser({
+            ...user,
+            isOnline: false,
+          });
           return;
         }
 
         const locationUpdated = await getLocationUpdate();
         setIsOnline(locationUpdated);
+        handleSetUser({
+          ...user,
+          isOnline: locationUpdated,
+        });
 
         return;
       }
 
       await updateAvailability({
+        isOnline: false,
+      });
+
+      handleSetUser({
+        ...user,
         isOnline: false,
       });
 
@@ -261,7 +285,7 @@ export default function HomeScreen() {
           <Text className="text-2xl font-bold text-dark mb-2">Seus ganhos</Text>
           {!user?.stripeAccountId ? (
             <Text className="text-danger text-lg">
-              Você precisa adicionar um conta para ver seus ganhos
+              Você precisa adicionar uma conta bancária para ver seus ganhos
             </Text>
           ) : (
             <View className="flex-row justify-between">

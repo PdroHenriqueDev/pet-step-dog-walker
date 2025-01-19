@@ -36,7 +36,7 @@ export default function ApplicationFeedbackScreen() {
       [DogWalkerApplicationStatus.PendingReview]: {
         title: 'Sua aplicação está sendo analisada',
         message:
-          'Por favor, aguarde enquanto revisamos os seus documentos. Pode levar até 15 dias',
+          'Por favor, aguarde enquanto revisamos os seus documentos. Pode levar até 30 dias',
       },
       [DogWalkerApplicationStatus.Rejected]: {
         title: 'Sua aplicação foi rejeitada',

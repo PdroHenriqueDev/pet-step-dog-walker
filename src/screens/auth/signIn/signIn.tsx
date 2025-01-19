@@ -9,10 +9,11 @@ import {useDialog} from '../../../contexts/dialogContext';
 import {useAuth} from '../../../contexts/authContext';
 import {signInWithCustomToken} from 'firebase/auth';
 import {auth} from '../../../../firebaseConfig';
+import {useAppNavigation} from '../../../hooks/useAppNavigation';
 
 export default function SignIn() {
   const {setIsLoading, storeTokens, isLoading} = useAuth();
-
+  const {navigation} = useAppNavigation();
   const {showDialog, hideDialog} = useDialog();
 
   const {
@@ -67,7 +68,7 @@ export default function SignIn() {
   };
 
   const handleForgotPassword = () => {
-    console.log('Esqueceu a senha?');
+    navigation.navigate('ForgotPasswordScreen');
   };
 
   return (
@@ -126,7 +127,7 @@ export default function SignIn() {
       </TouchableOpacity>
 
       <CustomButton
-        label="Entar"
+        label="Entrar"
         onPress={handleSubmit(onSubmit)}
         isLoading={isLoading}
       />

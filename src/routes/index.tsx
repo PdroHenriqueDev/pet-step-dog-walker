@@ -28,28 +28,6 @@ function Routes() {
     fetchUser();
   }, [fetchUser, setAuthTSession]);
 
-  // const {logout} = useAuth();
-  // useEffect(() => {
-  //   logout();
-  // }, []);
-
-  // useEffect(() => {
-  //   async function requestPermission() {
-  //     const authStatus = await messaging().requestPermission();
-  //     const enabled =
-  //       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-  //       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  //     if (enabled) {
-  //       console.log('Authorization status:', authStatus);
-  //     } else {
-  //       console.log('Permissão de notificação negada.');
-  //     }
-  //   }
-
-  //   requestPermission();
-  // }, []);
-
   useEffect(() => {
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       const requestId = remoteMessage?.data?.requestId as string;

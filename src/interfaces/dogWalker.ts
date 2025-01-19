@@ -3,12 +3,14 @@ import {WalkEvents} from '../enum/walk';
 export interface DogWalker {
   _id?: string;
   name?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
   document?: string;
   address?: {
     zipCode?: string;
     street: string;
+    houseNumber: string;
     neighborhood: string;
     city: string;
     state: string;
@@ -32,7 +34,18 @@ export interface DogWalker {
     latitude: number;
     longitude: number;
   };
-  bank?: any;
+  bank?: {
+    bankCode: string;
+    agencyNumber: string;
+    accountNumber: string;
+    bankDocumentSent?: boolean;
+    bankDocumentVerified?: boolean;
+  };
+  birthdate?: {
+    day: number;
+    month: number;
+    year: number;
+  };
 }
 
 export interface DogWalkerForm {
@@ -42,9 +55,11 @@ export interface DogWalkerForm {
   cpf: string;
   zipCode: string;
   street: string;
+  houseNumber: string;
   neighborhood: string;
   city: string;
   state: string;
   password: string;
   confirmPassword: string;
+  isAdult: boolean;
 }

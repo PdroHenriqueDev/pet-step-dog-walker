@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Platform} from 'react-native';
+import {View, Text, TextInput, Platform, Alert} from 'react-native';
 import CustomButton from '../../../components/customButton';
 import {useAppNavigation} from '../../../hooks/useAppNavigation';
 import colors from '../../../styles/colors';
@@ -18,6 +18,24 @@ export default function AboutMeScreen() {
 
   const minCharacters = 100;
   const maxCharacters = 600;
+
+  const confirm = () => {
+    Alert.alert(
+      'Confirmação',
+      'Você verificou as informações e tem certeza que deseja enviar?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: handleSubmit,
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   const handleSubmit = async () => {
     try {
@@ -77,7 +95,7 @@ export default function AboutMeScreen() {
         isLoading={isLoading}
         disabled={aboutMe.length < minCharacters}
         label="Enviar"
-        onPress={handleSubmit}
+        onPress={confirm}
         backgroundColor={
           aboutMe.length >= minCharacters ? colors.secondary : colors.accent
         }
